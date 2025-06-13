@@ -1,0 +1,145 @@
+@model IEnumerable<MarinaRegSystem.Models.DoctorSchedule>
+
+@{
+    ViewData["Title"] = "جداول الأطباء";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - جداول الأطباء</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    </head>
+}
+
+@section cuurnetPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">جداول الأطباء</a></li>
+}
+
+<div class="card bg-white">
+    <div class="card-body">
+        <div class="table-responsive">
+            <div class="table-top">
+                <div class="search-set">
+                    <div class="search-input">
+                        <a class="btn btn-searchset"><i class="fas fa-search"></i></a>
+                    </div>
+                </div>
+                <div class="wordset">
+                    <a asp-action="AddDoctorSchedule" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة جدول</a>
+                </div>
+            </div>
+            <table class="table" id="schedulesTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الطبيب</th>
+                        <th>اليوم</th>
+                        <th>وقت البدء</th>
+                        <th>وقت الانتهاء</th>
+                        <th>مدة الموعد</th>
+                        <th>عدد المواعيد</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Doctor?.Name</td>
+                            <td>
+                                @switch ((int)item.DayOfWeek)
+                                {
+                                    case 0:
+                                        <span>الأحد</span>
+                                        break;
+                                    case 1:
+                                        <span>الإثنين</span>
+                                        break;
+                                    case 2:
+                                        <span>الثلاثاء</span>
+                                        break;
+                                    case 3:
+                                        <span>الأربعاء</span>
+                                        break;
+                                    case 4:
+                                        <span>الخميس</span>
+                                        break;
+                                    case 5:
+                                        <span>الجمعة</span>
+                                        break;
+                                    case 6:
+                                        <span>السبت</span>
+                                        break;
+                                }
+                            </td>
+                            <td>@item.StartTime.ToString("HH:mm")</td>
+                            <td>@item.EndTime.ToString("HH:mm")</td>
+                            <td>@item.AppointmentDuration دقيقة</td>
+                            <td>@item.MaxAppointmentsPerDay</td>
+                            <td>
+                                <a asp-action="EditDoctorSchedule" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a asp-action="DeleteDoctorSchedule" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Datatables JS -->
+    <script src="~/assets/js/datatables.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/app.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#schedulesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json'
+                },
+                order: [[0, 'desc']]
+            });
+        });
+    </script>
+} 

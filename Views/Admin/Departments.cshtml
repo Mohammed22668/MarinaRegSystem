@@ -1,0 +1,94 @@
+@model IEnumerable<MarinaRegSystem.Models.Department>
+
+@{
+    ViewData["Title"] = "الأقسام";
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأقسام</a></li>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">قائمة الأقسام</h3>
+                    <div class="text-end">
+                        <a asp-action="AddDepartment" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة قسم
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>الوصف</th>
+                                        <th>عدد الأطباء</th>
+                                        <th>عدد الخدمات</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="#">@item.Name</a>
+                                                </h2>
+                                            </td>
+                                            <td>@item.Description</td>
+                                            <td>@(item.Doctors?.Count ?? 0)</td>
+                                            <td>@(item.Services?.Count ?? 0)</td>
+                                            <td>
+                                                <span class="badge bg-@(item.Status ? "success" : "danger")">
+                                                    @(item.Status ? "نشط" : "غير نشط")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="actions">
+                                                    <a asp-action="EditDepartment" asp-route-id="@item.Id" class="btn btn-sm bg-success-light me-2">
+                                                        <i class="fas fa-pencil-alt"></i> تعديل
+                                                    </a>
+                                                    <a asp-action="DeleteDepartment" asp-route-id="@item.Id" class="btn btn-sm bg-danger-light" onclick="return confirm('هل أنت متأكد من حذف هذا القسم؟');">
+                                                        <i class="fas fa-trash"></i> حذف
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+} 

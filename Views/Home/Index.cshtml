@@ -1,0 +1,284 @@
+﻿@{
+    ViewData["Title"] = "الرئيسية";
+}
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    </head>
+}
+@section Footer{
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datatables JS -->
+    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/plugins/datatables/datatables.min.js"></script>
+
+    <!-- counterup JS -->
+    <script src="~/assets/js/jquery.waypoints.js"></script>
+    <script src="~/assets/js/jquery.counterup.min.js"></script>
+
+    <!-- Apexchart JS -->
+    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+}
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-01.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الرئيسية</a></li>
+}
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">مرحباً بك في مستشفى مارينا</h3>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+<div class="good-morning-blk">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="morning-user">
+                <h2>مرحباً، <span>@ViewBag.Username</span></h2>
+                <p>نتمنى لك يوماً سعيداً!</p>
+            </div>
+        </div>
+        <div class="col-md-6 position-blk">
+            <div class="morning-img">
+                <img src="~/assets/img/morning-img-01.png" alt="" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-info">
+                        <h5 class="card-title">الحجز مع الطبيب</h5>
+                        <p class="card-text">احجز موعدك مع أفضل الأطباء</p>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-user-md fa-2x text-primary"></i>
+                    </div>
+                </div>
+                <a href="~/Patient/AddSchedule" class="btn btn-primary btn-block mt-3">احجز الآن</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-info">
+                        <h5 class="card-title">الخدمات الطبية</h5>
+                        <p class="card-text">اكتشف خدماتنا الطبية المتكاملة</p>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-stethoscope fa-2x text-success"></i>
+                    </div>
+                </div>
+                <a href="~/Patient/Services" class="btn btn-success btn-block mt-3">عرض الخدمات</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card-info">
+                        <h5 class="card-title">الأطباء</h5>
+                        <p class="card-text">تعرف على فريقنا الطبي المتميز</p>
+                    </div>
+                    <div class="card-icon">
+                        <i class="fas fa-hospital-user fa-2x text-info"></i>
+                    </div>
+                </div>
+                <a href="~/Patient/Doctors" class="btn btn-info btn-block mt-3">عرض الأطباء</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 col-md-12 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 style="font-weight:bolder">زيارات الاطباء السابقة</h3>
+            </div>
+            <div class="card-body p-0 table-dash">
+                <div class="table-responsive">
+                    <table class="table mb-0 border-0 datatable custom-table patient-table">
+                        <thead>
+                            <tr>
+                                <th>اسم الدكتور</th>
+                                <th>القسم</th>
+                                <th>تاريخ الفحص</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="table-image">
+                                    <img width="28" height="28" class="rounded-circle" src="~/assets/img/profiles/avatar-02.jpg" alt="">
+                                    <h2>دكتور رقم 1</h2>
+                                </td>
+                                <td>الباطنية</td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-red" style="font-weight:bolder">مؤجلة</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <img width="28" height="28" class="rounded-circle" src="~/assets/img/profiles/avatar-04.jpg" alt="">
+                                    <h2>دكتور رقم 2</h2>
+                                </td>
+                                <td>العظام و الكسور</td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-blue re-shedule" style="font-weight:bolder">في الانتظار</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <img width="28" height="28" class="rounded-circle" src="~/assets/img/profiles/avatar-05.jpg" alt="">
+                                    <h2>دكتور رقم 3</h2>
+                                </td>
+                                <td>اطفال</td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-green re-shedule " style="font-weight:bolder">منتهية</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-12 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 style="font-weight:bolder">زيارات المختبر السابقة</h3>
+            </div>
+            <div class="card-body p-0 table-dash">
+                <div class="table-responsive">
+                    <table class="table mb-0 border-0 datatable custom-table patient-table">
+                        <thead>
+                            <tr>
+                                <th>نوع الفحص</th>
+                                <th>تاريخ الفحص</th>
+                                <th>حالة الفحص</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>CBC</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-red" style="font-weight:bolder">اعادة فحص</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>CA & VIT D</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-blue re-shedule" style="font-weight:bolder">في الانتظار</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>GUE</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-green re-shedule " style="font-weight:bolder">منتهي</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-12 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 style="font-weight:bolder">زيارات الاشعة السابقة</h3>
+            </div>
+            <div class="card-body p-0 table-dash">
+                <div class="table-responsive">
+                    <table class="table mb-0 border-0 datatable custom-table patient-table">
+                        <thead>
+                            <tr>
+                                <th>نوع الفحص</th>
+                                <th>تاريخ الفحص</th>
+                                <th>حالة الفحص</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>CT Scan</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-red" style="font-weight:bolder">اعادة فحص</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>MRI</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-blue re-shedule" style="font-weight:bolder">في الانتظار</div></td>
+                            </tr>
+                            <tr>
+                                <td class="table-image">
+                                    <h2>MRC</h2>
+                                </td>
+                                <td>@DateTime.Now.ToString("yyyy-MM-dd") </td>
+                                <td><div class="custom-badge status-green re-shedule " style="font-weight:bolder">منتهي</div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

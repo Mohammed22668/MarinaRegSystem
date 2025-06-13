@@ -1,0 +1,31 @@
+@model IEnumerable<MarinaRegSystem.Models.Doctor>
+
+@{
+    ViewData["Title"] = "قائمة الأطباء";
+}
+
+<h2 class="mb-4">قائمة الأطباء</h2>
+
+<div class="row">
+    @foreach (var doctor in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@doctor.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">القسم: @doctor.Department?.Name</h6>
+                    <p class="card-text">
+                        @if (!string.IsNullOrEmpty(doctor.Speciality))
+                        {
+                            <strong>الاختصاص:</strong> @doctor.Speciality<br />
+                        }
+                        @if (!string.IsNullOrEmpty(doctor.Phone))
+                        {
+                            <strong>الهاتف:</strong> @doctor.Phone
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

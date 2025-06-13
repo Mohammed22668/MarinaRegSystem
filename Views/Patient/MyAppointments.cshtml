@@ -1,0 +1,46 @@
+@model IEnumerable<MarinaRegSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "حجوزاتي السابقة";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>تاريخ الموعد</th>
+            <th>وقت الموعد</th>
+            <th>الطبيب</th>
+            <th>القسم</th>
+            <th>الخدمة</th>
+            <th>الحالة</th>
+            <th>السعر</th>
+            <th>ملاحظات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="8" class="text-center">لا توجد حجوزات سابقة</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                    <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
+                    <td>@item.Doctor?.Name</td>
+                    <td>@item.Department?.Name</td>
+                    <td>@item.Service?.Name</td>
+                    <td>@item.Status.ToString()</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.Notes</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

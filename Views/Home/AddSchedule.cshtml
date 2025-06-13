@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا الاهلي - حجز موعد</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datepicker CSS -->
+        <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    </head>
+}
+@section Footer{
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/feather.min.js"></script>
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker Core JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="~/assets/js/app.js"></script>
+}
+@section cuurnetPage
+{
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-05.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الحجز الالكتروني </a></li>
+}
+<div class="card bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-heading">
+                                    <h4 style="font-weight:bolder">حجز موعد مع الدكتور</h4>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label style="font-weight:bolder">اسم الدكتور<span class="login-danger">*</span></label>
+                                    <select class="form-control select">
+                                        <option>دكتور رقم 1 (رقم 1)</option>
+                                        <option>دكتور رقم 2 (رقم 2)</option>
+                                        <option>دكتور رقم 3 (رقم 3)</option>
+                                        <option>دكتور رقم 4 (رقم 4)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms cal-icon">
+                                    <label style="font-weight:bolder">تحديد موعد الزيارة<span class="login-danger">*</span></label>
+                                    <input class="form-control datetimepicker" type="text">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="input-block local-forms">
+                                    <label style="font-weight:bolder">تحديد ساعة الحجز <span class="login-danger">*</span></label>
+                                    <div class="time-icon">
+                                        <input type="text" class="form-control" id="datetimepicker3">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12">
+                                <div class="input-block local-forms">
+                                    <label style="font-weight:bolder">ملاحظات </label>
+                                    <textarea class="form-control" rows="3" cols="30"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="doctor-submit text-end">
+                                    <button style="font-weight:bolder" type="submit" class="btn btn-primary submit-form me-2">حجز الموعد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

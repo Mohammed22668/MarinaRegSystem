@@ -1,0 +1,87 @@
+@model MarinaRegSystem.Models.Department
+
+@{
+    ViewData["Title"] = "إضافة قسم";
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة قسم</a></li>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">إضافة قسم جديد</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="AddDepartment" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Name" style="font-weight:bolder">اسم القسم<span class="login-danger">*</span></label>
+                                        <input asp-for="Name" class="form-control" type="text" required>
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Status" style="font-weight:bolder">الحالة</label>
+                                        <div class="form-check form-switch">
+                                            <input asp-for="Status" class="form-check-input" type="checkbox" checked>
+                                            <label class="form-check-label" for="Status">نشط</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Description" style="font-weight:bolder">الوصف</label>
+                                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="doctor-submit text-end">
+                                    <button type="submit" class="btn btn-primary submit-form me-2">حفظ</button>
+                                    <a asp-action="Departments" class="btn btn-primary cancel-form">إلغاء</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+} 

@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "الصفحة الرئيسية للمريض";
+}
+
+@section currentPage {
+    <!-- محتوى القسم، مثلاً: -->
+    <h1>صفحة المريض الرئيسية</h1>
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">مرحبًا بك في نظام الحجز بمستشفى Marina</h2>
+        <p class="lead text-muted">يسرّنا خدمتك، يمكنك من هنا متابعة كل ما يتعلق بمواعيدك وخدماتك الطبية.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0 hover-shadow">
+                <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold">عرض الأطباء</h5>
+                        <p class="card-text text-muted">تصفّح الأطباء المتاحين في المستشفى واحجز موعدًا معهم.</p>
+                    </div>
+                    <a href="@Url.Action("Doctors", "Patient")" class="btn btn-outline-primary mt-3">عرض الأطباء</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0 hover-shadow">
+                <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                        <h5 class="card-title fw-bold">مواعيدي</h5>
+                        <p class="card-text text-muted">اطّلع على تفاصيل المواعيد المحجوزة، وعدّل أو ألغِ منها ما تشاء.</p>
+                    </div>
+                    <a href="@Url.Action("MyAppointments", "Patient")" class="btn btn-outline-success mt-3">مواعيدي</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 border-0 hover-shadow">
+                <div class="card-body text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="fas fa-calendar-plus fa-3x text-warning mb-3"></i>
+                        <h5 class="card-title fw-bold">احجز موعدًا جديدًا</h5>
+                        <p class="card-text text-muted">ابدأ حجز موعد جديد مع أحد الأطباء حسب القسم والخدمة.</p>
+                    </div>
+                    <a href="@Url.Action("AddSchedule", "Patient")" class="btn btn-outline-warning mt-3">حجز موعد</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}

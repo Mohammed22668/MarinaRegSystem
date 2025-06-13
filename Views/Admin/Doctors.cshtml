@@ -1,0 +1,106 @@
+@model IEnumerable<MarinaRegSystem.Models.Doctor>
+
+@{
+    ViewData["Title"] = "الأطباء";
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأطباء</a></li>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">قائمة الأطباء</h3>
+                    <div class="text-end">
+                        <a asp-action="AddDoctor" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> إضافة طبيب
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>الاسم</th>
+                                        <th>التخصص</th>
+                                        <th>القسم</th>
+                                        <th>سنوات الخبرة</th>
+                                        <th>التقييم</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="#" class="avatar avatar-sm me-2">
+                                                        <img class="avatar-img rounded-circle" src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : item.ImageUrl)" alt="@item.Name">
+                                                    </a>
+                                                    <a href="#">د. @item.Name</a>
+                                                </h2>
+                                            </td>
+                                            <td>@item.Speciality</td>
+                                            <td>@item.Department?.Name</td>
+                                            <td>@item.Experience سنوات</td>
+                                            <td>
+                                                <div class="rating">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <i class="fas fa-star @(i <= item.Rating ? "text-warning" : "text-muted")"></i>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-@(item.Status ? "success" : "danger")">
+                                                    @(item.Status ? "نشط" : "غير نشط")
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="actions">
+                                                    <a asp-action="EditDoctor" asp-route-id="@item.Id" class="btn btn-sm bg-success-light me-2">
+                                                        <i class="fas fa-pencil-alt"></i> تعديل
+                                                    </a>
+                                                    <a asp-action="DeleteDoctor" asp-route-id="@item.Id" class="btn btn-sm bg-danger-light" onclick="return confirm('هل أنت متأكد من حذف هذا الطبيب؟');">
+                                                        <i class="fas fa-trash"></i> حذف
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+} 

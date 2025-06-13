@@ -1,0 +1,102 @@
+@model IEnumerable<MarinaRegSystem.Models.Appointment>
+
+@{
+    ViewData["Title"] = "المواعيد";
+}
+
+@section Head {
+    <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">المواعيد</a></li>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">المواعيد</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>اسم المريض</th>
+                                        <th>القسم</th>
+                                        <th>الخدمة</th>
+                                        <th>الطبيب</th>
+                                        <th>التاريخ</th>
+                                        <th>الوقت</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in Model)
+                                    {
+                                        <tr>
+                                            <td>@appointment.Id</td>
+                                            <td>@appointment.PatientName</td>
+                                            <td>@appointment.Department?.Name</td>
+                                            <td>@appointment.Service?.Name</td>
+                                            <td>@appointment.Doctor?.Name</td>
+                                            <td>@appointment.AppointmentDate.ToShortDateString()</td>
+                                            <td>@appointment.AppointmentTime</td>
+                                            <td>
+                                                <span class="badge @(appointment.Status == AppointmentStatus.Completed ? "bg-success" : 
+                                                                    appointment.Status == AppointmentStatus.Cancelled ? "bg-danger" : "bg-warning")">
+                                                    @appointment.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="actions">
+                                                    <a asp-action="Edit" asp-route-id="@appointment.Id" class="btn btn-sm bg-success-light me-2">
+                                                        <i class="feather-edit-3"></i> تعديل
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@appointment.Id" class="btn btn-sm bg-danger-light" 
+                                                       onclick="return confirm('هل أنت متأكد من حذف هذا الموعد؟');">
+                                                        <i class="feather-trash-2"></i> حذف
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+}
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+} 

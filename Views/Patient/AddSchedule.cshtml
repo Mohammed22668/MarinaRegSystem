@@ -1,0 +1,242 @@
+@model MarinaRegSystem.Models.Appointment
+@{
+    ViewData["Title"] = "حجز موعد";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - إضافة حجز</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datepicker CSS -->
+        <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">حجز موعد</a></li>
+}
+
+<div class="card bg-white">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="AddSchedule" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-heading">
+                                    <h4 style="font-weight:bolder">حجز موعد مع الدكتور</h4>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label asp-for="DepartmentId" style="font-weight:bolder">القسم<span class="login-danger">*</span></label>
+                                    <select asp-for="DepartmentId" class="form-control select" asp-items="ViewBag.Departments">
+                                        <option value="">اختر القسم</option>
+                                    </select>
+                                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label asp-for="ServiceId" style="font-weight:bolder">الخدمة<span class="login-danger">*</span></label>
+                                    <select asp-for="ServiceId" class="form-control select" asp-items="ViewBag.Services">
+                                        <option value="">اختر الخدمة</option>
+                                    </select>
+                                    <span asp-validation-for="ServiceId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label asp-for="DoctorId" style="font-weight:bolder">الدكتور<span class="login-danger">*</span></label>
+                                    <select asp-for="DoctorId" class="form-control select" asp-items="ViewBag.Doctors">
+                                        <option value="">اختر الدكتور</option>
+                                    </select>
+                                    <span asp-validation-for="DoctorId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label asp-for="PatientName" style="font-weight:bolder">اسم المريض<span class="login-danger">*</span></label>
+                                    <input asp-for="PatientName" class="form-control" type="text" required>
+                                    <span asp-validation-for="PatientName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms cal-icon">
+                                    <label asp-for="AppointmentDate" style="font-weight:bolder">تاريخ الحجز<span class="login-danger">*</span></label>
+                                    <input asp-for="AppointmentDate" class="form-control datetimepicker" type="text" required data-date-format="DD/MM/YYYY">
+                                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="input-block local-forms">
+                                    <label asp-for="AppointmentTime" style="font-weight:bolder">وقت الحجز<span class="login-danger">*</span></label>
+                                    <div class="time-icon">
+                                        <input asp-for="AppointmentTime" type="text" class="form-control timepicker" required>
+                                    </div>
+                                    <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12">
+                                <div class="input-block local-forms">
+                                    <label style="font-weight:bolder">ملف التشخيص (PDF أو صورة)</label>
+                                    <input type="file" name="diagnosisFile" class="form-control" accept=".pdf,image/*">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="doctor-submit text-end">
+                                    <button style="font-weight:bolder" type="submit" class="btn btn-primary submit-form me-2">حجز الموعد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker Core JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/app.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+<script>
+    $(document).ready(function() {
+        // تهيئة Select2
+        $('.select').select2();
+
+        // تهيئة Datepicker
+        $('.datetimepicker').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'ar',
+            useCurrent: false,
+            minDate: moment(),
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-right',
+                next: 'fa fa-chevron-left',
+                today: 'fa fa-screenshot',
+                clear: 'fa fa-trash',
+                close: 'fa fa-remove'
+            }
+        });
+
+        // تهيئة Timepicker
+        $('.timepicker').datetimepicker({
+            format: 'HH:mm',
+            locale: 'ar',
+            stepping: 30,
+            minTime: '08:00',
+            maxTime: '20:00',
+            defaultTime: '08:00',
+            useCurrent: false,
+            showTodayButton: false,
+            showClear: false,
+            showClose: true,
+            toolbarPlacement: 'bottom',
+            widgetPositioning: {
+                horizontal: 'left',
+                vertical: 'bottom'
+            },
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+                up: 'fa fa-chevron-up',
+                down: 'fa fa-chevron-down',
+                previous: 'fa fa-chevron-right',
+                next: 'fa fa-chevron-left',
+                today: 'fa fa-screenshot',
+                clear: 'fa fa-trash',
+                close: 'fa fa-remove'
+            }
+        });
+
+        // فلترة الخدمات حسب القسم
+        $('#DepartmentId').change(function() {
+            var departmentId = $(this).val();
+            if (departmentId) {
+                $.get('/Appointment/GetServicesByDepartment', { departmentId: departmentId }, function(data) {
+                    var serviceSelect = $('#ServiceId');
+                    serviceSelect.empty();
+                    serviceSelect.append($('<option></option>').val('').text('اختر الخدمة'));
+                    $.each(data, function(index, item) {
+                        serviceSelect.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                    serviceSelect.trigger('change');
+                });
+            } else {
+                $('#ServiceId').empty().append($('<option></option>').val('').text('اختر الخدمة'));
+                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
+            }
+        });
+
+        // فلترة الأطباء حسب الخدمة
+        $('#ServiceId').change(function() {
+            var serviceId = $(this).val();
+            if (serviceId) {
+                $.get('/Appointment/GetDoctorsByService', { serviceId: serviceId }, function(data) {
+                    var doctorSelect = $('#DoctorId');
+                    doctorSelect.empty();
+                    doctorSelect.append($('<option></option>').val('').text('اختر الدكتور'));
+                    $.each(data, function(index, item) {
+                        doctorSelect.append($('<option></option>').val(item.id).text(item.name));
+                    });
+                    doctorSelect.trigger('change');
+                });
+            } else {
+                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
+            }
+        });
+    });
+</script> 

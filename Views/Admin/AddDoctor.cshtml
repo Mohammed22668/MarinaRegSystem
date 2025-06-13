@@ -1,0 +1,159 @@
+@model MarinaRegSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "إضافة طبيب";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - إضافة طبيب</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة طبيب</a></li>
+}
+
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">إضافة طبيب جديد</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="AddDoctor" method="post" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="row">
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Name" style="font-weight:bolder">اسم الطبيب<span class="login-danger">*</span></label>
+                                        <input asp-for="Name" class="form-control" type="text" required>
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Speciality" style="font-weight:bolder">التخصص<span class="login-danger">*</span></label>
+                                        <input asp-for="Speciality" class="form-control" type="text" required>
+                                        <span asp-validation-for="Speciality" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Experience" style="font-weight:bolder">سنوات الخبرة<span class="login-danger">*</span></label>
+                                        <input asp-for="Experience" class="form-control" type="number" required>
+                                        <span asp-validation-for="Experience" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="DepartmentId" style="font-weight:bolder">القسم<span class="login-danger">*</span></label>
+                                        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Departments" required>
+                                            <option value="">اختر القسم</option>
+                                        </select>
+                                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Bio" style="font-weight:bolder">نبذة عن الطبيب</label>
+                                        <textarea asp-for="Bio" class="form-control" rows="4"></textarea>
+                                        <span asp-validation-for="Bio" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="ImageUrl" style="font-weight:bolder">صورة الطبيب</label>
+                                        <input type="file" name="ImageFile" class="form-control" accept="image/*">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Rating" style="font-weight:bolder">التقييم</label>
+                                        <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="5">
+                                        <span asp-validation-for="Rating" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="doctor-submit text-end">
+                                    <button type="submit" class="btn btn-primary submit-form me-2">حفظ</button>
+                                    <a asp-action="Doctors" class="btn btn-primary cancel-form">إلغاء</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/app.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select').select2({
+                minimumResultsForSearch: -1,
+                width: '100%'
+            });
+        });
+    </script>
+} 
