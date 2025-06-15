@@ -35,7 +35,7 @@ namespace MarinaRegSystem.Models
         public DateTime? UpdatedAt { get; set; }
 
         // العلاقات
-        public virtual ICollection<Service> Services { get; set; }
+
         public virtual ICollection<Appointment> Appointments { get; set; }
         public virtual ICollection<Doctor> Doctors { get; set; }
     }

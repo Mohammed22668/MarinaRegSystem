@@ -444,3 +444,4 @@ E:\C#_Project\MarinaRegSystem\MarinaRegSystem\obj\Debug\net8.0\refint\MarinaRegS
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\obj\Debug\net8.0\MarinaRegSystem.pdb
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\obj\Debug\net8.0\MarinaRegSystem.genruntimeconfig.cache
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\obj\Debug\net8.0\ref\MarinaRegSystem.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\obj\Debug\net8.0\MarinaRegSystem.sourcelink.json

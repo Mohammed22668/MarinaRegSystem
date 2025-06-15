@@ -30,13 +30,32 @@ namespace MarinaRegSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSchedule()
         {
-            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
-            ViewBag.Services = new SelectList(await _context.Services.ToListAsync(), "Id", "Name");
+            // التحقق من أن المستخدم مسجل دخول
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+            {
+                return RedirectToAction("Login", "Home"); // تسجيل الدخول في HomeController
+            }
 
-            var doctors = await _context.Doctors
-                .Where(d => d.Status == true)
-                .ToListAsync();
-            ViewBag.Doctors = new SelectList(doctors, "Id", "Name");
+            // جلب بيانات المريض المرتبطة بالمستخدم
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+            {
+                TempData["Error"] = "يرجى إدخال بيانات المريض أولاً";
+                return RedirectToAction("Create", "Patient"); // تأكد من وجود هذا الإجراء
+            }
+
+            // تحميل القوائم المنسدلة للحجز
+            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
+
+            ViewBag.Doctors = new SelectList(
+                await _context.Doctors.Where(d => d.Status == true).ToListAsync(),
+                "Id",
+                "Name"
+            );
+
+            // إرسال بيانات المريض للعرض في الصفحة
+            ViewBag.Patient = patient;
 
             return View();
         }
@@ -44,102 +63,63 @@ namespace MarinaRegSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> AddSchedule(Appointment appointment, IFormFile diagnosisFile)
         {
-            try
+            // جلب معرف المستخدم من الكلايمز
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
             {
-                // التحقق من صحة البيانات
-                if (string.IsNullOrEmpty(appointment.PatientName))
-                {
-                    ModelState.AddModelError("PatientName", "اسم المريض مطلوب");
-                }
-
-                if (appointment.DepartmentId <= 0)
-                {
-                    ModelState.AddModelError("DepartmentId", "القسم مطلوب");
-                }
-
-                if (appointment.ServiceId <= 0)
-                {
-                    ModelState.AddModelError("ServiceId", "الخدمة مطلوبة");
-                }
-
-                if (appointment.DoctorId <= 0)
-                {
-                    ModelState.AddModelError("DoctorId", "الطبيب مطلوب");
-                }
-
-                if (appointment.AppointmentDate == default)
-                {
-                    ModelState.AddModelError("AppointmentDate", "تاريخ الموعد مطلوب");
-                }
-
-                if (appointment.AppointmentTime == default)
-                {
-                    ModelState.AddModelError("AppointmentTime", "وقت الموعد مطلوب");
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // رفع الملف إن وُجد
-                    if (diagnosisFile != null && diagnosisFile.Length > 0)
-                    {
-                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "diagnosis");
-                        if (!Directory.Exists(uploadsFolder))
-                        {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
-
-                        var uniqueFileName = Guid.NewGuid() + "_" + diagnosisFile.FileName;
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await diagnosisFile.CopyToAsync(stream);
-                        }
-
-                        appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + uniqueFileName;
-                    }
-
-                    appointment.Status = AppointmentStatus.Pending;
-                    appointment.CreatedAt = DateTime.Now;
-                    // appointment.UserId = 1; // مؤقتًا - لاحقًا نربطه بالمستخدم الحالي
-                    // appointment.UserId = int.Parse(User.FindFirst("UserId")?.Value ?? "0");
-
-                    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-                    if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
-                    {
-                        ModelState.AddModelError("", "حدث خطأ: المستخدم غير معروف.");
-                        ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
-                        ViewBag.Services = new SelectList(await _context.Services.ToListAsync(), "Id", "Name");
-                        var doctors2 = await _context.Doctors.Where(d => d.Status == true).ToListAsync();
-                        ViewBag.Doctors = new SelectList(doctors2, "Id", "Name");
-                        return View(appointment);
-                    }
-                    appointment.UserId = userId;
-
-
-
-
-                    _context.Appointments.Add(appointment);
-                    await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";
-                    return RedirectToAction(nameof(MyAppointments));
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "حدث خطأ أثناء الحجز: " + ex.Message);
+                return RedirectToAction("Login", "Home");
             }
 
-            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
-            ViewBag.Services = new SelectList(await _context.Services.ToListAsync(), "Id", "Name");
+            // تعيين UserId للمستخدم الحالي
+            appointment.UserId = userId;
 
-            var doctors = await _context.Doctors
-                .Where(d => d.Status == true)
-                .ToListAsync();
-            ViewBag.Doctors = new SelectList(doctors, "Id", "Name");
+            // تعيين PatientName من بيانات المريض
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            appointment.PatientName = "غير محدد";
 
-            return View(appointment);
+            if (appointment.DepartmentId <= 0)
+                ModelState.AddModelError("DepartmentId", "القسم مطلوب");
+
+            if (appointment.DoctorId <= 0)
+                ModelState.AddModelError("DoctorId", "الطبيب مطلوب");
+            if (appointment.AppointmentDate == default)
+                ModelState.AddModelError("AppointmentDate", "تاريخ الموعد مطلوب");
+            if (appointment.AppointmentTime == default)
+                ModelState.AddModelError("AppointmentTime", "وقت الموعد مطلوب");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
+                var doctors = await _context.Doctors.Where(d => d.Status == true).ToListAsync();
+                ViewBag.Doctors = new SelectList(doctors, "Id", "Name");
+                return View(appointment);
+            }
+
+            // معالجة رفع الملف
+            if (diagnosisFile != null && diagnosisFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "diagnosis");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Guid.NewGuid() + "_" + Path.GetFileName(diagnosisFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await diagnosisFile.CopyToAsync(stream);
+
+                appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + uniqueFileName;
+            }
+
+            appointment.Status = AppointmentStatus.Pending;
+            appointment.CreatedAt = DateTime.Now;
+
+            _context.Appointments.Add(appointment);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";
+            return RedirectToAction(nameof(MyAppointments));
         }
 
         // يتم إضافة الفقرات التالية لاحقًا:
@@ -171,20 +151,25 @@ namespace MarinaRegSystem.Controllers
         // صفحة عرض الحجوزات السابقة للمريض
         public async Task<IActionResult> MyAppointments()
         {
-            // استرجاع UserId من الـ Claims
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
+            // جرب أولاً الحصول على UserId من Claim الشائع استخدامه
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // لو ما حصلنا على UserId من ClaimTypes.NameIdentifier جرب "UserId"
+            if (string.IsNullOrEmpty(userIdClaim))
             {
-                return RedirectToAction("Login", "Account"); // أو حسب اسم صفحة الدخول لديك
+                userIdClaim = User.FindFirst("UserId")?.Value;
             }
 
-            var userId = long.Parse(userIdClaim.Value);
+            if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out long userId))
+            {
+                // لم يتم التعرف على المستخدم، إعادة التوجيه لتسجيل الدخول
+                return RedirectToAction("Login", "Home");
+            }
 
             var appointments = await _context.Appointments
-                .Include(a => a.Doctor)
-                .Include(a => a.Department)
-                .Include(a => a.Service)
                 .Where(a => a.UserId == userId)
+                .Include(a => a.Department)
+                .Include(a => a.Doctor)
                 .OrderByDescending(a => a.AppointmentDate)
                 .ThenByDescending(a => a.AppointmentTime)
                 .ToListAsync();
@@ -192,5 +177,60 @@ namespace MarinaRegSystem.Controllers
             return View(appointments);
         }
 
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Patient patient)
+        {
+            // محاولة جلب هوية المستخدم من الجلسة (Claims)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+            {
+                // إذا لم يكن المستخدم مسجل دخول، إعادته إلى صفحة تسجيل الدخول
+                return RedirectToAction("Login", "Home");
+            }
+
+            // التحقق إن كان المستخدم قد أدخل بياناته سابقًا
+            var existing = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (existing != null)
+            {
+                TempData["Info"] = "لقد قمت بإدخال بيانات المريض مسبقًا.";
+                return RedirectToAction("AddSchedule", "Patient");
+            }
+
+            // التحقق من صحة البيانات المدخلة في النموذج
+            if (!ModelState.IsValid)
+            {
+                return View(patient);
+            }
+
+            // ربط المريض بالمستخدم الحالي
+            patient.UserId = userId;
+            patient.CreatedAt = DateTime.Now;
+
+            // حفظ البيانات
+            _context.Patients.Add(patient);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "تم حفظ بيانات المريض بنجاح.";
+            return RedirectToAction("AddSchedule", "Patient");
+        }
+
+
+        public IActionResult Departments()
+        {
+            var departments = _context.Departments
+                .Where(d => d.Status)  // فقط الأقسام الفعالة
+                .OrderBy(d => d.Name)
+                .ToList();
+
+            return View(departments);
+        }
     }
 }

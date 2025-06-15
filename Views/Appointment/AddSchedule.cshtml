@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4 style="font-weight:bolder">حجز موعد مع الدكتور</h4>
+                                    <h4 style="font-weight:bolder">حجز موعد مع الطبيب</h4>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-6">
@@ -60,20 +60,12 @@
                                     <span asp-validation-for="DepartmentId" class="text-danger"></span>
                                 </div>
                             </div>
+                           
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label asp-for="ServiceId" style="font-weight:bolder">الخدمة<span class="login-danger">*</span></label>
-                                    <select asp-for="ServiceId" class="form-control select" asp-items="ViewBag.Services">
-                                        <option value="">اختر الخدمة</option>
-                                    </select>
-                                    <span asp-validation-for="ServiceId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label asp-for="DoctorId" style="font-weight:bolder">الدكتور<span class="login-danger">*</span></label>
+                                    <label asp-for="DoctorId" style="font-weight:bolder">الطبيب<span class="login-danger">*</span></label>
                                     <select asp-for="DoctorId" class="form-control select" asp-items="ViewBag.Doctors">
-                                        <option value="">اختر الدكتور</option>
+                                        <option value="">اختر الطبيب</option>
                                     </select>
                                     <span asp-validation-for="DoctorId" class="text-danger"></span>
                                 </div>
@@ -217,7 +209,7 @@
                 });
             } else {
                 $('#ServiceId').empty().append($('<option></option>').val('').text('اختر الخدمة'));
-                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
+                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الطبيب'));
             }
         });
 
@@ -228,14 +220,14 @@
                 $.get('/Appointment/GetDoctorsByService', { serviceId: serviceId }, function(data) {
                     var doctorSelect = $('#DoctorId');
                     doctorSelect.empty();
-                    doctorSelect.append($('<option></option>').val('').text('اختر الدكتور'));
+                    doctorSelect.append($('<option></option>').val('').text('اختر الطبيب'));
                     $.each(data, function(index, item) {
                         doctorSelect.append($('<option></option>').val(item.id).text(item.name));
                     });
                     doctorSelect.trigger('change');
                 });
             } else {
-                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
+                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الطبيب'));
             }
         });
     });

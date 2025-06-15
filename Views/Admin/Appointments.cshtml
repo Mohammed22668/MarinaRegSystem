@@ -1,0 +1,43 @@
+@model IEnumerable<MarinaRegSystem.Models.Appointment>
+@using MarinaRegSystem.Helpers;
+@{
+    ViewData["Title"] = "الحجوزات";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+         
+            <th>المستخدم</th>
+            <th>القسم</th>
+            <th>الطبيب</th>
+            <th>تاريخ الموعد</th>
+            <th>وقت الموعد</th>
+            <th>الحالة</th>
+            <th>السعر</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var appt in Model)
+        {
+            <tr>
+             
+                <td>@appt.User?.Username</td>
+                <td>@appt.Department?.Name</td>
+                <td>@appt.Doctor?.Name</td>
+                <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                <td>@appt.Status.GetDisplayName()</td>
+                <td>@appt.Price.ToString("C")</td>
+                <td>
+                    <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-primary">تعديل</a>
+                    <a asp-action="DeleteAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-danger" onclick="return confirm('هل تريد حذف هذا الحجز؟');">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

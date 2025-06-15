@@ -10,8 +10,8 @@ namespace MarinaRegSystem.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string PatientName { get; set; }
+
+        public string? PatientName { get; set; }
 
         [Required(ErrorMessage = "المستخدم مطلوب")]
         [Display(Name = "المستخدم")]
@@ -21,9 +21,6 @@ namespace MarinaRegSystem.Models
         [Display(Name = "القسم")]
         public int DepartmentId { get; set; }
 
-        [Required(ErrorMessage = "الخدمة مطلوبة")]
-        [Display(Name = "الخدمة")]
-        public int ServiceId { get; set; }
 
         [Required(ErrorMessage = "الطبيب مطلوب")]
         [Display(Name = "الطبيب")]
@@ -70,8 +67,6 @@ namespace MarinaRegSystem.Models
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        [ForeignKey("ServiceId")]
-        public virtual Service Service { get; set; }
 
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
@@ -94,4 +89,4 @@ namespace MarinaRegSystem.Models
         [Display(Name = "ملغي")]
         Cancelled = 4
     }
-} 
+}

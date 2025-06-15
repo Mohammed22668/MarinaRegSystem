@@ -29,21 +29,21 @@ namespace MarinaRegSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-             services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+       options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-    // ✅ إعداد المصادقة باستخدام الكوكيز
-    services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.LoginPath = "/Home/Login";
-            options.LogoutPath = "/Home/Logout";
-            options.AccessDeniedPath = "/Account/AccessDenied";
-            options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // اختياري: مدة الجلسة
-        });
+            // ✅ إعداد المصادقة باستخدام الكوكيز
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Home/Login";
+                    options.LogoutPath = "/Home/Logout";
+                    options.AccessDeniedPath = "/Home/AccessDenied";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // اختياري: مدة الجلسة
+                });
 
-    services.AddControllersWithViews().AddRazorRuntimeCompilation();
-    services.AddRazorPages();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

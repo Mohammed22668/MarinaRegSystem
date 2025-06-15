@@ -55,7 +55,6 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("PatientName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
@@ -64,9 +63,6 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("RejectionReason")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
@@ -84,8 +80,6 @@ namespace MarinaRegSystem.Migrations
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("DoctorId");
-
-                    b.HasIndex("ServiceId");
 
                     b.HasIndex("UserId");
 
@@ -163,6 +157,9 @@ namespace MarinaRegSystem.Migrations
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(3,1)");
 
+                    b.Property<int>("Shift")
+                        .HasColumnType("int");
+
                     b.Property<string>("Speciality")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -230,93 +227,7 @@ namespace MarinaRegSystem.Migrations
                     b.ToTable("DoctorSchedules");
                 });
 
-            modelBuilder.Entity("MarinaRegSystem.Models.DoctorService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("SpecialPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Uid")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("DoctorServices");
-                });
-
-            modelBuilder.Entity("MarinaRegSystem.Models.Service", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.ToTable("Services");
-                });
-
-            modelBuilder.Entity("MarinaRegSystem.Models.cUsers", b =>
+            modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -327,8 +238,20 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Allergies")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BloodType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChronicDiseases")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -342,13 +265,35 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("NationalNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Province")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.cUsers", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Province")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -358,6 +303,9 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Uid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -577,12 +525,6 @@ namespace MarinaRegSystem.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MarinaRegSystem.Models.Service", "Service")
-                        .WithMany("Appointments")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("MarinaRegSystem.Models.cUsers", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -592,8 +534,6 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Doctor");
-
-                    b.Navigation("Service");
 
                     b.Navigation("User");
                 });
@@ -620,34 +560,15 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Doctor");
                 });
 
-            modelBuilder.Entity("MarinaRegSystem.Models.DoctorService", b =>
+            modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>
                 {
-                    b.HasOne("MarinaRegSystem.Models.Doctor", "Doctor")
-                        .WithMany("DoctorServices")
-                        .HasForeignKey("DoctorId")
+                    b.HasOne("MarinaRegSystem.Models.cUsers", "User")
+                        .WithOne("Patient")
+                        .HasForeignKey("MarinaRegSystem.Models.Patient", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MarinaRegSystem.Models.Service", "Service")
-                        .WithMany("DoctorServices")
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("MarinaRegSystem.Models.Service", b =>
-                {
-                    b.HasOne("MarinaRegSystem.Models.Department", "Department")
-                        .WithMany("Services")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Department");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -706,8 +627,6 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Doctors");
-
-                    b.Navigation("Services");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.Doctor", b =>
@@ -715,15 +634,11 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("DoctorSchedules");
-
-                    b.Navigation("DoctorServices");
                 });
 
-            modelBuilder.Entity("MarinaRegSystem.Models.Service", b =>
+            modelBuilder.Entity("MarinaRegSystem.Models.cUsers", b =>
                 {
-                    b.Navigation("Appointments");
-
-                    b.Navigation("DoctorServices");
+                    b.Navigation("Patient");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,53 @@
+@model MarinaRegSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "تعديل طبيب";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditDoctor" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Speciality" class="form-label"></label>
+        <input asp-for="Speciality" class="form-control" />
+        <span asp-validation-for="Speciality" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Experience" class="form-label"></label>
+        <input asp-for="Experience" type="number" class="form-control" min="0" />
+        <span asp-validation-for="Experience" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepartmentId" class="form-label"></label>
+        <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments"></select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>الصورة الحالية</label><br />
+        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : Model.ImageUrl)" 
+             alt="صورة الطبيب" width="120" />
+    </div>
+
+    <div class="mb-3">
+        <label for="ImageFile" class="form-label">تغيير الصورة</label>
+        <input type="file" name="ImageFile" id="ImageFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+    <a asp-action="Doctors" class="btn btn-secondary">إلغاء</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

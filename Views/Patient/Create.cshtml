@@ -1,0 +1,241 @@
+@model MarinaRegSystem.Models.Patient
+
+@{
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "إدخال بيانات المريض";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    </head>
+}
+@section Footer{
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datatables JS -->
+    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/plugins/datatables/datatables.min.js"></script>
+
+    <!-- counterup JS -->
+    <script src="~/assets/js/jquery.waypoints.js"></script>
+    <script src="~/assets/js/jquery.counterup.min.js"></script>
+
+    <!-- Apexchart JS -->
+    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"  rel="stylesheet">
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .patient-form-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+        background-color: white;
+        margin-top: 3rem;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .input-group-text {
+        background-color: #f1f1f1;
+    }
+
+    .btn-submit {
+        border-radius: 50px;
+        padding: 0.6rem 2rem;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card patient-form-card">
+                <h4 class="text-center mb-4">إدخال بيانات المريض</h4>
+
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success text-center">@TempData["Success"]</div>
+                }
+
+                @if (TempData["Info"] != null)
+                {
+                    <div class="alert alert-info text-center">@TempData["Info"]</div>
+                }
+
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">الاسم الكامل</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="FullName" class="form-control" placeholder="أدخل الاسم الكامل" />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DateOfBirth" class="form-label">تاريخ الميلاد</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                        </div>
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Gender" class="form-label">الجنس</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                            <select asp-for="Gender" class="form-control">
+                                <option value="">-- اختر --</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="أنثى">أنثى</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NationalNumber" class="form-label">الرقم الوطني</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                            <input asp-for="NationalNumber" class="form-control" placeholder="أدخل الرقم الوطني" />
+                        </div>
+                        <span asp-validation-for="NationalNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Country" class="form-label">الدولة</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-globe-asia"></i></span>
+                            <input asp-for="Country" class="form-control" value="العراق" readonly />
+                        </div>
+                        <span asp-validation-for="Country" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Province" class="form-label">المحافظة</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-city"></i></span>
+                            <select asp-for="Province" class="form-control">
+                                <option value="">-- اختر المحافظة --</option>
+                                <option value="بغداد">بغداد</option>
+                                <option value="نينوى">نينوى</option>
+                                <option value="البصرة">البصرة</option>
+                                <option value="كركوك">كركوك</option>
+                                <option value="أربيل">أربيل</option>
+                                <option value="الأنبار">الأنبار</option>
+                                <option value="ديالى">ديالى</option>
+                                <option value="صلاح الدين">صلاح الدين</option>
+                                <option value="النجف">النجف</option>
+                                <option value="كربلاء">كربلاء</option>
+                                <option value="واسط">واسط</option>
+                                <option value="ميسان">ميسان</option>
+                                <option value="ذي قار">ذي قار</option>
+                                <option value="المثنى">المثنى</option>
+                                <option value="الديوانية">الديوانية</option>
+                                <option value="بابل">بابل</option>
+                                <option value="دهوك">دهوك</option>
+                                <option value="السليمانية">السليمانية</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Province" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="BloodType" class="form-label">فصيلة الدم</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-tint"></i></span>
+                            <select asp-for="BloodType" class="form-control">
+                                <option value="">-- اختر --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="BloodType" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Allergies" class="form-label">الحساسية</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-biohazard"></i></span>
+                            <input asp-for="Allergies" class="form-control" placeholder="مثلاً: حساسية من البنسلين" />
+                        </div>
+                        <span asp-validation-for="Allergies" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ChronicDiseases" class="form-label">الأمراض المزمنة</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
+                            <input asp-for="ChronicDiseases" class="form-control" placeholder="مثلاً: سكري، ضغط" />
+                        </div>
+                        <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-submit">
+                            <i class="fas fa-save me-1"></i> حفظ البيانات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
