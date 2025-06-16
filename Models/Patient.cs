@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace MarinaRegSystem.Models
 {
@@ -28,6 +29,14 @@ namespace MarinaRegSystem.Models
 
         // العلاقة
         public virtual cUsers User { get; set; }
+
+        public virtual ICollection<Appointment> Appointments { get; set; }
+
+        public Patient()
+        {
+            Appointments = new HashSet<Appointment>();
+        }
+
 
     }
 }

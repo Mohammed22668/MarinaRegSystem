@@ -1,10 +1,12 @@
-@model List<MarinaRegSystem.Models.DoctorSchedule>
-
 @{
-     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "جداول دوام الأطباء";
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "الصفحة الرئيسية";
 }
 
+
+@section currentPage {
+    <li class="breadcrumb-item active">الصفحة الشخصية </li>
+}
 
 
 @section Head {
@@ -38,53 +40,11 @@
 }
 
 
-<h2 class="mb-4">جداول دوام الأطباء</h2>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
 
-<a href="@Url.Action("AddDoctorSchedule", "Admin")" class="btn btn-primary mb-3">إضافة جدول جديد</a>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>الطبيب</th>
-            <th>اليوم</th>
-            <th>من</th>
-            <th>إلى</th>
-            <th>مدة الموعد</th>
-            <th>مدة الاستراحة</th>
-            <th>الحد الأقصى للمواعيد</th>
-            <th>نشط</th>
-            <th>خيارات</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.Doctor?.Name</td>
-            <td>@item.DayOfWeek</td>
-            <td>@item.StartTime.ToString(@"hh\:mm")</td>
-            <td>@item.EndTime.ToString(@"hh\:mm")</td>
-            <td>@item.AppointmentDuration</td>
-            <td>@item.BreakDuration</td>
-            <td>@item.MaxAppointmentsPerDay</td>
-            <td>@(item.IsActive ? "نعم" : "لا")</td>
-            <td>
-                <a href="@Url.Action("EditDoctorSchedule", "Admin", new { id = item.Id })" class="btn btn-sm btn-warning">تعديل</a>
-                
-                <form asp-action="DeleteDoctorSchedule" asp-controller="Admin" method="post" style="display:inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
-                    <input type="hidden" name="id" value="@item.Id" />
-                    <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div>
+<h2>Welcome in Profile Page</h2>
+</div>
 
 
 

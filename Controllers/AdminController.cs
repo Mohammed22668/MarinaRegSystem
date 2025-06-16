@@ -1,4 +1,5 @@
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MarinaRegSystem.Data;
@@ -13,55 +14,25 @@ using Microsoft.AspNetCore.Http;
 
 namespace MarinaRegSystem.Controllers
 {
-    [RoleAuthorize("Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
         public AdminController(ApplicationDbContext context) : base(context) { }
 
+        [HttpGet]
         public override async Task<IActionResult> Index()
         {
-            var user = HttpContext.Items["CurrentUser"] as cUsers;
-            ViewBag.Username = user?.Username;
 
-            ViewBag.DepartmentsCount = await _context.Departments.CountAsync();
-            ViewBag.DoctorsCount = await _context.Doctors.CountAsync();
-
-            ViewBag.AppointmentsCount = await _context.Appointments.CountAsync();
-
-            ViewBag.RecentAppointments = await _context.Appointments
-                .Include(a => a.Doctor)
-                .OrderByDescending(a => a.AppointmentDate)
-                .Take(5)
-                .Select(a => new RecentAppointmentViewModel
-                {
-                    PatientName = a.PatientName,
-                    DoctorName = a.Doctor.Name,
-                    AppointmentDate = a.AppointmentDate,
-                    Status = a.Status
-                })
-                .ToListAsync();
-
-            var activeDoctors = await _context.Doctors
-                .Include(d => d.Department)
-                .Include(d => d.Appointments)
-                .Where(d => d.Status == true)
-                .Select(d => new ActiveDoctorViewModel
-                {
-                    Name = d.Name,
-                    ImageUrl = d.ImageUrl ?? "/assets/img/doctors/doctor-thumb-03.jpg",
-                    DepartmentName = d.Department.Name,
-                    AppointmentsCount = d.Appointments.Count,
-                    Rating = (int)Math.Round(d.Rating)
-                })
-                .ToListAsync();
-            ViewBag.ActiveDoctors = activeDoctors;
 
             return View();
         }
 
         public IActionResult Departments()
         {
-            var departments = _context.Departments.ToList();
+            var departments = _context.Departments
+                .Include(d => d.Doctors)
+                .Include(d => d.Appointments)
+                .ToList();
             return View(departments);
         }
 
@@ -85,11 +56,99 @@ namespace MarinaRegSystem.Controllers
 
 
 
+        public async Task<IActionResult> EditDepartment(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var department = await _context.Departments.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditDepartment(int id, Department department)
+        {
+            if (id != department.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(department);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "تم تعديل القسم بنجاح";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DepartmentExists(department.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Departments));
+            }
+            return View(department);
+        }
+
+        private bool DepartmentExists(int id)
+        {
+            return _context.Departments.Any(e => e.Id == id);
+        }
+
+        // GET: Departments/Delete/5
+        public async Task<IActionResult> DeleteDepartment(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var department = await _context.Departments
+                .Include(d => d.Doctors)
+                .Include(d => d.Appointments)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            // إذا القسم له أطباء أو حجوزات، لا تسمح بالحذف
+            if ((department.Doctors?.Count > 0) || (department.Appointments?.Count > 0))
+            {
+                TempData["ErrorMessage"] = "لا يمكن حذف القسم لأنه يحتوي على أطباء أو حجوزات.";
+                return RedirectToAction(nameof(Departments));
+            }
+
+            // حذف القسم
+            _context.Departments.Remove(department);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "تم حذف القسم بنجاح";
+            return RedirectToAction(nameof(Departments));
+        }
+
 
 
         public IActionResult Doctors()
         {
-            var doctors = _context.Doctors.Include(d => d.Department).ToList();
+            var doctors = _context.Doctors.Include(d => d.Department)
+            .Include(d => d.Appointments)
+            .ToList();
             return View(doctors);
         }
 
@@ -175,9 +234,9 @@ namespace MarinaRegSystem.Controllers
             {
                 try
                 {
+                    // رفع الصورة الجديدة إذا كانت موجودة
                     if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        // تحميل الصورة وحفظها في مجلد (مثلاً wwwroot/uploads/doctors)
                         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/doctors");
                         if (!Directory.Exists(uploadsFolder))
                             Directory.CreateDirectory(uploadsFolder);
@@ -190,12 +249,15 @@ namespace MarinaRegSystem.Controllers
                             await ImageFile.CopyToAsync(fileStream);
                         }
 
-                        // تحديث رابط الصورة في الكائن doctor
+                        // تحديث رابط الصورة
                         doctor.ImageUrl = "/uploads/doctors/" + uniqueFileName;
                     }
 
+                    // تحديث البيانات في قاعدة البيانات
                     _context.Update(doctor);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Doctors));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -208,15 +270,14 @@ namespace MarinaRegSystem.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Doctors));
             }
 
+            // إعادة تحميل الأقسام في حالة وجود خطأ
             var departments = await _context.Departments.ToListAsync();
             ViewBag.Departments = new SelectList(departments, "Id", "Name", doctor.DepartmentId);
+
             return View(doctor);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> DeleteDoctor(int id)
@@ -359,9 +420,12 @@ namespace MarinaRegSystem.Controllers
                 .Include(a => a.Doctor)
                 .Include(a => a.Department)
                 .Include(a => a.User)
+                .Select(a => new
+                {
+                    Appointment = a,
+                    Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
+                })
 
-                .OrderByDescending(a => a.AppointmentDate)
-                .ThenByDescending(a => a.AppointmentTime)
                 .ToList();
 
             return View(appointments);

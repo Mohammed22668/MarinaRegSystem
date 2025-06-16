@@ -4,12 +4,17 @@
     Layout = "_LayoutPatient";
     ViewData["Title"] = "قائمة الأطباء";
 }
+
+@section currentPage {
+    <li class="breadcrumb-item active">الاطباء </li>
+}
+
 @section Head {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
         <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-        <title>مستشفى مارينا - الرئيسية</title>
+        <title>مستشفى مارينا - الأطباء</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
@@ -33,38 +38,7 @@
 
     </head>
 }
-@section Footer{
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
 
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Feather Js -->
-    <script src="~/assets/js/feather.min.js"></script>
-
-    <!-- Slimscroll -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
-
-    <!-- Select2 Js -->
-    <script src="~/assets/js/select2.min.js"></script>
-
-    <!-- Datatables JS -->
-    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/assets/plugins/datatables/datatables.min.js"></script>
-
-    <!-- counterup JS -->
-    <script src="~/assets/js/jquery.waypoints.js"></script>
-    <script src="~/assets/js/jquery.counterup.min.js"></script>
-
-    <!-- Apexchart JS -->
-    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
-    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
-
-    <!-- Custom JS -->
-    <script src="~/assets/js/script.js"></script>
-}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"  rel="stylesheet">
 
 <style>
     body {
@@ -166,3 +140,35 @@
         </a>
     </div>
 </div>
+
+
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

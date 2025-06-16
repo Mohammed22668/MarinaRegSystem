@@ -1,7 +1,104 @@
 @model IEnumerable<MarinaRegSystem.Models.Doctor>
 
 @{
+     Layout = "_LayoutAdmin";
     ViewData["Title"] = "الأطباء";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+
+        <style>
+    .table th {
+        background-color: #f1f4f7;
+        color: #3b3f5c;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-avatar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .table-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .rating i {
+        font-size: 1rem;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .bg-success-light {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .bg-danger-light {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-primary i {
+        margin-left: 5px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #3b3f5c;
+        font-size: 1.75rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 50px;
+    }
+</style>
+
+    </head>
 }
 
 @section currentPage {
@@ -9,16 +106,16 @@
     <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأطباء</a></li>
 }
 
-<div class="page-wrapper">
-    <div class="content">
+<div >
+    <div >
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
                     <h3 class="page-title">قائمة الأطباء</h3>
                     <div class="text-end">
-                        <a asp-action="AddDoctor" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> إضافة طبيب
-                        </a>
+                     <a asp-action="AddDoctor" class="btn btn-success" style="font-weight: bold; border-radius: 10px;">
+    <i class="fas fa-user-md me-2"></i> طبيب جديد
+       </a>
                     </div>
                 </div>
             </div>
@@ -37,6 +134,8 @@
                                         <th>القسم</th>
                                         <th>سنوات الخبرة</th>
                                         <th>التقييم</th>
+                                         <th>الشفت</th> 
+                                       
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
                                     </tr>
@@ -64,6 +163,13 @@
                                                     }
                                                 </div>
                                             </td>
+
+                                              <td>
+                @* إذا كان Shift من نوع Enum وتريد عرض اسمه المعروض *@
+                @MarinaRegSystem.Helpers.EnumExtensions.GetDisplayName(item.Shift)
+            </td>
+         
+         
                                             <td>
                                                 <span class="badge bg-@(item.Status ? "success" : "danger")">
                                                     @(item.Status ? "نشط" : "غير نشط")
@@ -76,7 +182,7 @@
                                                     </a>
                                                    <a href="#" data-id="@item.Id" class="btn btn-sm bg-danger-light delete-doctor-btn">
     <i class="fas fa-trash"></i> حذف
-</a>
+     </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -90,26 +196,29 @@
         </div>
     </div>
 </div>
-
-@section Footer {
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Slimscroll JS -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
-
-    <!-- Custom JS -->
-    <script src="~/assets/js/script.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-} 
+ 
 
 @section Scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+    @if (TempData["Success"] != null)
+    {
+        <text>
+        Swal.fire({
+            icon: 'success',
+            title: 'تم بنجاح',
+            text: '@TempData["Success"]',
+            timer: 2500,
+            showConfirmButton: false
+        });
+        </text>
+    }
+</script>
+
+
     <script>
         $(document).ready(function () {
             $('.delete-doctor-btn').click(function (e) {
@@ -135,4 +244,36 @@
             });
         });
     </script>
+}
+
+
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

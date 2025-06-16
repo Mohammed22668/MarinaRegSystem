@@ -142,9 +142,21 @@ namespace MarinaRegSystem.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return RedirectToAction("Index", "Patient");
+            // التوجيه حسب الدور
+            if (user.Role == "Patient")
+            {
+                return RedirectToAction("Index", "Patient");
+            }
+            else if (user.Role == "Admin")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else
+            {
+                // توجيه افتراضي لأي دور آخر
+                return RedirectToAction("Index", "Home");
+            }
         }
-
 
 
         public async Task<IActionResult> Logout()

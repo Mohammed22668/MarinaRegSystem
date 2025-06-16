@@ -64,6 +64,14 @@ namespace MarinaRegSystem.Models
         [ForeignKey("UserId")]
         public virtual cUsers User { get; set; }
 
+
+        public long? PatientId { get; set; }
+
+        [ForeignKey("PatientId")]
+        public virtual Patient Patient { get; set; }
+
+
+
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 

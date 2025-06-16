@@ -4,11 +4,17 @@
     ViewData["Title"] = "حجز موعد";
 }
 
+@section currentPage {
+    <li class="breadcrumb-item active"> حجز موعد</li>
+}
+
+
 @section Head {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
         <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
@@ -33,39 +39,6 @@
     </head>
 }
 
-
-
-@section Footer{
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Feather Js -->
-    <script src="~/assets/js/feather.min.js"></script>
-
-    <!-- Slimscroll -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
-
-    <!-- Select2 Js -->
-    <script src="~/assets/js/select2.min.js"></script>
-
-    <!-- Datatables JS -->
-    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/assets/plugins/datatables/datatables.min.js"></script>
-
-    <!-- counterup JS -->
-    <script src="~/assets/js/jquery.waypoints.js"></script>
-    <script src="~/assets/js/jquery.counterup.min.js"></script>
-
-    <!-- Apexchart JS -->
-    <script src="~/assets/plugins/apexchart/apexcharts.min.js"></script>
-    <script src="~/assets/plugins/apexchart/chart-data.js"></script>
-
-    <!-- Custom JS -->
-    <script src="~/assets/js/script.js"></script>
-}
 
 <style>
     body {
@@ -116,6 +89,7 @@
     }
 </style>
 
+
 <div class="container mt-5">
     <div class="form-container">
         @if (TempData["SuccessMessage"] != null)
@@ -136,18 +110,27 @@
             <!-- القسم -->
             <div class="input-block">
                 <label asp-for="DepartmentId" class="form-label">القسم<span class="text-danger">*</span></label>
-                <select asp-for="DepartmentId" class="form-control select2" asp-items="ViewBag.Departments">
+                <select asp-for="DepartmentId" class="form-control select2" id="DepartmentId" name="DepartmentId" asp-items="ViewBag.Departments">
                     <option value="">اختر القسم</option>
                 </select>
                 <span asp-validation-for="DepartmentId" class="text-danger"></span>
             </div>
 
-         
+            <!-- شفت الدوام -->
+            <div class="input-block">
+                <label for="Shift" class="form-label">شفت الدوام</label>
+                <select id="Shift" name="Shift" class="form-control select2">
+                    <option value="">اختر الشفت</option>
+                    <option value="0">صباحي</option>
+                    <option value="1">مسائي</option>
+                    <option value="2">خفر</option>
+                </select>
+            </div>
 
             <!-- الطبيب -->
             <div class="input-block">
                 <label asp-for="DoctorId" class="form-label">الطبيب<span class="text-danger">*</span></label>
-                <select asp-for="DoctorId" class="form-control select2" asp-items="ViewBag.Doctors">
+                <select asp-for="DoctorId" class="form-control select2" id="DoctorId" name="DoctorId">
                     <option value="">اختر الطبيب</option>
                 </select>
                 <span asp-validation-for="DoctorId" class="text-danger"></span>
@@ -195,10 +178,7 @@
     </div>
 </div>
 
-
-
 @section Scripts {
-   
     <script>
         $(document).ready(function () {
             // تهيئة Select2
@@ -234,40 +214,65 @@
                 }
             });
 
-            // فلترة الخدمات حسب القسم
-            $('#DepartmentId').change(function () {
-                var departmentId = $(this).val();
-                if (departmentId) {
-                    $.get('/Appointment/GetServicesByDepartment', { departmentId: departmentId }, function (data) {
-                        var serviceSelect = $('#ServiceId');
-                        serviceSelect.empty().append('<option value="">اختر الخدمة</option>');
-                        $.each(data, function (index, item) {
-                            serviceSelect.append($('<option></option>').val(item.id).text(item.name));
-                        });
-                        serviceSelect.trigger('change');
-                    });
-                } else {
-                    $('#ServiceId').empty().append('<option value="">اختر الخدمة</option>');
-                    $('#DoctorId').empty().append('<option value="">اختر الطبيب</option>');
-                }
-            });
+            // عند تغير القسم أو الشفت يتم تحديث قائمة الأطباء
+            $('#DepartmentId, #Shift').change(function () {
+                var departmentId = $('#DepartmentId').val();
+                var shift = $('#Shift').val();
 
-            // فلترة الأطباء حسب الخدمة
-            $('#ServiceId').change(function () {
-                var serviceId = $(this).val();
-                if (serviceId) {
-                    $.get('/Appointment/GetDoctorsByService', { serviceId: serviceId }, function (data) {
-                        var doctorSelect = $('#DoctorId');
-                        doctorSelect.empty().append('<option value="">اختر الطبيب</option>');
-                        $.each(data, function (index, item) {
-                            doctorSelect.append($('<option></option>').val(item.id).text(item.name));
-                        });
-                        doctorSelect.trigger('change');
-                    });
-                } else {
+                if (!departmentId) {
                     $('#DoctorId').empty().append('<option value="">اختر الطبيب</option>');
+                    return;
                 }
+
+                $.ajax({
+    url: '/Appointment/GetDoctorsByDepartmentAndShift',
+    data: { departmentId: departmentId, shift: shift },
+    success: function (data) {
+        console.log('Received doctors:', data); // تحقق من البيانات في Console
+        var doctorSelect = $('#DoctorId');
+        doctorSelect.empty().append('<option value="">اختر الطبيب</option>');
+
+        $.each(data, function (index, doctor) {
+            doctorSelect.append($('<option></option>').val(doctor.id).text(doctor.name));
+        });
+        doctorSelect.trigger('change');
+    },
+    error: function () {
+        alert('حدث خطأ أثناء جلب الأطباء. حاول مرة أخرى.');
+    }
+});
             });
         });
     </script>
+}
+
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

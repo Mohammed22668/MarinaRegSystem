@@ -84,6 +84,13 @@ namespace MarinaRegSystem.Data
                 .HasDefaultValueSql("GETDATE()");
 
 
+            builder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(a => a.PatientId)
+            .OnDelete(DeleteBehavior.Restrict);// أو Cascade حسب ما تراه مناسبًا
+
+
         }
     }
 }

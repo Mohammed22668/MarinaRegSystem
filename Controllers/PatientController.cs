@@ -73,19 +73,19 @@ namespace MarinaRegSystem.Controllers
             // تعيين UserId للمستخدم الحالي
             appointment.UserId = userId;
 
-            // تعيين PatientName من بيانات المريض
+            // جلب بيانات المريض بناءً على المستخدم الحالي
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-            appointment.PatientName = "غير محدد";
+            if (patient == null)
+            {
+                TempData["Error"] = "يرجى إدخال بيانات المريض أولاً";
+                return RedirectToAction("Create", "Patient");
+            }
 
-            if (appointment.DepartmentId <= 0)
-                ModelState.AddModelError("DepartmentId", "القسم مطلوب");
+            // تعيين PatientId و PatientName من بيانات المريض
+            appointment.PatientId = patient.Id;
+            appointment.PatientName = patient.FullName;
 
-            if (appointment.DoctorId <= 0)
-                ModelState.AddModelError("DoctorId", "الطبيب مطلوب");
-            if (appointment.AppointmentDate == default)
-                ModelState.AddModelError("AppointmentDate", "تاريخ الموعد مطلوب");
-            if (appointment.AppointmentTime == default)
-                ModelState.AddModelError("AppointmentTime", "وقت الموعد مطلوب");
+            // باقي التحقق من صحة البيانات ...
 
             if (!ModelState.IsValid)
             {
@@ -96,21 +96,7 @@ namespace MarinaRegSystem.Controllers
                 return View(appointment);
             }
 
-            // معالجة رفع الملف
-            if (diagnosisFile != null && diagnosisFile.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "diagnosis");
-                if (!Directory.Exists(uploadsFolder))
-                    Directory.CreateDirectory(uploadsFolder);
-
-                var uniqueFileName = Guid.NewGuid() + "_" + Path.GetFileName(diagnosisFile.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await diagnosisFile.CopyToAsync(stream);
-
-                appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + uniqueFileName;
-            }
+            // معالجة رفع الملف (كما لديك) ...
 
             appointment.Status = AppointmentStatus.Pending;
             appointment.CreatedAt = DateTime.Now;
@@ -120,6 +106,35 @@ namespace MarinaRegSystem.Controllers
 
             TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";
             return RedirectToAction(nameof(MyAppointments));
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetDoctorsByDepartmentAndShift(int departmentId, int? shift)
+        {
+            var doctorsQuery = _context.Doctors.AsQueryable();
+
+            if (departmentId > 0)
+            {
+                doctorsQuery = doctorsQuery.Where(d => d.DepartmentId == departmentId);
+            }
+
+            if (shift.HasValue)
+            {
+                var shiftEnum = (ShiftType)shift.Value;
+                doctorsQuery = doctorsQuery.Where(d => d.Shift == shiftEnum);
+            }
+
+            var doctors = await doctorsQuery
+                .Where(d => d.Status == true)
+                .Select(d => new
+                {
+                    id = d.Id,
+                    name = d.Name
+                })
+                .ToListAsync();
+
+            return Json(doctors);
         }
 
         // يتم إضافة الفقرات التالية لاحقًا:
@@ -231,6 +246,12 @@ namespace MarinaRegSystem.Controllers
                 .ToList();
 
             return View(departments);
+        }
+
+
+        public IActionResult Profile()
+        {
+            return View();
         }
     }
 }
