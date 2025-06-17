@@ -11,9 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using MarinaRegSystem.Filters;
 using System.Security.Claims;
-
-
-
+using Microsoft.AspNetCore.Hosting;
 
 namespace MarinaRegSystem.Controllers
 {
@@ -21,10 +19,12 @@ namespace MarinaRegSystem.Controllers
     public class PatientController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public PatientController(ApplicationDbContext context)
+        public PatientController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -73,7 +73,7 @@ namespace MarinaRegSystem.Controllers
             // تعيين UserId للمستخدم الحالي
             appointment.UserId = userId;
 
-            // جلب بيانات المريض بناءً على المستخدم الحالي
+            // جلب بيانات المريض
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
             if (patient == null)
             {
@@ -81,12 +81,11 @@ namespace MarinaRegSystem.Controllers
                 return RedirectToAction("Create", "Patient");
             }
 
-            // تعيين PatientId و PatientName من بيانات المريض
+            // ربط بيانات المريض
             appointment.PatientId = patient.Id;
             appointment.PatientName = patient.FullName;
 
-            // باقي التحقق من صحة البيانات ...
-
+            // التحقق من صحة البيانات
             if (!ModelState.IsValid)
             {
                 ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
@@ -96,7 +95,21 @@ namespace MarinaRegSystem.Controllers
                 return View(appointment);
             }
 
-            // معالجة رفع الملف (كما لديك) ...
+            // معالجة ملف التشخيص
+            if (diagnosisFile != null && diagnosisFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads/diagnosis");
+                Directory.CreateDirectory(uploadsFolder);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(diagnosisFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await diagnosisFile.CopyToAsync(fileStream);
+                }
+
+                appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + fileName;
+            }
 
             appointment.Status = AppointmentStatus.Pending;
             appointment.CreatedAt = DateTime.Now;
@@ -108,40 +121,42 @@ namespace MarinaRegSystem.Controllers
             return RedirectToAction(nameof(MyAppointments));
         }
 
-
         [HttpGet]
-        public async Task<JsonResult> GetDoctorsByDepartmentAndShift(int departmentId, int? shift)
+        public IActionResult GetDoctorsByDepartmentAndShift(int departmentId, int shift)
         {
-            var doctorsQuery = _context.Doctors.AsQueryable();
-
-            if (departmentId > 0)
-            {
-                doctorsQuery = doctorsQuery.Where(d => d.DepartmentId == departmentId);
-            }
-
-            if (shift.HasValue)
-            {
-                var shiftEnum = (ShiftType)shift.Value;
-                doctorsQuery = doctorsQuery.Where(d => d.Shift == shiftEnum);
-            }
-
-            var doctors = await doctorsQuery
-                .Where(d => d.Status == true)
+            var doctors = _context.Doctors
+                .Where(d => d.DepartmentId == departmentId && (int)d.Shift == shift)
                 .Select(d => new
                 {
                     id = d.Id,
                     name = d.Name
                 })
-                .ToListAsync();
+                .ToList();
 
             return Json(doctors);
         }
 
         // يتم إضافة الفقرات التالية لاحقًا:
         // - MyAppointments
-        // - EditSchedule
-        // - DeleteSchedule
 
+        // - EditSchedule
+        [HttpGet]
+        public IActionResult EditSchedule(int id)
+        {
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
+            if (appointment == null)
+            {
+                TempData["Error"] = "لم يتم العثور على الموعد.";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            ViewBag.Doctors = new SelectList(_context.Doctors, "Id", "Name");
+
+            return View(appointment);
+        }
+
+        // - DeleteSchedule
 
         [HttpGet]
         public async Task<IActionResult> Doctors()
@@ -154,14 +169,11 @@ namespace MarinaRegSystem.Controllers
             return View(doctors);
         }
 
-
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
-
-
 
         // صفحة عرض الحجوزات السابقة للمريض
         public async Task<IActionResult> MyAppointments()
@@ -191,8 +203,6 @@ namespace MarinaRegSystem.Controllers
 
             return View(appointments);
         }
-
-
 
         [HttpGet]
         public IActionResult Create()
@@ -237,7 +247,6 @@ namespace MarinaRegSystem.Controllers
             return RedirectToAction("AddSchedule", "Patient");
         }
 
-
         public IActionResult Departments()
         {
             var departments = _context.Departments
@@ -247,7 +256,6 @@ namespace MarinaRegSystem.Controllers
 
             return View(departments);
         }
-
 
         public IActionResult Profile()
         {

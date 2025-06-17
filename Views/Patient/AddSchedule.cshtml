@@ -117,15 +117,16 @@
             </div>
 
             <!-- شفت الدوام -->
-            <div class="input-block">
-                <label for="Shift" class="form-label">شفت الدوام</label>
-                <select id="Shift" name="Shift" class="form-control select2">
-                    <option value="">اختر الشفت</option>
-                    <option value="0">صباحي</option>
-                    <option value="1">مسائي</option>
-                    <option value="2">خفر</option>
-                </select>
-            </div>
+           <div class="input-block">
+    <label asp-for="Shift" class="form-label">شفت الدوام<span class="text-danger">*</span></label>
+    <select asp-for="Shift" class="form-control select2" id="Shift" name="Shift">
+        <option value="">اختر الشفت</option>
+        <option value="0">صباحي</option>
+        <option value="1">مسائي</option>
+        <option value="2">خفر</option>
+    </select>
+    <span asp-validation-for="Shift" class="text-danger"></span>
+</div>
 
             <!-- الطبيب -->
             <div class="input-block">
@@ -137,14 +138,17 @@
             </div>
 
             <!-- التاريخ -->
-            <div class="input-block">
-                <label asp-for="AppointmentDate" class="form-label">تاريخ الحجز<span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <input asp-for="AppointmentDate" class="form-control datetimepicker" type="date" data-date-format="DD/MM/YYYY" placeholder="اختر التاريخ">
-                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                </div>
-                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
-            </div>
+       <div class="input-block">
+    <label asp-for="AppointmentDate" class="form-label">تاريخ الحجز<span class="text-danger">*</span></label>
+    <div class="input-group">
+        <input asp-for="AppointmentDate" class="form-control"
+               type="date"
+              
+               placeholder="اختر التاريخ">
+        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+    </div>
+    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+</div>
 
             <!-- الوقت -->
             <div class="input-block">
@@ -179,8 +183,43 @@
 </div>
 
 @section Scripts {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+    <script>
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery failed to load');
+            document.write('<script src="https://code.jquery.com/jquery-3.7.1.min.js"><\/script>');
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
     <script>
         $(document).ready(function () {
+            console.log('Document ready');
+            console.log('jQuery version:', $.fn.jquery);
+            
             // تهيئة Select2
             $('.select2').select2({
                 placeholder: "اختر من القائمة",
@@ -214,65 +253,56 @@
                 }
             });
 
-            // عند تغير القسم أو الشفت يتم تحديث قائمة الأطباء
-            $('#DepartmentId, #Shift').change(function () {
-                var departmentId = $('#DepartmentId').val();
-                var shift = $('#Shift').val();
 
-                if (!departmentId) {
-                    $('#DoctorId').empty().append('<option value="">اختر الطبيب</option>');
-                    return;
-                }
 
-                $.ajax({
-    url: '/Appointment/GetDoctorsByDepartmentAndShift',
-    data: { departmentId: departmentId, shift: shift },
-    success: function (data) {
-        console.log('Received doctors:', data); // تحقق من البيانات في Console
-        var doctorSelect = $('#DoctorId');
-        doctorSelect.empty().append('<option value="">اختر الطبيب</option>');
 
-        $.each(data, function (index, doctor) {
-            doctorSelect.append($('<option></option>').val(doctor.id).text(doctor.name));
+
         });
-        doctorSelect.trigger('change');
-    },
-    error: function () {
-        alert('حدث خطأ أثناء جلب الأطباء. حاول مرة أخرى.');
+
+
+        $('#DepartmentId, #Shift').change(function () {
+    var departmentId = $('#DepartmentId').val();
+    var shift = $('#Shift').val();
+
+    console.log('DepartmentId:', departmentId);
+    console.log('Shift:', shift);
+
+    if (!departmentId || shift === '') {
+        $('#DoctorId').empty().append('<option value="">اختر الطبيب</option>');
+        return;
     }
+
+    var url = '@Url.Action("GetDoctorsByDepartmentAndShift", "Patient")';
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        data: {
+            departmentId: parseInt(departmentId),
+            shift: parseInt(shift)
+        },
+        success: function (data) {
+            var doctorSelect = $('#DoctorId');
+            doctorSelect.empty().append('<option value="">اختر الطبيب</option>');
+
+            if (data && data.length > 0) {
+                $.each(data, function (index, doctor) {
+                    doctorSelect.append($('<option></option>')
+                        .val(doctor.id)
+                        .text(doctor.name));
+                });
+            } else {
+                console.log('No doctors found');
+            }
+
+            doctorSelect.trigger('change');
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+            alert('حدث خطأ أثناء جلب الأطباء. حاول مرة أخرى.');
+        }
+    });
 });
-            });
-        });
     </script>
 }
 
-
-
-
-@section Footer{
-   <!-- jQuery -->
-<script src="~/assets/js/jquery-3.7.1.min.js"></script>
-
-<!-- Bootstrap JS -->
-<script src="~/assets/js/bootstrap.bundle.min.js"></script>
-
-<!-- Feather Js -->
-<script src="~/assets/js/feather.min.js"></script>
-
-<!-- Slimscroll -->
-<script src="~/assets/js/jquery.slimscroll.js"></script>
-
-<!-- Select2 Js -->
-<script src="~/assets/js/select2.min.js"></script>
-
-<!-- Datepicker JS -->
-<script src="~/assets/plugins/moment/moment.min.js"></script>
-<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
-
-<!-- Custom JS -->
-<script src="~/assets/js/script.js"></script>
-
-<!-- Validation Scripts -->
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-}

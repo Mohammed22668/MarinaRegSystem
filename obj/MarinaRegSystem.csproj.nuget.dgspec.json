@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\MarinaRegSystem.csproj": {}
+    "E:\\C#_Projects\\MarinaRegSystem\\MarinaRegSystem.csproj": {}
   },
   "projects": {
-    "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\MarinaRegSystem.csproj": {
+    "E:\\C#_Projects\\MarinaRegSystem\\MarinaRegSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\MarinaRegSystem.csproj",
+        "projectUniqueName": "E:\\C#_Projects\\MarinaRegSystem\\MarinaRegSystem.csproj",
         "projectName": "MarinaRegSystem",
-        "projectPath": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\MarinaRegSystem.csproj",
+        "projectPath": "E:\\C#_Projects\\MarinaRegSystem\\MarinaRegSystem.csproj",
         "packagesPath": "C:\\Users\\Mohammed\\.nuget\\packages\\",
-        "outputPath": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\obj\\",
+        "outputPath": "E:\\C#_Projects\\MarinaRegSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -77,6 +77,8 @@
               "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.0, )"
             }
@@ -100,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

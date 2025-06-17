@@ -78,6 +78,9 @@ namespace MarinaRegSystem.Models
 
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
+
+        [Display(Name = "شفت الدوام")]
+         public int Shift { get; set; } 
     }
 
     public enum AppointmentStatus

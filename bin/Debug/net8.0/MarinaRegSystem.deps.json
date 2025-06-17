@@ -398,9 +398,6 @@
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
           }
-        },
-        "compile": {
-          "lib/net6.0/Humanizer.dll": {}
         }
       },
       "Microsoft.AspNetCore.Cryptography.Internal/8.0.0": {},
@@ -674,9 +671,6 @@
           "lib/netcoreapp3.1/zh-Hant/Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll": {
             "locale": "zh-Hant"
           }
-        },
-        "compile": {
-          "lib/netcoreapp3.1/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
         }
       },
       "Microsoft.CodeAnalysis.Razor/6.0.0": {
@@ -750,9 +744,6 @@
           "lib/netcoreapp3.1/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll": {
             "locale": "zh-Hant"
           }
-        },
-        "compile": {
-          "lib/netcoreapp3.1/Microsoft.CodeAnalysis.Workspaces.dll": {}
         }
       },
       "Microsoft.CSharp/4.5.0": {},
@@ -1136,9 +1127,6 @@
             "assemblyVersion": "2.2.0.0",
             "fileVersion": "2.2.1.1"
           }
-        },
-        "compile": {
-          "lib/netstandard2.0/Mono.TextTemplating.dll": {}
         }
       },
       "System.CodeDom/4.4.0": {
@@ -1147,9 +1135,6 @@
             "assemblyVersion": "4.0.0.0",
             "fileVersion": "4.6.25519.3"
           }
-        },
-        "compile": {
-          "ref/netstandard2.0/System.CodeDom.dll": {}
         }
       },
       "System.Collections.Immutable/6.0.0": {
@@ -1172,9 +1157,6 @@
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
-        },
-        "compile": {
-          "lib/net6.0/System.Composition.AttributedModel.dll": {}
         }
       },
       "System.Composition.Convention/6.0.0": {
@@ -1186,9 +1168,6 @@
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
-        },
-        "compile": {
-          "lib/net6.0/System.Composition.Convention.dll": {}
         }
       },
       "System.Composition.Hosting/6.0.0": {
@@ -1200,9 +1179,6 @@
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
-        },
-        "compile": {
-          "lib/net6.0/System.Composition.Hosting.dll": {}
         }
       },
       "System.Composition.Runtime/6.0.0": {
@@ -1211,9 +1187,6 @@
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
-        },
-        "compile": {
-          "lib/net6.0/System.Composition.Runtime.dll": {}
         }
       },
       "System.Composition.TypedParts/6.0.0": {
@@ -1227,9 +1200,6 @@
             "assemblyVersion": "6.0.0.0",
             "fileVersion": "6.0.21.52210"
           }
-        },
-        "compile": {
-          "lib/net6.0/System.Composition.TypedParts.dll": {}
         }
       },
       "System.Configuration.ConfigurationManager/6.0.1": {

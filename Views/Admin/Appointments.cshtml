@@ -1,4 +1,6 @@
-@model IEnumerable<MarinaRegSystem.Models.Appointment>
+@* @model IEnumerable<MarinaRegSystem.Models.Appointment> *@
+@model IEnumerable<MarinaRegSystem.Models.AppointmentViewModel>
+ 
 @using MarinaRegSystem.Helpers;
 @{
      Layout = "_LayoutAdmin";
@@ -56,23 +58,25 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var appt in Model)
-        {
-            <tr>
-             
-                <td>@appt.User?.Username</td>
-                <td>@appt.Department?.Name</td>
-                <td>@appt.Doctor?.Name</td>
-                <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
-                <td>@appt.Status.GetDisplayName()</td>
-                <td>@appt.Price.ToString("C")</td>
-                <td>
-                    <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-primary">تعديل</a>
-                    <a asp-action="DeleteAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-danger" onclick="return confirm('هل تريد حذف هذا الحجز؟');">حذف</a>
-                </td>
-            </tr>
-        }
+    @foreach (var item in Model)
+{
+    var appt = item.Appointment;
+    var patient = item.Patient;
+
+    <tr>
+        <td>@appt.User?.Username</td>
+        <td>@appt.Department?.Name</td>
+        <td>@appt.Doctor?.Name</td>
+        <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+        <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+        <td>@appt.Status.GetDisplayName()</td>
+        <td>@appt.Price.ToString("C")</td>
+        <td>
+            <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-primary">تعديل</a>
+            <a asp-action="DeleteAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-danger" onclick="return confirm('هل تريد حذف هذا الحجز؟');">حذف</a>
+        </td>
+    </tr>
+}
     </tbody>
 </table>
 

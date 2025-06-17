@@ -414,22 +414,21 @@ namespace MarinaRegSystem.Controllers
 
 
         // قائمة الحجوزات
-        public IActionResult Appointments()
+       public IActionResult Appointments()
+{
+    var appointments = _context.Appointments
+        .Include(a => a.Doctor)
+        .Include(a => a.Department)
+        .Include(a => a.User)
+        .Select(a => new AppointmentViewModel
         {
-            var appointments = _context.Appointments
-                .Include(a => a.Doctor)
-                .Include(a => a.Department)
-                .Include(a => a.User)
-                .Select(a => new
-                {
-                    Appointment = a,
-                    Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
-                })
+            Appointment = a,
+            Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
+        })
+        .ToList();
 
-                .ToList();
-
-            return View(appointments);
-        }
+    return View(appointments);
+}
 
         // GET: تعديل حجز
         [HttpGet]
