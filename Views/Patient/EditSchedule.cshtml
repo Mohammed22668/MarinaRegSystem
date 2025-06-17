@@ -1,0 +1,182 @@
+@model MarinaRegSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "تعديل الحجز";
+}
+
+<div class="container mt-5">
+    <div class="form-container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <h4 class="form-heading">تعديل موعد الحجز</h4>
+
+        <form asp-action="EditSchedule" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- القسم -->
+            <div class="input-block">
+                <label asp-for="DepartmentId" class="form-label">القسم<span class="text-danger">*</span></label>
+                <select asp-for="DepartmentId" class="form-control select2" asp-items="ViewBag.Departments">
+                    <option value="">اختر القسم</option>
+                </select>
+                <span asp-validation-for="DepartmentId" class="text-danger"></span>
+            </div>
+
+            <!-- شفت الدوام -->
+            <div class="input-block">
+                <label asp-for="Shift" class="form-label">شفت الدوام<span class="text-danger">*</span></label>
+              <select asp-for="Shift" class="form-control select2">
+    <option value="">اختر الشفت</option>
+    <option value="0">صباحي</option>
+    <option value="1">مسائي</option>
+    <option value="2">خفر</option>
+</select>
+                <span asp-validation-for="Shift" class="text-danger"></span>
+            </div>
+
+            <!-- الطبيب -->
+            <div class="input-block">
+                <label asp-for="DoctorId" class="form-label">الطبيب<span class="text-danger">*</span></label>
+                <select asp-for="DoctorId" class="form-control select2" asp-items="ViewBag.Doctors">
+                    <option value="">اختر الطبيب</option>
+                </select>
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>
+
+            <!-- التاريخ -->
+            <div class="input-block">
+                <label asp-for="AppointmentDate" class="form-label">تاريخ الحجز<span class="text-danger">*</span></label>
+                <input asp-for="AppointmentDate" class="form-control datetimepicker" type="date" />
+                <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+            </div>
+
+            <!-- الوقت -->
+            <div class="input-block">
+                <label asp-for="AppointmentTime" class="form-label">وقت الحجز<span class="text-danger">*</span></label>
+                <input asp-for="AppointmentTime" class="form-control timepicker" type="time" />
+                <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+            </div>
+
+            <!-- ملف التشخيص -->
+            <div class="input-block">
+                <label class="form-label">ملف التشخيص (PDF أو صورة)</label>
+                <input type="file" name="diagnosisFile" class="form-control" accept=".pdf,image/*" />
+                @if (!string.IsNullOrEmpty(Model.DiagnosisFileUrl))
+                {
+                    <p>الملف الحالي: <a href="@Model.DiagnosisFileUrl" target="_blank">عرض الملف</a></p>
+                }
+            </div>
+
+            <!-- الملاحظات -->
+            <div class="input-block">
+                <label asp-for="Notes" class="form-label">ملاحظات</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            </div>
+
+            <!-- زر الإرسال -->
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <i class="fas fa-save me-1"></i> تحديث الحجز
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("MyAppointments", "Patient")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> العودة إلى حجوزاتي
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/js/select2.min.js"></script>
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "اختر من القائمة",
+                allowClear: true,
+                dir: "rtl"
+            });
+
+            $('.datetimepicker').datetimepicker({
+                format: 'YYYY-MM-DD',
+                locale: 'ar',
+                minDate: moment(),
+                icons: {
+                    date: 'fa fa-calendar'
+                }
+            });
+
+            $('.timepicker').datetimepicker({
+                format: 'HH:mm',
+                locale: 'ar',
+                stepping: 30,
+                minTime: '08:00',
+                maxTime: '20:00',
+                defaultTime: '08:00',
+                showTodayButton: false,
+                toolbarPlacement: 'bottom',
+                icons: {
+                    time: 'fa fa-clock'
+                }
+            });
+        });
+
+        // لجلب الأطباء حسب القسم والشفت عند تعديل الحجز
+        $('#DepartmentId, #Shift').change(function () {
+            var departmentId = $('#DepartmentId').val();
+            var shift = $('#Shift').val();
+
+            if (!departmentId || shift === '') {
+                $('#DoctorId').empty().append('<option value="">اختر الطبيب</option>');
+                return;
+            }
+
+            var url = '@Url.Action("GetDoctorsByDepartmentAndShift", "Patient")';
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    departmentId: parseInt(departmentId),
+                    shift: parseInt(shift)
+                },
+                success: function (data) {
+                    var doctorSelect = $('#DoctorId');
+                    doctorSelect.empty().append('<option value="">اختر الطبيب</option>');
+
+                    if (data && data.length > 0) {
+                        $.each(data, function (index, doctor) {
+                            doctorSelect.append($('<option></option>')
+                                .val(doctor.id)
+                                .text(doctor.name));
+                        });
+                    } else {
+                        console.log('No doctors found');
+                    }
+
+                    doctorSelect.trigger('change');
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    alert('حدث خطأ أثناء جلب الأطباء. حاول مرة أخرى.');
+                }
+            });
+        });
+    </script>
+}

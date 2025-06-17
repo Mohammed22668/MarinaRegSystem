@@ -137,7 +137,7 @@
                         <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
                         <td>@appt.Department?.Name</td>
                         <td>@appt.Doctor?.Name</td>
-                          <td>@appt.Shift</td>
+                          <td>@appt.Shift.GetDisplayName()</td>
                         <td>
                             <span class="status-badge @statusClass">@appt.Status.GetDisplayName()</span>
                         </td>

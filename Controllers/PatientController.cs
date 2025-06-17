@@ -156,6 +156,86 @@ namespace MarinaRegSystem.Controllers
             return View(appointment);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditSchedule(int id, Appointment appointment, IFormFile diagnosisFile)
+        {
+            if (id != appointment.Id)
+            {
+                return NotFound();
+            }
+
+            var existingAppointment = await _context.Appointments.FindAsync(id);
+            if (existingAppointment == null)
+            {
+                return NotFound();
+            }
+
+            // التحقق من صلاحية المريض (من الجلسة)
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId) || userId != existingAppointment.UserId)
+            {
+                return Unauthorized();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name", appointment.DepartmentId);
+                ViewBag.Doctors = new SelectList(await _context.Doctors.Where(d => d.Status).ToListAsync(), "Id", "Name", appointment.DoctorId);
+                return View(appointment);
+            }
+
+            // تحديث البيانات
+            existingAppointment.DepartmentId = appointment.DepartmentId;
+            existingAppointment.DoctorId = appointment.DoctorId;
+            existingAppointment.AppointmentDate = appointment.AppointmentDate;
+            existingAppointment.AppointmentTime = appointment.AppointmentTime;
+            existingAppointment.Notes = appointment.Notes;
+            existingAppointment.UpdatedAt = DateTime.Now;
+
+            // معالجة الملف إن تم رفعه
+            if (diagnosisFile != null && diagnosisFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "diagnosis");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(diagnosisFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await diagnosisFile.CopyToAsync(stream);
+                }
+
+                // حذف الملف القديم (اختياري)
+                if (!string.IsNullOrEmpty(existingAppointment.DiagnosisFileUrl))
+                {
+                    var oldFilePath = Path.Combine(_environment.WebRootPath, existingAppointment.DiagnosisFileUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                        System.IO.File.Delete(oldFilePath);
+                }
+
+                existingAppointment.DiagnosisFileUrl = $"/uploads/diagnosis/{uniqueFileName}";
+            }
+
+            try
+            {
+                _context.Update(existingAppointment);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "تم تعديل الموعد بنجاح";
+            }
+            catch (Exception ex)
+            {
+                if (!_context.Appointments.Any(e => e.Id == appointment.Id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return RedirectToAction(nameof(MyAppointments));
+        }
+
+
         // - DeleteSchedule
 
         [HttpGet]
@@ -257,9 +337,71 @@ namespace MarinaRegSystem.Controllers
             return View(departments);
         }
 
-        public IActionResult Profile()
+        [HttpGet]
+        public async Task<IActionResult> Profile()
         {
-            return View();
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+                return RedirectToAction("Login", "Home");
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+                return RedirectToAction("Create"); // أو صفحة إنشاء بيانات المريض
+
+            return View(patient);
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+                return RedirectToAction("Login", "Home");
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+                return NotFound();
+
+            return View(patient);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(Patient updatedPatient)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+                return RedirectToAction("Login", "Home");
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            if (patient == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(updatedPatient);
+
+            // تحديث الحقول
+            patient.FullName = updatedPatient.FullName;
+            patient.DateOfBirth = updatedPatient.DateOfBirth;
+            patient.Gender = updatedPatient.Gender;
+            patient.Address = updatedPatient.Address;
+            patient.NationalNumber = updatedPatient.NationalNumber;
+            patient.Country = updatedPatient.Country;
+            patient.Province = updatedPatient.Province;
+            patient.BloodType = updatedPatient.BloodType;
+            patient.Allergies = updatedPatient.Allergies;
+            patient.ChronicDiseases = updatedPatient.ChronicDiseases;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "تم تحديث البيانات بنجاح";
+            return RedirectToAction("Profile");
+        }
+
+
+
+
     }
 }

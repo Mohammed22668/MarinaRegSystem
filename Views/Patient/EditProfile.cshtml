@@ -1,0 +1,195 @@
+@model MarinaRegSystem.Models.Patient
+
+@{
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "تعديل الملف الشخصي";
+}
+
+@section currentPage {
+    <li class="breadcrumb-item active">تعديل الملف الشخصي</li>
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - تعديل الملف الشخصي</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <style>
+            body {
+                background-color: #f4f6f9; 
+            }
+
+            .profile-form {
+                max-width: 800px;
+                margin: 2rem auto;
+            }
+
+            .card-edit {
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+            }
+
+            .form-label {
+                font-weight: bold;
+            }
+
+            .btn-save {
+                border-radius: 50px;
+                padding: 0.6rem 1.5rem;
+                font-weight: bold;
+                width: 100%;
+            }
+        </style>
+    </head>
+}
+
+<div class="profile-form">
+    <div class="card card-edit">
+        <h3 class="text-center mb-4">تعديل البيانات الشخصية</h3>
+
+        <form asp-action="EditProfile" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label asp-for="FullName" class="form-label">الاسم الكامل</label>
+                    <input asp-for="FullName" class="form-control" placeholder="الاسم الكامل" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label">تاريخ التولد</label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Gender" class="form-label">الجنس</label>
+                    <select asp-for="Gender" class="form-control">
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="NationalNumber" class="form-label">رقم الهوية/البطاقة الوطنية</label>
+                    <input asp-for="NationalNumber" class="form-control" placeholder="رقم الهوية" />
+                    <span asp-validation-for="NationalNumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Country" class="form-label">البلد</label>
+                    <input asp-for="Country" class="form-control" placeholder="البلد" />
+                    <span asp-validation-for="Country" class="text-danger"></span>
+                </div>
+
+             
+
+                <div class="col-md-6">
+                    <label asp-for="Province" class="form-label">المحافظة</label>
+                    <select asp-for="Province" class="form-control">
+                        <option value="">-- اختر المحافظة --</option>
+                        <option value="بغداد">بغداد</option>
+                        <option value="البصرة">البصرة</option>
+                        <option value="نينوى">نينوى</option>
+                        <option value="الأنبار">الأنبار</option>
+                        <option value="أربيل">أربيل</option>
+                        <option value="ذي قار">ذي قار</option>
+                        <option value="السليمانية">السليمانية</option>
+                        <option value="ديالى">ديالى</option>
+                        <option value="كركوك">كركوك</option>
+                        <option value="صلاح الدين">صلاح الدين</option>
+                        <option value="واسط">واسط</option>
+                        <option value="القادسية">القادسية</option>
+                        <option value="بابل">بابل</option>
+                        <option value="كربلاء">كربلاء</option>
+                        <option value="النجف">النجف</option>
+                        <option value="ميسان">ميسان</option>
+                        <option value="المثنى">المثنى</option>
+                        <option value="دهوك">دهوك</option>
+                    </select>
+                    <span asp-validation-for="Province" class="text-danger"></span>
+                </div>
+
+                   <div class="col-md-6">
+                    <label asp-for="Address" class="form-label">عنوان السكن</label>
+                    <input asp-for="Address" class="form-control" placeholder="العنوان" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="BloodType" class="form-label">فصيلة الدم</label>
+                    <select asp-for="BloodType" class="form-control">
+                        <option value="">-- اختر فصيلة الدم --</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                    <span asp-validation-for="BloodType" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Allergies" class="form-label">حساسية</label>
+                    <input asp-for="Allergies" class="form-control" placeholder="مثال: حبوب اللقاح أو البنسلين" />
+                    <span asp-validation-for="Allergies" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ChronicDiseases" class="form-label">امراض مزمنة</label>
+                    <input asp-for="ChronicDiseases" class="form-control" placeholder="مثال: السكري أو ضغط الدم" />
+                    <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-grid">
+                <button type="submit" class="btn btn-success btn-save">
+                    <i class="fas fa-save me-1"></i> حفظ التعديلات
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

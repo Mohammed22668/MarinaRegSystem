@@ -52,6 +52,7 @@
             <th>الطبيب</th>
             <th>تاريخ الموعد</th>
             <th>وقت الموعد</th>
+              <th> الشفت</th>
             <th>الحالة</th>
             <th>السعر</th>
             <th>الإجراءات</th>
@@ -70,6 +71,9 @@
         <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
         <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
         <td>@appt.Status.GetDisplayName()</td>
+        <td>@appt.Shift.GetDisplayName()</td>
+        
+
         <td>@appt.Price.ToString("C")</td>
         <td>
             <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-primary">تعديل</a>

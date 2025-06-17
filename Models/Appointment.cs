@@ -79,8 +79,8 @@ namespace MarinaRegSystem.Models
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
 
-        [Display(Name = "شفت الدوام")]
-         public int Shift { get; set; } 
+        [Display(Name = "الشفت")]
+        public ShiftTypeAppo Shift { get; set; }
     }
 
     public enum AppointmentStatus
@@ -99,5 +99,19 @@ namespace MarinaRegSystem.Models
 
         [Display(Name = "ملغي")]
         Cancelled = 4
+    }
+
+
+
+    public enum ShiftTypeAppo
+    {
+        [Display(Name = "صباحي")]
+        Morning = 0,
+
+        [Display(Name = "مسائي")]
+        Evening = 1,
+
+        [Display(Name = "خفر")]
+        Night = 2
     }
 }
