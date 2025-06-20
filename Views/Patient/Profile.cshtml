@@ -87,7 +87,7 @@
 
         <div class="row g-3">
             <div class="col-md-6">
-                <p><strong class="profile-title">الاسم الكامل:</strong> <span class="profile-data">@Model.FullName</span></p>
+                <p><strong class="profile-title">الاسم الكامل:</strong> <span class="profile-data">@Model.FirstName @Model.SecondName  @Model.ThirdName @Model.FourthName </span></p>
             </div>
             <div class="col-md-6">
                 <p><strong class="profile-title">تاريخ الميلاد:</strong> <span class="profile-data">@Model.DateOfBirth.ToString("yyyy-MM-dd")</span></p>
@@ -115,6 +115,14 @@
             </div>
             <div class="col-md-6">
                 <p><strong class="profile-title">الأمراض المزمنة:</strong> <span class="profile-data">@Model.ChronicDiseases</span></p>
+            </div>
+
+            <div class="col-md-6">
+                <p><strong class="profile-title">رقم الهاتف:</strong> <span class="profile-data">@Model.PhoneNumber</span></p>
+                  </div>
+
+                    <div class="col-md-6"></div>
+                <p><strong class="profile-title">شخص مقرب :</strong> <span class="profile-data">@Model.ClosePerson</span></p>
             </div>
         </div>
 

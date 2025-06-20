@@ -1,7 +1,7 @@
 @* @model IEnumerable<MarinaRegSystem.Models.Appointment> *@
-@model IEnumerable<MarinaRegSystem.Models.AppointmentViewModel>
- 
-@using MarinaRegSystem.Helpers;
+@model MarinaRegSystem.Models.AppointmentFilterViewModel
+@using MarinaRegSystem.Helpers
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
      Layout = "_LayoutAdmin";
     ViewData["Title"] = "الحجوزات";
@@ -36,55 +36,164 @@
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
+        
+
     </head>
 }
 
 
 
+
+
 <h2>@ViewData["Title"]</h2>
 
-<table class="table table-bordered table-hover">
+<!-- 🔍 نموذج البحث والفلترة -->
+<form method="get" asp-action="Appointments" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="PatientName" value="@Model.PatientName" class="form-control" placeholder="اسم المريض" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="Username" value="@Model.Username" class="form-control" placeholder="اسم المستخدم" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control" placeholder="اسم الطبيب" />
+    </div>
+    <div class="col-md-3">
+        <select name="DepartmentId" class="form-select">
+            <option value="">-- اختر القسم --</option>
+            @foreach (var dept in Model.Departments)
+            {
+                <option value="@dept.Value" selected="@(dept.Value == Model.DepartmentId?.ToString())">@dept.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="AppointmentDate" value="@(Model.AppointmentDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <select name="Shift" class="form-select">
+            <option value="">-- اختر الشفت --</option>
+            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.ShiftType>())
+            {
+                <option value="@item.Value" selected="@(item.Value == Model.Shift?.ToString())">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="Status" class="form-select">
+            <option value="">-- اختر الحالة --</option>
+            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.AppointmentStatus>())
+            {
+                <option value="@item.Value" selected="@(item.Value == Model.Status?.ToString())">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 d-grid">
+        <button type="submit" class="btn btn-primary">بحث</button>
+    </div>
+</form>
+
+<!-- جدول عرض الحجوزات -->
+<table class="table table-hover table-center mb-0">
     <thead>
         <tr>
-         
             <th>المستخدم</th>
+            <th>اسم المريض</th>
             <th>القسم</th>
             <th>الطبيب</th>
             <th>تاريخ الموعد</th>
             <th>وقت الموعد</th>
-              <th> الشفت</th>
+            <th>الشفت</th>
             <th>الحالة</th>
             <th>السعر</th>
             <th>الإجراءات</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-{
-    var appt = item.Appointment;
-    var patient = item.Patient;
+        @foreach (var item in Model.Results)
+        {
+            var appt = item.Appointment;
 
-    <tr>
-        <td>@appt.User?.Username</td>
-        <td>@appt.Department?.Name</td>
-        <td>@appt.Doctor?.Name</td>
-        <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
-        <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
-        <td>@appt.Status.GetDisplayName()</td>
-        <td>@appt.Shift.GetDisplayName()</td>
-        
-
-        <td>@appt.Price.ToString("C")</td>
-        <td>
-            <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-primary">تعديل</a>
-            <a asp-action="DeleteAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-danger" onclick="return confirm('هل تريد حذف هذا الحجز؟');">حذف</a>
-        </td>
-    </tr>
-}
+            <tr>
+                <td class="text-center">@appt.User?.Username</td>
+                <td class="text-center">@appt.PatientName</td>
+                <td class="text-center">@appt.Department?.Name</td>
+                <td class="text-center">@appt.Doctor?.Name</td>
+                <td class="text-center">@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                <td class="text-center">@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                <td class="text-center">@appt.Shift.GetDisplayName()</td>
+                <td class="text-center">
+                    <span class="badge bg-@(appt.Status == MarinaRegSystem.Models.AppointmentStatus.Confirmed ? "success" : "danger")">
+                        @appt.Status.GetDisplayName()
+                    </span>
+                </td>
+                <td class="text-center">@appt.Price.ToString("C")</td>
+                <td class="text-center">
+                    <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm bg-success-light me-2">
+                        <i class="fas fa-pencil-alt"></i> تعديل
+                    </a>
+                    <button type="button" class="btn btn-sm bg-danger-light btn-delete" data-id="@appt.Id">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 
+@section Scripts {
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const appointmentId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'هل أنت متأكد؟',
+                    text: "لن تتمكن من التراجع عن هذا الحذف!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'نعم، احذف!',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // ارسال طلب الحذف عن طريق الفورم برمجياً أو إعادة توجيه
+                        // الطريقة الأسهل: عمل فورم وحذف برمجي
+
+                        // إنشاء فورم مؤقت للحذف (POST)
+                        const form = document.createElement('form');
+                        form.method = 'post';
+                        form.action = `/Admin/DeleteAppointment/${appointmentId}`;
+
+                        // إضافة مفتاح الحماية ضد الهجمات CSRF (إذا كنت تستخدمه)
+                        const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                        if(token) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = '__RequestVerificationToken';
+                            hiddenInput.value = token.value;
+                            form.appendChild(hiddenInput);
+                        }
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+}
 
 
 

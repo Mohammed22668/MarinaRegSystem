@@ -48,13 +48,13 @@
 
     <div class="mb-3">
         <label asp-for="PatientName" class="form-label"></label>
-        <input asp-for="PatientName" class="form-control" />
+        <input asp-for="PatientName" class="form-control"  readonly/>
         <span asp-validation-for="PatientName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="UserId" class="form-label"></label>
-        <input asp-for="UserId" type="number" class="form-control" />
+        @* <label asp-for="UserId" class="form-label" ></label> *@
+        <input asp-for="UserId" type="number" class="form-control" hidden/>
         <span asp-validation-for="UserId" class="text-danger"></span>
     </div>
 

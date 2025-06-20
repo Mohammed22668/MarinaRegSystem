@@ -108,10 +108,10 @@
                                                    class="btn btn-outline-success btn-sm btn-action">
                                                     <i class="fas fa-pencil-alt me-1"></i> تعديل
                                                 </a>
-                                               <button type="button" 
-        class="btn btn-outline-danger btn-sm btn-action"
+                                             <button type="button" 
+        class="btn btn-outline-danger btn-sm btn-action btn-delete"
         @( ((item.Doctors?.Count() ?? 0) > 0 || (item.Appointments?.Count() ?? 0) > 0) ? "disabled" : "") 
-        onclick="return confirmDelete('@item.Id', '@item.Name');">
+        data-id="@item.Id" data-name="@item.Name">
     <i class="fas fa-trash me-1"></i> حذف
 </button>
                                             </div>
@@ -155,12 +155,42 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }
 
+
+
+
+
+@section Scripts {
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <script>
-    function confirmDelete(departmentId, departmentName) {
-        if (confirm('هل أنت متأكد من حذف القسم "' + departmentName + '"؟')) {
-            // لو وافق المستخدم، توجه إلى رابط الحذف
-            window.location.href = '@Url.Action("DeleteDepartment", "Admin")' + '?id=' + departmentId;
-        }
-        return false; // منع إرسال الفورم أو إعادة تحميل الصفحة
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const departmentId = this.getAttribute('data-id');
+                const departmentName = this.getAttribute('data-name');
+
+                Swal.fire({
+                    title: `هل أنت متأكد من حذف القسم "${departmentName}"؟`,
+                    text: "لن تتمكن من التراجع عن هذه العملية!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'نعم، احذف!',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // إعادة التوجيه لرابط الحذف مع إرسال المعرف كـ query string
+                        window.location.href = `@Url.Action("DeleteDepartment", "Admin")?id=${departmentId}`;
+                    }
+                });
+            });
+        });
+    });
 </script>
+}    

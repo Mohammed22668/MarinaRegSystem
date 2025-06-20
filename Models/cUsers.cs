@@ -22,6 +22,17 @@ namespace MarinaRegSystem.Models
 
         public string Role { get; set; }
 
+        [Display(Name = "حالة المستخدم")]
+        public bool IsActive { get; set; } = true;
+
+        [Display(Name = "تاريخ الإنشاء")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Display(Name = "تاريخ التحديث")]
+        public DateTime? UpdatedAt { get; set; }
+
+
+
         public virtual Patient Patient { get; set; }
     }
 }

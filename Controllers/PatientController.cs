@@ -82,8 +82,9 @@ namespace MarinaRegSystem.Controllers
             }
 
             // ربط بيانات المريض
+
             appointment.PatientId = patient.Id;
-            appointment.PatientName = patient.FullName;
+            appointment.PatientName = patient.FirstName + " " + patient.SecondName + " " + patient.ThirdName + " " + patient.FourthName;
 
             // التحقق من صحة البيانات
             if (!ModelState.IsValid)
@@ -383,7 +384,10 @@ namespace MarinaRegSystem.Controllers
                 return View(updatedPatient);
 
             // تحديث الحقول
-            patient.FullName = updatedPatient.FullName;
+            patient.FirstName = updatedPatient.FirstName;
+            patient.SecondName = updatedPatient.SecondName;
+            patient.ThirdName = updatedPatient.ThirdName;
+            patient.FourthName = updatedPatient.FourthName;
             patient.DateOfBirth = updatedPatient.DateOfBirth;
             patient.Gender = updatedPatient.Gender;
             patient.Address = updatedPatient.Address;
@@ -393,6 +397,8 @@ namespace MarinaRegSystem.Controllers
             patient.BloodType = updatedPatient.BloodType;
             patient.Allergies = updatedPatient.Allergies;
             patient.ChronicDiseases = updatedPatient.ChronicDiseases;
+            patient.ClosePerson = updatedPatient.ClosePerson;
+            patient.PhoneNumber = updatedPatient.PhoneNumber;
 
             await _context.SaveChangesAsync();
 

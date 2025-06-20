@@ -1,0 +1,63 @@
+@model IEnumerable<MarinaRegSystem.Models.Patient>
+
+@{
+    Layout = "_LayoutAdmin";  // أو الـ Layout المناسب لك
+    ViewData["Title"] = "قائمة المرضى";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">المرضى</h5>
+        <span class="text-muted">إجمالي المرضى: @Model.Count()</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>الاسم الكامل</th>
+                        <th>تاريخ الميلاد</th>
+                        <th>الجنس</th>
+                        <th>المحافظة</th>
+                        <th>رقم الهوية</th>
+                        <th>شخص مقرب</th>
+                        <th>رقم الهاتف</th>
+                        <th>فصيلة الدم</th>
+                        <th>الحساسية</th>
+                        <th>الأمراض المزمنة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                لا يوجد مرضى حتى الآن.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var patient in Model)
+                        {
+                            <tr class="text-center">
+                                <td>@patient.FirstName   @patient.SecondName   @patient.ThirdName   @patient.FourthName </td>
+                                <td>@patient.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                <td>@patient.Gender</td>
+                                <td>@patient.Province</td>
+                                <td>@patient.NationalNumber</td>
+                                <td>@patient.ClosePerson</td>
+                                <td>@patient.User?.PhoneNumber </td>
+                                <td>@patient.BloodType</td>
+                                <td>@patient.Allergies  </td>
+                                <td>@patient.ChronicDiseases  </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

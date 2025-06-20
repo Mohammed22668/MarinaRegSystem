@@ -1,17 +1,13 @@
 ﻿using MarinaRegSystem.Data;
 using MarinaRegSystem.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -46,7 +42,7 @@ namespace MarinaRegSystem.Controllers
 
 
         [HttpPost]
-        public IActionResult Register(RegisterViewModel model, string DateOfBirth)
+        public async Task<IActionResult> Register(RegisterViewModel model, string DateOfBirth)
         {
             // تحقق من صلاحية الموديل أولاً
             if (!ModelState.IsValid)
@@ -62,9 +58,18 @@ namespace MarinaRegSystem.Controllers
                 return View(model);
             }
 
-            if (_context.cUsers.Any(u => u.Email == model.Email))
+            if (!string.IsNullOrWhiteSpace(model.Email))
             {
-                ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم مسبقاً");
+                if (_context.cUsers.Any(u => u.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم مسبقاً");
+                    return View(model);
+                }
+            }
+
+            if (_context.cUsers.Any(u => u.PhoneNumber == model.PhoneNumber))
+            {
+                ModelState.AddModelError("PhoneNumber", "رقم الهاتف مستخدم مسبقاً");
                 return View(model);
             }
 
@@ -88,18 +93,38 @@ namespace MarinaRegSystem.Controllers
             _context.SaveChanges();
 
             // إذا كان لديك جدول Patient مرتبط ب cUsers:
+            // تسجيل الدخول تلقائي
+            // إنشاء Claims لتسجيل الدخول
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
 
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-
-
-            // تعيين الكوكيز للتوثيق
+            // تعيين الكوكيز الإضافي (اختياري)
             HttpContext.Response.Cookies.Append("Auth", user.Token, new CookieOptions()
             {
                 Path = "/",
                 Expires = DateTime.Now.AddDays(365)
             });
 
-            return RedirectToAction("Login", "Home");
+            return RedirectToAction("Index", "Patient");
+
+
+
+            // // تعيين الكوكيز للتوثيق
+            // HttpContext.Response.Cookies.Append("Auth", user.Token, new CookieOptions()
+            // {
+            //     Path = "/",
+            //     Expires = DateTime.Now.AddDays(365)
+            // });
+
+            // return RedirectToAction("", "Home");
         }
 
 
@@ -122,7 +147,7 @@ namespace MarinaRegSystem.Controllers
 
             password = Functions.Encrypt256(password);
 
-            var user = _context.cUsers.FirstOrDefault(u => u.PhoneNumber == phoneNumber && u.Password == password);
+            var user = _context.cUsers.FirstOrDefault(u => u.PhoneNumber == phoneNumber && u.Password == password && u.IsActive);
 
             if (user == null)
             {

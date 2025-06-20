@@ -414,21 +414,62 @@ namespace MarinaRegSystem.Controllers
 
 
         // قائمة الحجوزات
-       public IActionResult Appointments()
-{
-    var appointments = _context.Appointments
-        .Include(a => a.Doctor)
-        .Include(a => a.Department)
-        .Include(a => a.User)
-        .Select(a => new AppointmentViewModel
+        [HttpGet]
+        public IActionResult Appointments(AppointmentFilterViewModel filter)
         {
-            Appointment = a,
-            Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
-        })
-        .ToList();
+            // جلب البيانات الأساسية
+            var query = _context.Appointments
+                .Include(a => a.Doctor)
+                .Include(a => a.Department)
+                .Include(a => a.User)
+                .Include(a => a.Patient)
+                .AsQueryable();
 
-    return View(appointments);
-}
+            // ✅ البحث
+            if (!string.IsNullOrEmpty(filter.PatientName))
+                query = query.Where(a => a.PatientName.Contains(filter.PatientName));
+
+            if (!string.IsNullOrEmpty(filter.Username))
+                query = query.Where(a => a.User.Username.Contains(filter.Username));
+
+            if (!string.IsNullOrEmpty(filter.DoctorName))
+                query = query.Where(a => a.Doctor.Name.Contains(filter.DoctorName));
+
+            // ✅ الفلاتر
+            if (filter.DepartmentId.HasValue)
+                query = query.Where(a => a.DepartmentId == filter.DepartmentId.Value);
+
+            if (filter.AppointmentDate.HasValue)
+                query = query.Where(a => a.AppointmentDate.Date == filter.AppointmentDate.Value.Date);
+
+            if (filter.Shift.HasValue)
+            {
+                var shiftValue = (ShiftTypeAppo)filter.Shift.Value;
+                query = query.Where(a => a.Shift == shiftValue);
+            }
+
+            if (filter.Status.HasValue)
+                query = query.Where(a => a.Status == filter.Status.Value);
+
+            // تحويل النتائج إلى ViewModel
+            var results = query
+                .Select(a => new AppointmentViewModel
+                {
+                    Appointment = a,
+                    Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
+                }).ToList();
+
+            // تعبئة القوائم المنسدلة
+            filter.Results = results;
+            filter.Departments = _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToList();
+
+            return View(filter);
+        }
 
         // GET: تعديل حجز
         [HttpGet]
@@ -443,6 +484,8 @@ namespace MarinaRegSystem.Controllers
             // تجهيز بيانات للقوائم المنسدلة
             ViewBag.Doctors = new SelectList(_context.Doctors, "Id", "Name", appointment.DoctorId);
             ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", appointment.DepartmentId);
+            ViewBag.Users = new SelectList(_context.Users, "Id", "UserName", appointment.UserId);
+            ViewBag.Patients = new SelectList(_context.Patients, "UserId", "FirstName", appointment.UserId);
 
             return View(appointment);
         }
@@ -479,17 +522,34 @@ namespace MarinaRegSystem.Controllers
         }
 
         // حذف الحجز
-        public async Task<IActionResult> DeleteAppointment(int id)
+        public IActionResult DeleteAppointment(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
+            var appointment = _context.Appointments.Find(id);
             if (appointment == null)
-            {
                 return NotFound();
-            }
 
             _context.Appointments.Remove(appointment);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "تم حذف الموعد بنجاح";
             return RedirectToAction(nameof(Appointments));
+        }
+
+
+
+        [HttpGet]
+        public IActionResult AllPatients()
+        {
+
+            var patients = _context.Patients
+      .Include(p => p.User) // لو عندك علاقة مع جدول المستخدمين
+      .OrderBy(p => p.FirstName)
+      .ToList();
+
+            return View(patients);
+
+
+
         }
     }
 }

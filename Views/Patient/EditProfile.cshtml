@@ -71,11 +71,47 @@
             @Html.AntiForgeryToken()
 
             <div class="row g-3">
-                <div class="col-md-12">
-                    <label asp-for="FullName" class="form-label">الاسم الكامل</label>
-                    <input asp-for="FullName" class="form-control" placeholder="الاسم الكامل" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
+                 <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label">الاسم الاول</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="FirstName" class="form-control" placeholder="أدخل الاسم الاول" />
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    
+                      <div class="mb-3">
+                        <label asp-for="SecondName" class="form-label">الاسم الثاني</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="SecondName" class="form-control" placeholder="أدخل الاسم الثاني" />
+                        </div>
+                        <span asp-validation-for="SecondName" class="text-danger"></span>
+                    </div>
+
+
+
+
+                       <div class="mb-3">
+                        <label asp-for="ThirdName" class="form-label"> الاسم الثالث</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="ThirdName" class="form-control" placeholder="أدخل الاسم الثالث" />
+                        </div>
+                        <span asp-validation-for="ThirdName" class="text-danger"></span>
+                    </div>
+
+
+
+   <div class="mb-3">
+                        <label asp-for="FourthName" class="form-label">الاسم الرابع</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input asp-for="FourthName" class="form-control" placeholder="أدخل الاسم الرابع" />
+                        </div>
+                        <span asp-validation-for="FourthName" class="text-danger"></span>
+                    </div>
 
                 <div class="col-md-6">
                     <label asp-for="DateOfBirth" class="form-label">تاريخ التولد</label>
@@ -165,6 +201,20 @@
                     <input asp-for="ChronicDiseases" class="form-control" placeholder="مثال: السكري أو ضغط الدم" />
                     <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
                 </div>
+
+                 <div class="col-md-6">
+                    <label asp-for="ClosePerson" class="form-label"> شخص مقرب</label>
+                    <input asp-for="ClosePerson" class="form-control" placeholder="ادخل اسم شخص مقرب" />
+                    <span asp-validation-for="ClosePerson" class="text-danger"></span>
+                </div>
+
+                 <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label"> رقم الهاتف</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+
             </div>
 
             <div class="mt-4 d-grid">

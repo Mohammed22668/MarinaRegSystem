@@ -54000,6 +54000,42 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7a44feac-0485-43c2-b40d-6427cc6c19e6.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>MarinaRegSystem</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/MarinaRegSystem</BasePath>
+      <RelativePath>uploads/doctors/7a44feac-0485-43c2-b40d-6427cc6c19e6.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>qgsrzxtke1</Fingerprint>
+      <Integrity>JkBozertRxSam0bRfkFv7ZNXi0zQ3HsonjgBZfKBwkg=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7a44feac-0485-43c2-b40d-6427cc6c19e6.png'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7c0ae6a6-acd7-450b-b4f2-838e40f58af3.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>MarinaRegSystem</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/MarinaRegSystem</BasePath>
+      <RelativePath>uploads/doctors/7c0ae6a6-acd7-450b-b4f2-838e40f58af3.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>yworc3tytd</Fingerprint>
+      <Integrity>HoF+pQlW81eIRee3a9CiAc/hFDh7dT3rm7tynpx72K4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7c0ae6a6-acd7-450b-b4f2-838e40f58af3.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7ca6c8d2-a8d9-46e9-b230-b2a2efb4e93f.jpg'))">
       <SourceType>Package</SourceType>
       <SourceId>MarinaRegSystem</SourceId>
@@ -54017,6 +54053,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\7ca6c8d2-a8d9-46e9-b230-b2a2efb4e93f.jpg'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg'))">
+      <SourceType>Package</SourceType>
+      <SourceId>MarinaRegSystem</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/MarinaRegSystem</BasePath>
+      <RelativePath>uploads/doctors/88aea6bf-7284-4f09-8db9-78bee4a06043.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>87d27kwdzx</Fingerprint>
+      <Integrity>rNlznXnQERiE51HcJTyy050kSZhzNVNbbU35uCd1Z4E=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploads\doctors\ed626b98-5834-40cc-931e-27aa86e786d9.jpg'))">
       <SourceType>Package</SourceType>

@@ -11,6 +11,8 @@ namespace MarinaRegSystem.Models
         public int Id { get; set; }
 
 
+
+        [Display(Name = "الاسم الرباعي")]
         public string? PatientName { get; set; }
 
         [Required(ErrorMessage = "المستخدم مطلوب")]
