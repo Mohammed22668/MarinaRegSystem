@@ -101,7 +101,7 @@
 
     <div class="d-flex justify-content-end mb-3">
         <a href="~/Patient/AddSchedule" class="btn btn-success btn-custom">
-            <i class="fas fa-plus-circle me-1"></i> إضافة حجز جديد
+            <i class="fas fa-plus-circle me-1"></i> تقديم حجز جديد
         </a>
     </div>
 
@@ -116,7 +116,8 @@
                     <th>الشفت</th>
                     <th>الحالة</th>
                     <th>ملاحظات</th>
-                    <th>الإجراءات</th>
+                    <th>تفاصيل</th>
+                      <th>الغاء الحجز</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,25 +132,49 @@
                         AppointmentStatus.Cancelled => "text-cancelled",
                         _ => ""
                     };
+                     bool isEditable = appt.Status == AppointmentStatus.Pending;
 
                     <tr>
                         <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
                         <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
                         <td>@appt.Department?.Name</td>
-                        <td>@appt.Doctor?.Name</td>
+                        <td>@appt.Doctor?.Name </td>
                           <td>@appt.Shift.GetDisplayName()</td>
                         <td>
                             <span class="status-badge @statusClass">@appt.Status.GetDisplayName()</span>
                         </td>
                         <td>@(string.IsNullOrEmpty(appt.Notes) ? "-" : appt.Notes)</td>
                         <td>
-                            <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-primary me-1" title="تعديل">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="~/Patient/DeleteSchedule/@appt.Id" class="btn btn-sm btn-danger" title="حذف">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
+            @if (isEditable)
+            {
+                <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-primary me-1" title="تعديل">
+                    <i class="fas fa-edit"></i>
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-sm btn-secondary me-1" disabled title="لا يمكن التعديل">
+                    <i class="fas fa-edit"></i>
+                </button>
+            }
+        </td>
+        <td>
+           @if (isEditable)
+{
+    <form asp-action="CancelSchedule" asp-controller="Patient" method="post" style="display:inline;">
+        <input type="hidden" name="id" value="@appt.Id" />
+        <button type="submit" class="btn btn-sm btn-danger" title="إلغاء الحجز">
+            <i class="fas fa-times me-1"></i> إلغاء
+        </button>
+    </form>
+}
+else
+{
+    <button class="btn btn-sm btn-secondary" disabled title="لا يمكن الإلغاء">
+        <i class="fas fa-times me-1"></i> إلغاء
+    </button>
+}
+        </td>
                     </tr>
                 }
             </tbody>

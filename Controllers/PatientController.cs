@@ -130,7 +130,7 @@ namespace MarinaRegSystem.Controllers
                 .Select(d => new
                 {
                     id = d.Id,
-                    name = d.Name
+                    name = d.Name + " - (" + d.Speciality + ")" // ← الاسم + التخصص
                 })
                 .ToList();
 
@@ -407,7 +407,23 @@ namespace MarinaRegSystem.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult CancelSchedule(int id)
+        {
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
 
+            if (appointment == null)
+            {
+                TempData["Error"] = "لم يتم العثور على الحجز.";
+                return RedirectToAction("MyAppointments"); // غيّر الاسم حسب عرض قائمة الحجوزات
+            }
+
+            appointment.Status = AppointmentStatus.Cancelled;
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "تم إلغاء الحجز بنجاح.";
+            return RedirectToAction("MyAppointments"); // غيّر الاسم حسب عرض قائمة الحجوزات
+        }
 
     }
 }

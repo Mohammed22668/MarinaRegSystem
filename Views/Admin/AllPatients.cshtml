@@ -5,15 +5,114 @@
     ViewData["Title"] = "قائمة المرضى";
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
 
-<div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">المرضى</h5>
-        <span class="text-muted">إجمالي المرضى: @Model.Count()</span>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
+@section Head {
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="~/assets/img/favicon.png">
+    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
+     <style>
+    .table th {
+        background-color: #f1f4f7;
+        color: #3b3f5c;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-avatar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .table-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .rating i {
+        font-size: 1rem;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .bg-success-light {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .bg-danger-light {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-primary i {
+        margin-left: 5px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #3b3f5c;
+        font-size: 1.75rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 50px;
+    }
+</style>
+
+</head>
+}
+
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+     <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+
             <table class="table table-hover table-striped align-middle mb-0">
                 <thead class="table-light text-center">
                     <tr>
@@ -58,6 +157,40 @@
                     }
                 </tbody>
             </table>
+ 
+
+         </div>
+            </div>
         </div>
     </div>
 </div>
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

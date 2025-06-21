@@ -102,14 +102,14 @@
             <div class="alert alert-danger">@TempData["Error"]</div>
         }
 
-        <h4 class="form-heading">حجز موعد مع الطبيب</h4>
+        <h4 class="form-heading">للحجز اختر القسم والطبيب</h4>
 
         <form asp-action="AddSchedule" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <!-- القسم -->
             <div class="input-block">
-                <label asp-for="DepartmentId" class="form-label">القسم<span class="text-danger">*</span></label>
+                <label asp-for="DepartmentId" class="form-label">القسم الطبي<span class="text-danger">*</span></label>
                 <select asp-for="DepartmentId" class="form-control select2" id="DepartmentId" name="DepartmentId" asp-items="ViewBag.Departments">
                     <option value="">اختر القسم</option>
                 </select>
@@ -118,7 +118,7 @@
 
             <!-- شفت الدوام -->
            <div class="input-block">
-    <label asp-for="Shift" class="form-label">شفت الدوام<span class="text-danger">*</span></label>
+    <label asp-for="Shift" class="form-label">وقت الزيارة <span class="text-danger">*</span></label>
     <select asp-for="Shift" class="form-control select2" id="Shift" name="Shift">
         <option value="">اختر الشفت</option>
         <option value="0">صباحي</option>
@@ -162,7 +162,7 @@
 
             <!-- ملف التشخيص -->
             <div class="input-block">
-                <label class="form-label">ملف التشخيص (PDF أو صورة)</label>
+                <label class="form-label">تقرير او تحليل طبي سابق</label>
                 <input type="file" name="diagnosisFile" class="form-control" accept=".pdf,image/*">
             </div>
 

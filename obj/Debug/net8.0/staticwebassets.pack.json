@@ -109,6 +109,14 @@
       "PackagePath": "staticwebassets\\assets\\img\\activity-03.jpg"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\add-appointments.png",
+      "PackagePath": "staticwebassets\\assets\\img\\add-appointments.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\appointments-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\appointments-icon.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\arrow.svg",
       "PackagePath": "staticwebassets\\assets\\img\\arrow.svg"
     },
@@ -229,8 +237,20 @@
       "PackagePath": "staticwebassets\\assets\\img\\clock.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\dashboard-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\dashboard-icon.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\departments-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\departments-icon.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\doctor-03.jpg",
       "PackagePath": "staticwebassets\\assets\\img\\doctor-03.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\doctor-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\doctor-icon.png"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\error-01.png",
@@ -837,6 +857,10 @@
       "PackagePath": "staticwebassets\\assets\\img\\logo.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo.jpg",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo.jpg"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\morning-img-01.png",
       "PackagePath": "staticwebassets\\assets\\img\\morning-img-01.png"
     },
@@ -851,6 +875,10 @@
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-bg.jpg",
       "PackagePath": "staticwebassets\\assets\\img\\profile-bg.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\profile-icon.png"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-user-01.jpg",
@@ -11999,6 +12027,10 @@
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg",
       "PackagePath": "staticwebassets\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\64f4ee00-b8d3-4c1f-a1a4-f1461ad7a4c4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\64f4ee00-b8d3-4c1f-a1a4-f1461ad7a4c4.png"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\7a44feac-0485-43c2-b40d-6427cc6c19e6.png",

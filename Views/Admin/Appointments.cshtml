@@ -10,12 +10,12 @@
 
 
 @section Head {
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-        <title>مستشفى مارينا - الرئيسية</title>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="~/assets/img/favicon.png">
+    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
@@ -36,12 +36,82 @@
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
-        
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-    </head>
+
+     <style>
+    .table th {
+        background-color: #f1f4f7;
+        color: #3b3f5c;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-avatar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .table-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .rating i {
+        font-size: 1rem;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .bg-success-light {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .bg-danger-light {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-primary i {
+        margin-left: 5px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #3b3f5c;
+        font-size: 1.75rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 50px;
+    }
+</style>
+
+</head>
 }
 
-
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الحجوزات </a></li>
+}
 
 
 
@@ -52,9 +122,9 @@
     <div class="col-md-3">
         <input type="text" name="PatientName" value="@Model.PatientName" class="form-control" placeholder="اسم المريض" />
     </div>
-    <div class="col-md-3">
+    @* <div class="col-md-3">
         <input type="text" name="Username" value="@Model.Username" class="form-control" placeholder="اسم المستخدم" />
-    </div>
+    </div> *@
     <div class="col-md-3">
         <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control" placeholder="اسم الطبيب" />
     </div>
@@ -94,9 +164,14 @@
 </form>
 
 <!-- جدول عرض الحجوزات -->
-<table class="table table-hover table-center mb-0">
+  <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+               <table class="table table-hover table-center mb-0">
     <thead>
-        <tr>
+        <tr class="text-center ">
             <th>المستخدم</th>
             <th>اسم المريض</th>
             <th>القسم</th>
@@ -139,7 +214,15 @@
             </tr>
         }
     </tbody>
-</table>
+</table>              
+
+         </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 @section Scripts {

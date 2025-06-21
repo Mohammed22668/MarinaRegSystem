@@ -89,7 +89,7 @@
 
 <div class="container mt-4">
     <div class="hero-section mb-5">
-        <h2 class="fw-bold">مرحبًا بك في نظام الحجز بمستشفى مارينا</h2>
+        <h2 class="fw-bold">مرحبًا بك في نظام الحجز بمستشفى مارينا الاهلي</h2>
         <p class="lead">يسرّنا خدمتك، يمكنك من هنا متابعة كل ما يتعلق بمواعيدك وخدماتك الطبية.</p>
     </div>
 
@@ -97,8 +97,8 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center d-flex flex-column align-items-center">
-                    <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                    <h5 class="card-title fw-bold">الأطباء</h5>
+                    <img src="~/assets/img/doctor-icon.png"  alt="Doctors" width="100px" height="100px"/>
+                    <h5 class="card-title fw-bold">اطبائنا</h5>
                     <p class="card-text text-muted">تصفح الأطباء المتاحين في المستشفى.</p>
                     <a href="@Url.Action("Doctors", "Patient")" class="btn btn-outline-primary mt-3 btn-custom">
                         <i class="fas fa-eye me-1"></i> عرض
@@ -110,9 +110,9 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center d-flex flex-column align-items-center">
-                    <i class="fas fa-calendar-check fa-3x text-success mb-3"></i>
+                   <img src="~/assets/img/appointments-icon.png"  alt="Appointments" width="100px" height="100px"/>
                     <h5 class="card-title fw-bold">الحجوزات</h5>
-                    <p class="card-text text-muted">إنشاء حجز جديد - مراجعة الحجوزات السابقة.</p>
+                    <p class="card-text text-muted">حجز موعد   - عرض الحجوزات السابقة.</p>
                     <a href="@Url.Action("MyAppointments", "Patient")" class="btn btn-outline-success mt-3 btn-custom">
                         <i class="fas fa-calendar-alt me-1"></i> عرض
                     </a>
@@ -123,7 +123,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body text-center d-flex flex-column align-items-center">
-                    <i class="fas fa-building fa-3x text-warning mb-3"></i>
+                    <img src="~/assets/img/departments-icon.png"  alt="Departments" width="100px" height="100px"/>
                     <h5 class="card-title fw-bold">أقسام المستشفى</h5>
                     <p class="card-text text-muted">اطلع على أقسام المستشفى المختلفة.</p>
                     <a href="@Url.Action("Departments", "Patient")" class="btn btn-outline-warning mt-3 btn-custom">
