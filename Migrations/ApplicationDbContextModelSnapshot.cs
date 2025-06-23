@@ -36,10 +36,16 @@ namespace MarinaRegSystem.Migrations
                     b.Property<TimeSpan>("AppointmentTime")
                         .HasColumnType("time");
 
+                    b.Property<string>("BloodType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -47,8 +53,11 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("DiagnosisFileUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int?>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
@@ -67,13 +76,16 @@ namespace MarinaRegSystem.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<int>("Shift")
+                    b.Property<int?>("Shift")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<int?>("SubDepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -88,6 +100,8 @@ namespace MarinaRegSystem.Migrations
                     b.HasIndex("DoctorId");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("SubDepartmentId");
 
                     b.HasIndex("UserId");
 
@@ -175,12 +189,17 @@ namespace MarinaRegSystem.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("SubDepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
+
+                    b.HasIndex("SubDepartmentId");
 
                     b.ToTable("Doctors");
                 });
@@ -310,6 +329,45 @@ namespace MarinaRegSystem.Migrations
                         .IsUnique();
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.SubDepartment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("SubDepartments");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.cUsers", b =>
@@ -564,13 +622,16 @@ namespace MarinaRegSystem.Migrations
                     b.HasOne("MarinaRegSystem.Models.Doctor", "Doctor")
                         .WithMany("Appointments")
                         .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MarinaRegSystem.Models.Patient", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MarinaRegSystem.Models.SubDepartment", "SubDepartment")
+                        .WithMany()
+                        .HasForeignKey("SubDepartmentId");
 
                     b.HasOne("MarinaRegSystem.Models.cUsers", "User")
                         .WithMany()
@@ -584,6 +645,8 @@ namespace MarinaRegSystem.Migrations
 
                     b.Navigation("Patient");
 
+                    b.Navigation("SubDepartment");
+
                     b.Navigation("User");
                 });
 
@@ -595,7 +658,14 @@ namespace MarinaRegSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MarinaRegSystem.Models.SubDepartment", "SubDepartment")
+                        .WithMany("Doctors")
+                        .HasForeignKey("SubDepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Department");
+
+                    b.Navigation("SubDepartment");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.DoctorSchedule", b =>
@@ -618,6 +688,17 @@ namespace MarinaRegSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.SubDepartment", b =>
+                {
+                    b.HasOne("MarinaRegSystem.Models.Department", "Department")
+                        .WithMany("SubDepartments")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -676,6 +757,8 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("Doctors");
+
+                    b.Navigation("SubDepartments");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.Doctor", b =>
@@ -688,6 +771,11 @@ namespace MarinaRegSystem.Migrations
             modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.SubDepartment", b =>
+                {
+                    b.Navigation("Doctors");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.cUsers", b =>

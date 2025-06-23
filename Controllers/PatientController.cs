@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using MarinaRegSystem.Filters;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
 
@@ -30,90 +29,92 @@ namespace MarinaRegSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> AddSchedule()
         {
-            // التحقق من أن المستخدم مسجل دخول
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
-            {
-                return RedirectToAction("Login", "Home"); // تسجيل الدخول في HomeController
-            }
-
-            // جلب بيانات المريض المرتبطة بالمستخدم
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-            if (patient == null)
-            {
-                TempData["Error"] = "يرجى إدخال بيانات المريض أولاً";
-                return RedirectToAction("Create", "Patient"); // تأكد من وجود هذا الإجراء
-            }
-
-            // تحميل القوائم المنسدلة للحجز
-            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
-
-            ViewBag.Doctors = new SelectList(
-                await _context.Doctors.Where(d => d.Status == true).ToListAsync(),
-                "Id",
-                "Name"
-            );
-
-            // إرسال بيانات المريض للعرض في الصفحة
-            ViewBag.Patient = patient;
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddSchedule(Appointment appointment, IFormFile diagnosisFile)
-        {
-            // جلب معرف المستخدم من الكلايمز
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
             {
                 return RedirectToAction("Login", "Home");
             }
 
-            // تعيين UserId للمستخدم الحالي
-            appointment.UserId = userId;
-
-            // جلب بيانات المريض
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-            if (patient == null)
+            ViewBag.Patient = patient; // البيانات الخاصة بالحجز لنفسي
+
+            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
+
+            return View(new CreateAppointmentViewModel
             {
-                TempData["Error"] = "يرجى إدخال بيانات المريض أولاً";
-                return RedirectToAction("Create", "Patient");
+                AppointmentDate = DateTime.Today // يمكن وضع تاريخ اليوم افتراضياً
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddSchedule(CreateAppointmentViewModel model)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
+            {
+                return RedirectToAction("Login", "Home");
             }
 
-            // ربط بيانات المريض
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
+            ViewBag.Patient = patient;
+            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
 
-            appointment.PatientId = patient.Id;
-            appointment.PatientName = patient.FirstName + " " + patient.SecondName + " " + patient.ThirdName + " " + patient.FourthName;
-
-            // التحقق من صحة البيانات
             if (!ModelState.IsValid)
             {
-                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
-                var doctors = await _context.Doctors.Where(d => d.Status == true).ToListAsync();
-                ViewBag.Doctors = new SelectList(doctors, "Id", "Name");
-                return View(appointment);
+                // في حال وجود أخطاء في التحقق، أعاد عرض الصفحة
+                return View(model);
+            }
+
+            var appointment = new Appointment
+            {
+                UserId = userId,
+                DepartmentId = model.DepartmentId,
+                SubDepartmentId = model.SubDepartmentId,
+                DoctorId = model.DoctorId,
+                AppointmentDate = model.AppointmentDate,
+                AppointmentTime = model.AppointmentTime ?? TimeSpan.Zero,
+                Shift = model.Shift,
+                Notes = model.Notes,
+                Status = AppointmentStatus.Pending,
+                CreatedAt = DateTime.Now,
+            };
+
+            if (model.IsBookingForSelf)
+            {
+                if (patient == null)
+                {
+                    TempData["Error"] = "يرجى إدخال بيانات المريض أولاً";
+                    return RedirectToAction("Create", "Patient");
+                }
+                appointment.PatientId = patient.Id;
+                appointment.PatientName = $"{patient.FirstName} {patient.SecondName} {patient.ThirdName} {patient.FourthName}";
+                appointment.Gender = patient.Gender;
+                appointment.DateOfBirth = patient.DateOfBirth;
+                appointment.BloodType = patient.BloodType;
+            }
+            else
+            {
+                // الحجز لشخص آخر
+                appointment.PatientName = $"{model.FirstName} {model.SecondName} {model.ThirdName} {model.FourthName}";
+                appointment.Gender = model.Gender;
+                appointment.DateOfBirth = model.DateOfBirth;
+                appointment.BloodType = model.BloodType;
             }
 
             // معالجة ملف التشخيص
-            if (diagnosisFile != null && diagnosisFile.Length > 0)
+            if (model.DiagnosisFile != null && model.DiagnosisFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads/diagnosis");
                 Directory.CreateDirectory(uploadsFolder);
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(diagnosisFile.FileName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.DiagnosisFile.FileName);
                 var filePath = Path.Combine(uploadsFolder, fileName);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await diagnosisFile.CopyToAsync(fileStream);
+                    await model.DiagnosisFile.CopyToAsync(fileStream);
                 }
 
                 appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + fileName;
             }
-
-            appointment.Status = AppointmentStatus.Pending;
-            appointment.CreatedAt = DateTime.Now;
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
@@ -121,6 +122,63 @@ namespace MarinaRegSystem.Controllers
             TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";
             return RedirectToAction(nameof(MyAppointments));
         }
+
+
+
+        [HttpGet]
+        public IActionResult GetSubDepartments(int departmentId)
+        {
+            var subDepartments = _context.SubDepartments
+                .Where(sd => sd.DepartmentId == departmentId)
+                .Select(sd => new
+                {
+                    value = sd.Id,
+                    text = sd.Name
+                })
+                .ToList();
+
+            return Json(subDepartments);
+        }
+
+        [HttpGet]
+        public IActionResult GetDoctorsByDepartment(int departmentId, int? subDepartmentId)
+        {
+            var doctorsQuery = _context.Doctors.Where(d => d.DepartmentId == departmentId && d.Status == true);
+
+            if (subDepartmentId.HasValue && subDepartmentId.Value != 0)
+            {
+                doctorsQuery = doctorsQuery.Where(d => d.SubDepartmentId == subDepartmentId);
+            }
+            else
+            {
+                doctorsQuery = doctorsQuery.Where(d => d.SubDepartmentId == null);
+            }
+
+            var doctors = doctorsQuery
+                .AsEnumerable() // التحويل إلى LINQ in-memory
+                .Select(d => new
+                {
+                    value = d.Id,
+                    text = d.Name + $" ({GetShiftDisplayName(d.Shift)})"
+                })
+                .ToList();
+
+            return Json(doctors);
+        }
+
+        // مساعد لجلب اسم الشفت
+        private static string GetShiftDisplayName(ShiftType shift)
+        {
+            return shift switch
+            {
+                ShiftType.Morning => "صباحي",
+                ShiftType.Evening => "مسائي",
+                ShiftType.Night => "خفر",
+                _ => ""
+            };
+        }
+
+
 
         [HttpGet]
         public IActionResult GetDoctorsByDepartmentAndShift(int departmentId, int shift)

@@ -1,4 +1,4 @@
-@model IEnumerable<MarinaRegSystem.Models.Doctor>
+@model DoctorFilterViewModel
 
 @{
      Layout = "_LayoutAdmin";
@@ -106,6 +106,56 @@
     <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأطباء</a></li>
 }
 
+
+<form asp-action="Doctors" method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <input name="Name" class="form-control" placeholder="اسم الطبيب" value="@Model.Name" />
+        </div>
+        <div class="col-md-3">
+            <input name="Speciality" class="form-control" placeholder="التخصص" value="@Model.Speciality" />
+        </div>
+        <div class="col-md-2">
+            <select name="DepartmentId" class="form-control">
+                <option value="">-- اختر القسم --</option>
+                @foreach (var dept in Model.Departments)
+{
+    var isSelected = dept.Value == Model.DepartmentId?.ToString() ? "selected" : "";
+    @:<option value="@dept.Value" @isSelected>@dept.Text</option>
+}
+</select>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="SubDepartmentId" class="form-control">
+                <option value="">-- القسم الفرعي --</option>
+              @foreach (var sub in Model.SubDepartments)
+{
+    var isSelected = sub.Value == Model.SubDepartmentId?.ToString() ? "selected" : "";
+    @:<option value="@sub.Value" @isSelected>@sub.Text</option>
+}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="Shift" class="form-control">
+                <option value="">-- الشفت --</option>
+                   @foreach (ShiftType shift in Enum.GetValues(typeof(ShiftType)))
+        {
+            var isSelected = shift == Model.Shift ? "selected" : "";
+            var displayName = MarinaRegSystem.Helpers.EnumExtensions.GetDisplayName(shift);
+
+            @:<option value="@shift" @isSelected>@displayName</option>
+        }
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-primary">بحث</button>
+        <a asp-action="Doctors" class="btn btn-secondary">إعادة ضبط</a>
+    </div>
+</form>
+
 <div >
     <div >
         <div class="page-header">
@@ -114,7 +164,7 @@
                     <h3 class="page-title">قائمة الأطباء</h3>
                     <div class="text-end">
                      <a asp-action="AddDoctor" class="btn btn-success" style="font-weight: bold; border-radius: 10px;">
-    <i class="fas fa-user-md me-2"></i> طبيب جديد
+    <i class="fas fa-user-md me-2"></i>  اضافة طبيب جديد
        </a>
                     </div>
                 </div>
@@ -132,16 +182,18 @@
                                         <th>الاسم</th>
                                         <th>التخصص</th>
                                         <th>القسم</th>
+                                           <th>القسم الفرعي</th>
                                         <th>سنوات الخبرة</th>
                                         <th>التقييم</th>
                                          <th>الشفت</th> 
+                                          <th>الحجوزات</th> 
                                        
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model)
+                                   @foreach (var item in Model.Results)
                                     {
                                         <tr>
                                             <td>
@@ -154,6 +206,7 @@
                                             </td>
                                             <td>@item.Speciality</td>
                                             <td>@item.Department?.Name</td>
+                                             <td>@item.SubDepartment?.Name</td>
                                             <td>@item.Experience سنوات</td>
                                             <td>
                                                 <div class="rating">
@@ -168,6 +221,12 @@
                 @* إذا كان Shift من نوع Enum وتريد عرض اسمه المعروض *@
                 @MarinaRegSystem.Helpers.EnumExtensions.GetDisplayName(item.Shift)
             </td>
+
+                                            <td>
+                                                <span class="badge bg-primary">
+                                                    @(item.Appointments?.Count ?? 0)
+                                                </span>
+                                            </td>
          
          
                                             <td>

@@ -20,20 +20,27 @@ namespace MarinaRegSystem.Models
         public long UserId { get; set; }
 
         [Required(ErrorMessage = "القسم مطلوب")]
-        [Display(Name = "القسم")]
+        [Display(Name = "القسم الرئيسي")]
         public int DepartmentId { get; set; }
 
 
-        [Required(ErrorMessage = "الطبيب مطلوب")]
+        [Display(Name = "القسم الفرعي")]
+        public int? SubDepartmentId { get; set; }
+
+        [ForeignKey("SubDepartmentId")]
+        public virtual SubDepartment SubDepartment { get; set; }
+
+
+
         [Display(Name = "الطبيب")]
-        public int DoctorId { get; set; }
+        public int? DoctorId { get; set; }
 
         [Required(ErrorMessage = "تاريخ الموعد مطلوب")]
         [Display(Name = "تاريخ الموعد")]
         [DataType(DataType.Date)]
         public DateTime AppointmentDate { get; set; }
 
-        [Required(ErrorMessage = "وقت الموعد مطلوب")]
+
         [Display(Name = "وقت الموعد")]
         [DataType(DataType.Time)]
         public TimeSpan AppointmentTime { get; set; }
@@ -82,7 +89,19 @@ namespace MarinaRegSystem.Models
         public virtual Doctor Doctor { get; set; }
 
         [Display(Name = "الشفت")]
-        public ShiftTypeAppo Shift { get; set; }
+        public ShiftType? Shift { get; set; }
+
+
+
+        // 
+        [Display(Name = "تاريخ الميلاد")]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Display(Name = "الجنس")]
+        public string? Gender { get; set; }
+
+        [Display(Name = "فصيلة الدم")]
+        public string? BloodType { get; set; }
     }
 
     public enum AppointmentStatus
@@ -105,15 +124,5 @@ namespace MarinaRegSystem.Models
 
 
 
-    public enum ShiftTypeAppo
-    {
-        [Display(Name = "صباحي")]
-        Morning = 0,
 
-        [Display(Name = "مسائي")]
-        Evening = 1,
-
-        [Display(Name = "خفر")]
-        Night = 2
-    }
 }

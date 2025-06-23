@@ -45,6 +45,12 @@ namespace MarinaRegSystem.Models
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
 
+
+        public int? SubDepartmentId { get; set; }
+
+        [ForeignKey("SubDepartmentId")]
+        public virtual SubDepartment SubDepartment { get; set; }
+
         [Display(Name = "شفت الدوام")]
         public ShiftType Shift { get; set; }
 

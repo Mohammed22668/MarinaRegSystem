@@ -13,10 +13,18 @@ namespace MarinaRegSystem.Helpers
     {
         public static string GetDisplayName(this Enum enumValue)
         {
-            return enumValue.GetType()
-                .GetMember(enumValue.ToString())[0]
-                .GetCustomAttribute<DisplayAttribute>()?
-                .Name ?? enumValue.ToString();
+            return enumValue?.GetType()
+                       .GetMember(enumValue.ToString())[0]
+                       .GetCustomAttribute<DisplayAttribute>()?
+                       .Name ?? enumValue.ToString();
+        }
+
+        public static string? GetDisplayName<T>(this T? enumValue) where T : struct, Enum
+        {
+            if (enumValue == null)
+                return null;
+
+            return enumValue.Value.GetDisplayName();
         }
 
         public static IEnumerable<SelectListItem> ToSelectList<T>() where T : Enum

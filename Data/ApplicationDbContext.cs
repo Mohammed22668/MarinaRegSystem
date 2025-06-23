@@ -25,6 +25,9 @@ namespace MarinaRegSystem.Data
 
         public DbSet<Patient> Patients { get; set; }
 
+        public DbSet<SubDepartment> SubDepartments { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -89,6 +92,27 @@ namespace MarinaRegSystem.Data
             .WithMany(p => p.Appointments)
             .HasForeignKey(a => a.PatientId)
             .OnDelete(DeleteBehavior.Restrict);// أو Cascade حسب ما تراه مناسبًا
+
+
+            builder.Entity<SubDepartment>()
+    .HasOne(sd => sd.Department)
+    .WithMany(d => d.SubDepartments)
+    .HasForeignKey(sd => sd.DepartmentId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubDepartment>()
+                .Property(sd => sd.CreatedAt)
+                .HasDefaultValueSql("GETDATE()");
+
+
+
+            builder.Entity<Doctor>()
+          .HasOne(d => d.SubDepartment)
+          .WithMany(sd => sd.Doctors)
+          .HasForeignKey(d => d.SubDepartmentId)
+          .OnDelete(DeleteBehavior.SetNull);
+
+
 
 
         }

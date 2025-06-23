@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using MarinaRegSystem.Helpers;
 using Microsoft.AspNetCore.Http;
 
 
@@ -144,12 +143,50 @@ namespace MarinaRegSystem.Controllers
 
 
 
-        public IActionResult Doctors()
+        public IActionResult Doctors(DoctorFilterViewModel filter)
         {
-            var doctors = _context.Doctors.Include(d => d.Department)
-            .Include(d => d.Appointments)
-            .ToList();
-            return View(doctors);
+            var query = _context.Doctors
+        .Include(d => d.Department)
+        .Include(d => d.SubDepartment)
+        .Include(d => d.Appointments)
+        .AsQueryable();
+
+            // البحث
+            if (!string.IsNullOrEmpty(filter.Name))
+                query = query.Where(d => d.Name.Contains(filter.Name));
+
+            if (!string.IsNullOrEmpty(filter.Speciality))
+                query = query.Where(d => d.Speciality.Contains(filter.Speciality));
+
+            // الفلاتر
+            if (filter.DepartmentId.HasValue)
+                query = query.Where(d => d.DepartmentId == filter.DepartmentId);
+
+            if (filter.SubDepartmentId.HasValue)
+                query = query.Where(d => d.SubDepartmentId == filter.SubDepartmentId);
+
+            if (filter.Shift.HasValue)
+                query = query.Where(d => d.Shift == filter.Shift.Value);
+
+            // تعبئة النتائج
+            filter.Results = query.ToList();
+
+            // تعبئة القوائم المنسدلة
+            filter.Departments = _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToList();
+
+            filter.SubDepartments = _context.SubDepartments
+                .Select(sd => new SelectListItem
+                {
+                    Value = sd.Id.ToString(),
+                    Text = sd.Name
+                }).ToList();
+
+            return View(filter);
         }
 
         [HttpGet]
@@ -165,40 +202,33 @@ namespace MarinaRegSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // حفظ الصورة إن وُجدت
+                // حفظ الصورة
                 if (ImageFile != null && ImageFile.Length > 0)
                 {
-                    // توليد اسم عشوائي للصورة
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-
-                    // تحديد المسار الكامل للحفظ
                     var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/doctors");
 
-                    // إنشاء المجلد إذا لم يكن موجودًا
                     if (!Directory.Exists(uploadPath))
                         Directory.CreateDirectory(uploadPath);
 
-                    // المسار النهائي للصورة
                     var filePath = Path.Combine(uploadPath, fileName);
 
-                    // حفظ الصورة في السيرفر
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await ImageFile.CopyToAsync(stream);
                     }
 
-                    // حفظ رابط الصورة داخل الكائن
                     doctor.ImageUrl = "/uploads/doctors/" + fileName;
                 }
 
-                // إضافة الطبيب إلى قاعدة البيانات
+                // التأكد من حفظ القسم الفرعي إن وجد
                 _context.Doctors.Add(doctor);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Doctors));
             }
 
-            // في حال وجود خطأ في النموذج، نعيد تعبئة القائمة المنسدلة
+            // في حالة فشل التحقق، نعيد تعبئة القائمة
             var departments = await _context.Departments.ToListAsync();
             ViewBag.Departments = new SelectList(departments, "Id", "Name");
 
@@ -206,16 +236,32 @@ namespace MarinaRegSystem.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetSubDepartmentsByDepartment(int id)
+        {
+            var subs = _context.SubDepartments
+                .Where(sd => sd.DepartmentId == id)
+                .Select(sd => new { id = sd.Id, name = sd.Name })
+                .ToList();
+
+            return Json(subs);
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> EditDoctor(int id)
         {
             var doctor = await _context.Doctors.FindAsync(id);
             if (doctor == null)
-            {
                 return NotFound();
-            }
 
-            var departments = await _context.Departments.ToListAsync();
-            ViewBag.Departments = new SelectList(departments, "Id", "Name", doctor.DepartmentId);
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", doctor.DepartmentId);
+
+            var subDepartments = _context.SubDepartments
+                .Where(sd => sd.DepartmentId == doctor.DepartmentId)
+                .Select(sd => new SelectListItem { Value = sd.Id.ToString(), Text = sd.Name })
+                .ToList();
+
+            ViewBag.SubDepartments = subDepartments;
 
             return View(doctor);
         }
@@ -225,58 +271,47 @@ namespace MarinaRegSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditDoctor(int id, Doctor doctor, IFormFile ImageFile)
         {
-            if (id != doctor.Id)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", doctor.DepartmentId);
+                ViewBag.SubDepartments = _context.SubDepartments
+                    .Where(sd => sd.DepartmentId == doctor.DepartmentId)
+                    .Select(sd => new SelectListItem { Value = sd.Id.ToString(), Text = sd.Name })
+                    .ToList();
+                return View(doctor);
             }
 
-            if (ModelState.IsValid)
+            var existing = await _context.Doctors.FindAsync(doctor.Id);
+            if (existing == null)
+                return NotFound();
+
+            existing.Name = doctor.Name;
+            existing.DepartmentId = doctor.DepartmentId;
+            existing.SubDepartmentId = doctor.SubDepartmentId;
+            existing.Speciality = doctor.Speciality;
+            existing.Experience = doctor.Experience;
+            existing.Bio = doctor.Bio;
+            existing.Rating = doctor.Rating;
+            existing.Shift = doctor.Shift;
+
+            // تحديث الصورة إن تم رفعها
+            if (ImageFile != null && ImageFile.Length > 0)
             {
-                try
+                var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/doctors", fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    // رفع الصورة الجديدة إذا كانت موجودة
-                    if (ImageFile != null && ImageFile.Length > 0)
-                    {
-                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/doctors");
-                        if (!Directory.Exists(uploadsFolder))
-                            Directory.CreateDirectory(uploadsFolder);
-
-                        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await ImageFile.CopyToAsync(fileStream);
-                        }
-
-                        // تحديث رابط الصورة
-                        doctor.ImageUrl = "/uploads/doctors/" + uniqueFileName;
-                    }
-
-                    // تحديث البيانات في قاعدة البيانات
-                    _context.Update(doctor);
-                    await _context.SaveChangesAsync();
-
-                    return RedirectToAction(nameof(Doctors));
+                    await ImageFile.CopyToAsync(stream);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Doctors.Any(e => e.Id == doctor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                existing.ImageUrl = "/uploads/doctors/" + fileName;
             }
 
-            // إعادة تحميل الأقسام في حالة وجود خطأ
-            var departments = await _context.Departments.ToListAsync();
-            ViewBag.Departments = new SelectList(departments, "Id", "Name", doctor.DepartmentId);
+            existing.UpdatedAt = DateTime.Now;
 
-            return View(doctor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Doctors));
         }
 
         [HttpGet]
@@ -444,7 +479,7 @@ namespace MarinaRegSystem.Controllers
 
             if (filter.Shift.HasValue)
             {
-                var shiftValue = (ShiftTypeAppo)filter.Shift.Value;
+                var shiftValue = (ShiftType)filter.Shift.Value;
                 query = query.Where(a => a.Shift == shiftValue);
             }
 
@@ -547,9 +582,101 @@ namespace MarinaRegSystem.Controllers
       .ToList();
 
             return View(patients);
-
-
-
         }
+        public IActionResult SubDepartments(SubDepartmentFilterViewModel filter)
+        {
+            var query = _context.SubDepartments
+        .Include(sd => sd.Department)
+        .Include(sd => sd.Doctors)
+        .AsQueryable();
+
+            // 🔍 بحث بالاسم
+            if (!string.IsNullOrEmpty(filter.SubDepartmentName))
+            {
+                query = query.Where(sd => sd.Name.Contains(filter.SubDepartmentName));
+            }
+
+            // ✅ فلترة بالقسم الرئيسي
+            if (filter.DepartmentId.HasValue)
+            {
+                query = query.Where(sd => sd.DepartmentId == filter.DepartmentId.Value);
+            }
+
+            filter.Results = query.ToList();
+
+            // تعبئة القائمة المنسدلة للأقسام
+            filter.Departments = _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                }).ToList();
+
+            return View(filter);
+        }
+
+
+        public IActionResult CreateSubDepartment()
+        {
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateSubDepartment(SubDepartment subDepartment)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.SubDepartments.Add(subDepartment);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "تم إضافة القسم الفرعي بنجاح";
+                return RedirectToAction(nameof(SubDepartments));
+            }
+
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", subDepartment.DepartmentId);
+            return View(subDepartment);
+        }
+
+        public IActionResult EditSubDepartment(int id)
+        {
+            var subDept = _context.SubDepartments.Find(id);
+            if (subDept == null) return NotFound();
+
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", subDept.DepartmentId);
+            return View(subDept);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditSubDepartment(int id, SubDepartment subDepartment)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.SubDepartments.Update(subDepartment);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(SubDepartments));
+            }
+
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", subDepartment.DepartmentId);
+            return View(subDepartment);
+        }
+
+        // Delete SubDepartment
+        public IActionResult DeleteSubDepartment(int id)
+        {
+            var subDept = _context.SubDepartments.Find(id);
+            if (subDept == null) return NotFound();
+
+            _context.SubDepartments.Remove(subDept);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(SubDepartments));
+        }
+
+
+
     }
+
 }

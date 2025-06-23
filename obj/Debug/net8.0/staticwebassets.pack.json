@@ -12025,8 +12025,20 @@
       "PackagePath": "staticwebassets\\uploads\\diagnosis\\bc233e73-d6f6-4dd5-b379-abd06f14dc08_10.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\2f53c132-55be-4379-91df-420cdca2d6ea.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\2f53c132-55be-4379-91df-420cdca2d6ea.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg",
       "PackagePath": "staticwebassets\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\576dcf88-85f0-4a4c-ad32-8d76baeb9373.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\576dcf88-85f0-4a4c-ad32-8d76baeb9373.jpg"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\64f4ee00-b8d3-4c1f-a1a4-f1461ad7a4c4.png",
@@ -12047,6 +12059,14 @@
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg",
       "PackagePath": "staticwebassets\\uploads\\doctors\\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\98360513-f87b-43d5-9926-a4b4e18f7ff4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\98360513-f87b-43d5-9926-a4b4e18f7ff4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\9ed0fb99-87ed-46c1-978f-16a4a524d7dd.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\9ed0fb99-87ed-46c1-978f-16a4a524d7dd.jpg"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\ed626b98-5834-40cc-931e-27aa86e786d9.jpg",

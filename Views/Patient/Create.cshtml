@@ -89,7 +89,8 @@
                 }
 
                 <form asp-action="Create" method="post">
-                    <div class="col-md-6">
+                    <div class="row">
+                    <div class="col-md-6 mb-3">
                         <label asp-for="FirstName" class="form-label">الاسم الاول</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -99,7 +100,7 @@
                     </div>
 
                     
-                      <div class="col-md-6">
+                      <div class="col-md-6 mb-3">
                         <label asp-for="SecondName" class="form-label">اسم الاب </label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -108,31 +109,37 @@
                         <span asp-validation-for="SecondName" class="text-danger"></span>
                     </div>
 
+                    </div>
 
 
 
-                       <div class="col-md-6">
+                        <div class="row">
+                       <div class="col-md-6 mb-3">
                         <label asp-for="ThirdName" class="form-label"> اسم الجد  </label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                             <input asp-for="ThirdName" class="form-control" placeholder="اسم الجد " />
                         </div>
                         <span asp-validation-for="ThirdName" class="text-danger"></span>
-                    </div>
+                         </div>
 
 
 
-   <div class="col-md-6">
+                      <div class="col-md-6 mb-3">
                         <label asp-for="FourthName" class="form-label">اسم جد الاب </label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                             <input asp-for="FourthName" class="form-control" placeholder="اسم جد الاب  " />
                         </div>
                         <span asp-validation-for="FourthName" class="text-danger"></span>
-                    </div>
+                        </div>
 
+                        </div>
 
-                    <div class="mb-3">
+                      
+
+                       <div class="row">
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="DateOfBirth" class="form-label">تاريخ الميلاد</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
@@ -141,7 +148,7 @@
                         <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    <div class=" col-md-6 mb-3 ">
                         <label asp-for="Gender" class="form-label">الجنس</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
@@ -154,7 +161,12 @@
                         <span asp-validation-for="Gender" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    </div>
+
+
+                      <div class="row">
+
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="NationalNumber" class="form-label">الرقم الوطني</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -163,7 +175,7 @@
                         <span asp-validation-for="NationalNumber" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="Country" class="form-label">الدولة</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-globe-asia"></i></span>
@@ -172,7 +184,11 @@
                         <span asp-validation-for="Country" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    </div>
+
+                       <div class="row">
+
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="Province" class="form-label">المحافظة</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-city"></i></span>
@@ -201,7 +217,7 @@
                         <span asp-validation-for="Province" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="BloodType" class="form-label">فصيلة الدم</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-tint"></i></span>
@@ -220,8 +236,12 @@
                         <span asp-validation-for="BloodType" class="text-danger"></span>
                     </div>
 
+                    </div>
 
-                      <div class="mb-3">
+
+
+                         <div class="row">
+                      <div class="col-md-6 mb-3 ">
                         <label asp-for="ClosePerson" class="form-label">شخص مقرب</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-biohazard"></i></span>
@@ -231,7 +251,7 @@
                     </div>
 
 
-                        <div class="mb-3">
+                        <div class="col-md-6 mb-3 ">
                         <label asp-for="PhoneNumber" class="form-label">رقم الهاتف</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-biohazard"></i></span>
@@ -240,9 +260,14 @@
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                     </div>
 
+                       </div>
 
 
-                    <div class="mb-3">
+
+
+
+   <div class="row">
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="Allergies" class="form-label">الحساسية</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-biohazard"></i></span>
@@ -251,13 +276,15 @@
                         <span asp-validation-for="Allergies" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="col-md-6 mb-3 ">
                         <label asp-for="ChronicDiseases" class="form-label">الأمراض المزمنة</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
                             <input asp-for="ChronicDiseases" class="form-control" placeholder="مثلاً: سكري، ضغط" />
                         </div>
                         <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
+                    </div>
+
                     </div>
 
                     <div class="d-grid">

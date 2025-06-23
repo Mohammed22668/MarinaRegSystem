@@ -122,9 +122,7 @@
     <div class="col-md-3">
         <input type="text" name="PatientName" value="@Model.PatientName" class="form-control" placeholder="اسم المريض" />
     </div>
-    @* <div class="col-md-3">
-        <input type="text" name="Username" value="@Model.Username" class="form-control" placeholder="اسم المستخدم" />
-    </div> *@
+   
     <div class="col-md-3">
         <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control" placeholder="اسم الطبيب" />
     </div>
@@ -197,6 +195,7 @@
                 <td class="text-center">@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
                 <td class="text-center">@appt.AppointmentTime.ToString(@"hh\:mm")</td>
                 <td class="text-center">@appt.Shift.GetDisplayName()</td>
+
                 <td class="text-center">
                     <span class="badge bg-@(appt.Status == MarinaRegSystem.Models.AppointmentStatus.Confirmed ? "success" : "danger")">
                         @appt.Status.GetDisplayName()
