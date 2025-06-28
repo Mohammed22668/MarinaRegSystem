@@ -1,0 +1,225 @@
+@model MarinaRegSystem.Models.Patient
+@using MarinaRegSystem.Helpers;
+
+@{
+    ViewData["Title"] = "ملف المريض";
+}
+
+@section currentPage {
+    <li class="breadcrumb-item active">ملف المريض</li>
+}
+
+@section Head {
+
+      <meta charset="utf-8" lang="ar">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="~/assets/img/favicon.png">
+    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .patient-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .patient-name {
+            font-size: 1.75rem;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .patient-info strong {
+            color: #333;
+        }
+
+        .table-rounded {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .status-badge {
+            padding: 0.4em 0.8em;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .text-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .text-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .text-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .text-cancelled {
+            background-color: #e9ecef;
+            color: #343a40;
+        }
+
+        .btn-custom {
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div class="container">
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+    <!-- Patient Info Card -->
+    <div class="card patient-card shadow-sm">
+        <div class="card-body text-center">
+            <!-- Profile Image (Example only - optional) -->
+            <div class="mb-3">
+                <img src="~/assets/img/user.jpg" alt="صورة المريض" class="rounded-circle" style="width: 100px; height: 100px;">
+            </div>
+
+            <!-- Full Name -->
+            <h4 class="patient-name mb-3">@Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName</h4>
+
+            <!-- Basic Info -->
+            <div class="row g-3 justify-content-center text-start" style="max-width: 600px; margin: auto;">
+                <div class="col-md-6 patient-info">
+                    <strong>الجنس:</strong> @Model.Gender
+                </div>
+                <div class="col-md-6 patient-info">
+                    <strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")
+                </div>
+                <div class="col-md-6 patient-info">
+                    <strong>رقم الهاتف:</strong> @Model.PhoneNumber
+                </div>
+                <div class="col-md-6 patient-info">
+                    <strong>فصيلة الدم:</strong> @Model.BloodType
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appointments Table -->
+    <h4 class="mt-5 mb-3">الحجوزات السابقة</h4>
+
+    @if (Model.Appointments != null && Model.Appointments.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-rounded">
+                <thead class="table-light">
+                    <tr>
+                        <th>التاريخ</th>
+                        <th>الوقت</th>
+                        <th>القسم</th>
+                        <th>الطبيب</th>
+                        <th>الشفت</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var appt in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                    {
+                        var statusClass = appt.Status switch
+                        {
+                            AppointmentStatus.Pending => "text-pending",
+                            AppointmentStatus.Confirmed => "text-confirmed",
+                            AppointmentStatus.Rejected => "text-rejected",
+                            AppointmentStatus.Completed => "text-completed",
+                            AppointmentStatus.Cancelled => "text-cancelled",
+                            _ => ""
+                        };
+
+                        <tr>
+                            <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                            <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                            <td>@appt.Department?.Name</td>
+                            <td>@appt.Doctor?.Name</td>
+                            <td>@appt.Shift.GetDisplayName()</td>
+                            <td>
+                                <span class="status-badge ">@appt.Status.GetDisplayName()</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-3">
+            لا توجد حجوزات سابقة لهذا المريض.
+        </div>
+    }
+
+    <!-- Back Button -->
+    <div class="text-center mt-4">
+        <a href="~/Admin/AllPatients" class="btn btn-outline-primary btn-custom">
+            <i class="fas fa-arrow-left me-1"></i> العودة إلى قائمة المرضى
+        </a>
+    </div>
+</div>
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

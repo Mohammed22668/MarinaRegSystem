@@ -30,6 +30,9 @@ namespace MarinaRegSystem.Models
         [Display(Name = "تاريخ الميلاد")]
         public DateTime DateOfBirth { get; set; }
 
+        [Display(Name = "العمر")]
+        public int? Age { get; set; }
+
         [Required(ErrorMessage = "الجنس مطلوب")]
         [Display(Name = "الجنس")]
         public string Gender { get; set; }
@@ -49,6 +52,13 @@ namespace MarinaRegSystem.Models
         [Required(ErrorMessage = "المدينة مطلوبة")]
         public string Province { get; set; }
 
+
+        [Display(Name = "المنطقة")]
+        public string City { get; set; }
+
+        [Display(Name = "الحي")]
+        public string Neighborhood { get; set; }
+
         [Display(Name = "فصيلة الدم")]
         [Required(ErrorMessage = "فصيلة الدم مطلوبة")]
         public string BloodType { get; set; }
@@ -65,7 +75,7 @@ namespace MarinaRegSystem.Models
         public string ClosePerson { get; set; }
 
 
-        [Required(ErrorMessage = "رقم الهاتف مطلوب")]
+
         [Display(Name = "رقم الهاتف")]
         public string PhoneNumber { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

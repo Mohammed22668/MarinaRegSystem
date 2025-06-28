@@ -39,6 +39,10 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("BloodType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CancelReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -55,6 +59,10 @@ namespace MarinaRegSystem.Migrations
 
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ExplainReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
@@ -86,6 +94,9 @@ namespace MarinaRegSystem.Migrations
 
                     b.Property<int?>("SubDepartmentId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("TimeCancel")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -265,6 +276,9 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
                     b.Property<string>("Allergies")
                         .HasColumnType("nvarchar(max)");
 
@@ -273,6 +287,9 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChronicDiseases")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClosePerson")
@@ -304,8 +321,10 @@ namespace MarinaRegSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Neighborhood")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Province")

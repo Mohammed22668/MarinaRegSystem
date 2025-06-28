@@ -10,6 +10,7 @@
 }
 
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -32,7 +33,7 @@
 
         <style>
             body {
-                background-color: #f4f6f9; 
+                background-color: #f4f6f9;
                 font-family: 'Tajawal', sans-serif;
             }
 
@@ -119,10 +120,12 @@
                     <div class="card shadow-sm doctor-card h-100">
                         <div class="card-body d-flex flex-column align-items-center text-center p-4">
                             <!-- صورة الطبيب -->
-                            <img class="doctor-image mb-3" src="@(string.IsNullOrEmpty(doctor.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : doctor.ImageUrl)" alt="@doctor.Name">
+                            <img class="doctor-image mb-3"
+                                src="@(string.IsNullOrEmpty(doctor.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : doctor.ImageUrl)"
+                                alt="@doctor.Name">
 
 
-                                   @* class="doctor-image mb-3" *@
+                            @* class="doctor-image mb-3" *@
 
                             <!-- اسم الطبيب -->
                             <h5 class="card-title">@doctor.Name</h5>
@@ -150,7 +153,7 @@
 
                             <!-- زر الحجز -->
                             <a href="@Url.Action("AddSchedule", "Patient", new { doctorId = doctor.Id })"
-                               class="btn btn-primary btn-book mt-3">
+                                class="btn btn-primary btn-book mt-3">
                                 <i class="fas fa-calendar-check me-1"></i> حجز موعد
                             </a>
                         </div>
@@ -177,6 +180,20 @@
     <!-- Feather Js -->
     <script src="~/assets/js/feather.min.js"></script>
 
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
     <!-- Custom JS -->
     <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

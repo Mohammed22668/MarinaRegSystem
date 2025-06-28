@@ -178,7 +178,9 @@
             <th>وقت الموعد</th>
             <th>الشفت</th>
             <th>الحالة</th>
+
             <th>السعر</th>
+              <th>سبب الالغاء</th>
             <th>الإجراءات</th>
         </tr>
     </thead>
@@ -201,7 +203,9 @@
                         @appt.Status.GetDisplayName()
                     </span>
                 </td>
-                <td class="text-center">@appt.Price.ToString("C")</td>
+              <td class="text-center">@($"{appt.Price:##,##0} د.ع")</td>
+
+                 <td class="text-center">@appt.CancelReason</td>
                 <td class="text-center">
                     <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm bg-success-light me-2">
                         <i class="fas fa-pencil-alt"></i> تعديل

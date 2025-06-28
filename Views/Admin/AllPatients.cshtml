@@ -1,10 +1,9 @@
 @model IEnumerable<MarinaRegSystem.Models.Patient>
 
 @{
-    Layout = "_LayoutAdmin";  // أو الـ Layout المناسب لك
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "قائمة المرضى";
 }
-
 
 @section Head {
 <head>
@@ -12,159 +11,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" href="~/assets/img/favicon.png">
     <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
 
-        <!-- Fontawesome CSS -->
-        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
-        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
 
-        <!-- Select2 CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+    <!-- Feathericon CSS -->
+    <link rel="stylesheet" href="~/assets/css/feather.css">
 
-        <!-- Datatables CSS -->
-        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
-        <!-- Feathericon CSS -->
-        <link rel="stylesheet" href="~/assets/css/feather.css">
-
-        <!-- Main CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
-
-    <!-- Animate -->
+    <!-- Animate CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-
-     <style>
-    .table th {
-        background-color: #f1f4f7;
-        color: #3b3f5c;
-        font-weight: bold;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .table td {
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .table-avatar a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-    }
-
-    .table-avatar img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .rating i {
-        font-size: 1rem;
-    }
-
-    .actions .btn {
-        padding: 5px 10px;
-        font-size: 0.85rem;
-        border-radius: 6px;
-    }
-
-    .bg-success-light {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .bg-danger-light {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .btn-primary i {
-        margin-left: 5px;
-    }
-
-    .page-title {
-        font-weight: 700;
-        color: #3b3f5c;
-        font-size: 1.75rem;
-    }
-
-    .badge {
-        font-size: 0.85rem;
-        padding: 6px 12px;
-        border-radius: 50px;
-    }
-</style>
-
-</head>
+     body {
+    background-color: #f4f6f9;
+    font-family: 'Tajawal', sans-serif;
 }
 
+.table thead th {
+    font-weight: bold;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+}
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
-     <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
+.table tbody tr:hover {
+    background-color: #f1f3f7;
+    transition: all 0.3s ease;
+}
 
-            <table class="table table-hover table-striped align-middle mb-0">
-                <thead class="table-light text-center">
-                    <tr>
-                        <th>الاسم الكامل</th>
-                        <th>تاريخ الميلاد</th>
-                        <th>الجنس</th>
-                        <th>المحافظة</th>
-                        <th>رقم الهوية</th>
-                        <th>شخص مقرب</th>
-                        <th>رقم الهاتف</th>
-                        <th>فصيلة الدم</th>
-                        <th>الحساسية</th>
-                        <th>الأمراض المزمنة</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="10" class="text-center text-muted py-4">
-                                لا يوجد مرضى حتى الآن.
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        foreach (var patient in Model)
-                        {
-                            <tr class="text-center">
-                                <td>@patient.FirstName   @patient.SecondName   @patient.ThirdName   @patient.FourthName </td>
-                                <td>@patient.DateOfBirth.ToString("yyyy-MM-dd")</td>
-                                <td>@patient.Gender</td>
-                                <td>@patient.Province</td>
-                                <td>@patient.NationalNumber</td>
-                                <td>@patient.ClosePerson</td>
-                                <td>@patient.User?.PhoneNumber </td>
-                                <td>@patient.BloodType</td>
-                                <td>@patient.Allergies  </td>
-                                <td>@patient.ChronicDiseases  </td>
+.table td, .table th {
+    vertical-align: middle !important;
+    text-align: center;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.badge-status {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 50px;
+}
+</head>
+}
+  
+
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">@ViewData["Title"]</h3>
+      
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4" role="alert">
+            لا يوجد مرضى حتى الآن.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">الاسم الرباعي</th>
+                                <th class="text-center">تاريخ الميلاد</th>
+                                <th class="text-center">الجنس</th>
+                                <th class="text-center">المحافظة</th>
+                                <th class="text-center">رقم الهوية</th>
+                                <th class="text-center">رقم الهاتف</th>
+                                <th class="text-center">فصيلة الدم</th>
+                                <th class="text-center">الحساسية</th>
+                                <th class="text-center">الأمراض المزمنة</th>
+                                <th class="text-center">الإجراءات</th>
                             </tr>
-                        }
-                    }
-                </tbody>
-            </table>
- 
-
-         </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var patient in Model)
+                            {
+                                <tr>
+                                    <td>@patient.FirstName @patient.SecondName @patient.ThirdName @patient.FourthName</td>
+                                    <td class="text-center">@patient.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-center">@patient.Gender</td>
+                                    <td class="text-center">@patient.Province</td>
+                                    <td class="text-center">@patient.NationalNumber</td>
+                                    <td class="text-center">@patient.User?.PhoneNumber</td>
+                                    <td class="text-center">@patient.BloodType</td>
+                                    <td class="text-center">@patient.Allergies</td>
+                                    <td class="text-center">@patient.ChronicDiseases</td>
+                                    <td class="text-center">
+                                        <div class="btn-group gap-2">
+                                            <a href="~/Admin/Profile/@patient.Id" class="btn btn-outline-info btn-sm rounded-pill" title="عرض الملف">
+                                                <i class="fas fa-user me-1"></i> عرض
+                                            </a>
+                                       
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a href="~/Admin/Index" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-1"></i> العودة إلى الصفحة الرئيسية
+        </a>
     </div>
 </div>
-
 
 
 @section Footer{

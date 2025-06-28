@@ -56,6 +56,19 @@ namespace MarinaRegSystem.Models
         [StringLength(500, ErrorMessage = "سبب الرفض يجب أن لا يتجاوز 500 حرف")]
         public string RejectionReason { get; set; }
 
+
+        [Display(Name = "سبب الالغاء")]
+        [StringLength(500, ErrorMessage = "سبب الالغاء يجب أن لا يتجاوز 500 حرف")]
+        public string CancelReason { get; set; }
+
+        [Display(Name = "شرح السبب")]
+        [StringLength(500, ErrorMessage = "شرح السبب يجب أن لا يتجاوز 500 حرف")]
+        public string ExplainReason { get; set; }
+
+
+        [Display(Name = "تاريخ التحديث")]
+        public DateTime? TimeCancel { get; set; }
+
         [Display(Name = "السعر")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }

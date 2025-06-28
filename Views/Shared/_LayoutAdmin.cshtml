@@ -21,11 +21,6 @@
     <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
     <style>
-
-          body {
-        margin: 0;
-        padding: 0;
-    }
         /* تنسيقات القائمة المنسدلة */
         .dropdown-menu {
             display: none;
@@ -40,7 +35,7 @@
             list-style: none;
             background-color: #fff;
             background-clip: padding-box;
-            border: 1px solid rgba(0,0,0,.15);
+            border: 1px solid rgba(0, 0, 0, .15);
             border-radius: 0.25rem;
         }
 
@@ -73,7 +68,6 @@
             .mobile_btn {
                 display: block !important;
             }
-
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -83,13 +77,11 @@
                 z-index: 9999;
                 transition: all 0.3s ease;
                 background: #fff;
-                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             }
-
             .sidebar.active {
                 right: 0;
             }
-
             .sidebar-overlay {
                 display: none;
                 position: fixed;
@@ -97,36 +89,29 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0,0,0,0.5);
+                background: rgba(0, 0, 0, 0.5);
                 z-index: 999;
             }
-
             .sidebar-overlay.active {
                 display: block;
             }
-
             .page-wrapper {
                 margin-right: 0;
-                 padding-top: 20px;
             }
-
-            @@media (min-width: 992px) {
-    .page-wrapper {
-        margin-right: 280px; /* عرض الـ Sidebar */
-    }
-}
-
-.content {
-    padding: 2rem;
-    margin-top: 1rem;
-}
-
             .mobile-user-menu {
                 display: block;
             }
-
             .user-menu {
                 display: none;
+            }
+            /* إصلاح السايدبار في RTL للجوال فقط */
+            html[dir="rtl"] .sidebar {
+                left: -280px !important;
+                right: auto !important;
+            }
+            html[dir="rtl"] .sidebar.active {
+                left: 0 !important;
+                right: auto !important;
             }
         }
 
@@ -169,21 +154,29 @@
             left: auto;
         }
 
-         .sidebar {
-        top: 60px; /* أو أقل حسب الهيدر */
-        transition: all 0.3s ease;
-    }
+        .sidebar {
+            position: relative;
+            right: 0;
+            left: 0;
+            width: 280px;
+            height: 100%;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            transition: none;
+        }
     </style>
 
     @RenderSection("Head", required: false)
 </head>
+
 <body>
     <div class="main-wrapper">
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <a href="~/Patient/Index" class="logo">
-                    <img src="~/assets/img/marina-logo.jpg" width="35" height="35" alt=""> <span>مستشفى مارينا الاهلي</span>
+                <a href="~/Admin/Index" class="logo">
+                    <img src="~/assets/img/marina-logo5.png" width="35" height="35" alt=""> <span>مستشفى مارينا الاهلي</span>
                 </a>
             </div>
             <a id="toggle_btn" href="javascript:void(0);"><img src="~/assets/img/icons/bar-icon.svg" alt=""></a>
@@ -294,18 +287,31 @@
     </div>
 
     <div class="sidebar-overlay" data-reff=""></div>
-
     <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
-    
-    <!-- Bootstrap Core JS -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Slimscroll JS -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
-    
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
     <!-- Custom JS -->
     <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
     @RenderSection("Footer", required: false)
     @RenderSection("Scripts", required: false)
@@ -362,21 +368,21 @@
             });
 
             // تهيئة القوائم المنسدلة
-            $('.dropdown-toggle').on('click', function(e) {
+            $('.dropdown-toggle').on('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var $dropdown = $(this).closest('.dropdown');
                 var $menu = $dropdown.find('.dropdown-menu');
-                
+
                 // إغلاق جميع القوائم المنسدلة الأخرى
                 $('.dropdown-menu').not($menu).removeClass('show');
-                
+
                 // تبديل حالة القائمة الحالية
                 $menu.toggleClass('show');
             });
 
             // إغلاق القائمة المنسدلة عند الضغط خارجها
-            $(document).on('click', function(e) {
+            $(document).on('click', function (e) {
                 if (!$(e.target).closest('.dropdown').length) {
                     $('.dropdown-menu').removeClass('show');
                 }

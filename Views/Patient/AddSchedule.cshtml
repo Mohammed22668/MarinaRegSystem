@@ -10,10 +10,11 @@
 }
 
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/marina-logo5.png">
         <title>مستشفى مارينا - @ViewData["Title"]</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -35,7 +36,7 @@
 
         <style>
             body {
-                background-color: #f4f6f9; 
+                background-color: #f4f6f9;
                 font-family: 'Tajawal', sans-serif;
             }
 
@@ -83,44 +84,44 @@
                 color: #6c757d;
             }
 
-                .stepper-step.active,
-                .stepper-step.completed {
-                    color: #007bff;
-                    font-weight: bold;
-                }
+            .stepper-step.active,
+            .stepper-step.completed {
+                color: #007bff;
+                font-weight: bold;
+            }
 
-                .stepper-step span.circle {
-                    display: inline-block;
-                    width: 35px;
-                    height: 35px;
-                    line-height: 35px;
-                    border-radius: 50%;
-                    background-color: #e9ecef;
-                    color: #6c757d;
-                    margin-bottom: 0.5rem;
-                    transition: all 0.3s ease;
-                }
+            .stepper-step span.circle {
+                display: inline-block;
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+                border-radius: 50%;
+                background-color: #e9ecef;
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+                transition: all 0.3s ease;
+            }
 
-                .stepper-step.completed span.circle {
-                    background-color: #28a745;
-                    color: white;
-                }
+            .stepper-step.completed span.circle {
+                background-color: #28a745;
+                color: white;
+            }
 
-                .stepper-step.active span.circle {
-                    background-color: #007bff;
-                    color: white;
-                }
+            .stepper-step.active span.circle {
+                background-color: #007bff;
+                color: white;
+            }
 
-                .stepper-step:not(:last-child)::after {
-                    content: '';
-                    position: absolute;
-                    top: 17px;
-                    left: 50%;
-                    width: 100%;
-                    height: 2px;
-                    background-color: #ccc;
-                    z-index: -1;
-                }
+            .stepper-step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                top: 17px;
+                left: 50%;
+                width: 100%;
+                height: 2px;
+                background-color: #ccc;
+                z-index: -1;
+            }
 
             .form-section {
                 display: none;
@@ -173,10 +174,11 @@
                 </div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="IsBookingForSelf" value="false">
-                    <label class="form-check-label">لا، لشخص آخر</label>
+                    <label class="form-check-label"> لأحد افراد العائلة</label>
                 </div>
             </div>
-            <button type="button" class="btn btn-primary btn-step btn-lg w-100 mt-3" onclick="nextStep(2)">التالي</button>
+            <button type="button" class="btn btn-primary btn-step btn-lg w-100 mt-3"
+                onclick="nextStep(2)">التالي</button>
         </div>
 
         <!-- المرحلة 2 -->
@@ -188,15 +190,15 @@
                     <input type="text" name="FirstName" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">الاسم الثاني</label>
+                    <label class="form-label">الاسم الاب</label>
                     <input type="text" name="SecondName" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">الاسم الثالث</label>
+                    <label class="form-label">الاسم الجد</label>
                     <input type="text" name="ThirdName" class="form-control" />
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">الاسم الرابع</label>
+                    <label class="form-label">الاسم الرابع </label>
                     <input type="text" name="FourthName" class="form-control" />
                 </div>
                 <div class="col-md-6">
@@ -213,12 +215,22 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">فصيلة الدم</label>
-                    <input type="text" name="BloodType" class="form-control" placeholder="مثال: A+" />
+                    <select asp-for="BloodType" class="form-control">
+                        <option value="">-- اختر --</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
                 </div>
             </div>
 
             <div class="mt-4 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(1)">عودة</button>
+                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(1)">رجوع</button>
                 <button type="button" class="btn btn-primary btn-step" onclick="nextStep(3)">التالي</button>
             </div>
         </div>
@@ -231,7 +243,7 @@
                 <label class="form-label">القسم الرئيسي<span class="text-danger">*</span></label>
                 <select id="DepartmentId" name="DepartmentId" class="form-select" required>
                     <option value="">اختر القسم</option>
-                    @foreach(var dept in ViewBag.Departments as SelectList)
+                    @foreach (var dept in ViewBag.Departments as SelectList)
                     {
                         <option value="@dept.Value">@dept.Text</option>
                     }
@@ -252,17 +264,23 @@
                 </select>
             </div>
 
+            @{
+                var tomorrow = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+            }
+
             <div class="mb-3">
-                <label class="form-label">تاريخ الموعد<span class="text-danger">*</span></label>
-                <input type="date" name="AppointmentDate" class="form-control" required />
+                <label class="form-label">التاريخ <span class="text-danger">*</span></label>
+                <input type="date" name="AppointmentDate" class="form-control" required value="@tomorrow"
+                    min="@tomorrow" />
+                <span class="text-danger"> الحجز قبل يوم أو اكثر من الموعد</span>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">وقت الموعد</label>
+                <label class="form-label">الوقت </label>
                 <input type="time" name="AppointmentTime" class="form-control" />
             </div>
 
-            <div class="mb-3">
+            @* <div class="mb-3">
                 <label class="form-label">الشفت</label>
                 <select name="Shift" class="form-select">
                     <option value="">اختر الشفت</option>
@@ -270,10 +288,10 @@
                     <option value="1">مسائي</option>
                     <option value="2">خفر</option>
                 </select>
-            </div>
+            </div> *@
 
             <div class="mb-3">
-                <label class="form-label">ملاحظات</label>
+                <label class="form-label">الملاحظات والاستفسارات</label>
                 <textarea name="Notes" class="form-control" rows="3" maxlength="500"></textarea>
             </div>
 
@@ -283,8 +301,8 @@
             </div>
 
             <div class="mt-4 d-flex justify-content-between">
-                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(2)">عودة</button>
-                <button type="submit" class="btn btn-success btn-step">حجز الموعد</button>
+                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(2)">رجوع</button>
+                <button type="submit" class="btn btn-success btn-step">تثبيت الحجز </button>
             </div>
         </div>
     </form>
@@ -356,4 +374,35 @@
                 });
         });
     </script>
+}
+
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

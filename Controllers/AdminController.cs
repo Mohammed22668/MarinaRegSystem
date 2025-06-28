@@ -23,7 +23,50 @@ namespace MarinaRegSystem.Controllers
         {
 
 
+            // جلب إحصائيات عامة
+            var totalDepartments = await _context.Departments.CountAsync();
+            var totalDoctors = await _context.Doctors.CountAsync();
+            var totalAppointments = await _context.Appointments.CountAsync();
+            var totalAppointmentsToday = await _context.Appointments
+    .Where(a => a.AppointmentDate.Date == DateTime.Now.Date)
+    .CountAsync();
+            var totalPatients = await _context.Patients.CountAsync();
+            var totalUsers = await _context.Users.CountAsync();
+            var totalSubDepartments = await _context.SubDepartments.CountAsync();
+            var totalDoctorSchedules = await _context.DoctorSchedules.CountAsync();
+            // إنشاء نموذج الإحصائيات
+
+
+
+
+            var Pending = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatus.Pending);
+            var Confirmed = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatus.Confirmed);
+            var Rejected = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatus.Rejected);
+            var Completed = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatus.Completed);
+            var Cancelled = await _context.Appointments.CountAsync(a => a.Status == AppointmentStatus.Cancelled);
+
+
+            ViewBag.TotalAppointments = totalAppointments;
+            ViewBag.TotalAppointmentsToday = totalAppointmentsToday;
+            ViewBag.TotalDepartments = totalDepartments;
+            ViewBag.TotalDoctors = totalDoctors;
+            ViewBag.TotalPatients = totalPatients;
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalSubDepartments = totalSubDepartments;
+            ViewBag.TotalDoctorSchedules = totalDoctorSchedules;
+            ViewBag.PendingAppointments = Pending;
+            ViewBag.ConfirmedAppointments = Confirmed;
+            ViewBag.RejectedAppointments = Rejected;
+            ViewBag.CompletedAppointments = Completed;
+            ViewBag.CancelledAppointments = Cancelled;
+
+
+            // تمرير النموذج إلى العرض
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            ViewBag.ErrorMessage = TempData["ErrorMessage"];
+
             return View();
+
         }
 
         public IActionResult Departments()
@@ -457,7 +500,8 @@ namespace MarinaRegSystem.Controllers
                 .Include(a => a.Doctor)
                 .Include(a => a.Department)
                 .Include(a => a.User)
-                .Include(a => a.Patient)
+                .Include(a => a.Patient).OrderByDescending(a => a.AppointmentDate)
+                .ThenByDescending(a => a.AppointmentTime)
                 .AsQueryable();
 
             // ✅ البحث
@@ -582,6 +626,24 @@ namespace MarinaRegSystem.Controllers
       .ToList();
 
             return View(patients);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Profile(int id)
+        {
+            var patient = await _context.Patients
+                .Include(p => p.Appointments)
+                    .ThenInclude(a => a.Doctor)
+                .Include(p => p.Appointments)
+                    .ThenInclude(a => a.Department)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return View(patient);
         }
         public IActionResult SubDepartments(SubDepartmentFilterViewModel filter)
         {

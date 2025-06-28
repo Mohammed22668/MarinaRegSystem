@@ -199,98 +199,75 @@ namespace MarinaRegSystem.Controllers
         // - MyAppointments
 
         // - EditSchedule
+
         [HttpGet]
-        public IActionResult EditSchedule(int id)
+        public async Task<IActionResult> EditSchedule(int id)
         {
-            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
-            if (appointment == null)
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null) return NotFound();
+
+            var model = new EditAppointmentViewModel
             {
-                TempData["Error"] = "لم يتم العثور على الموعد.";
-                return RedirectToAction("Index");
-            }
+                Id = appointment.Id,
+                DepartmentId = appointment.DepartmentId,
+                SubDepartmentId = appointment.SubDepartmentId,
+                DoctorId = appointment.DoctorId.HasValue ? appointment.DoctorId.Value : 0,
 
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
-            ViewBag.Doctors = new SelectList(_context.Doctors, "Id", "Name");
+                AppointmentDate = appointment.AppointmentDate,
+                AppointmentTime = appointment.AppointmentTime,
+                Shift = appointment.Shift,
+                Notes = appointment.Notes,
 
-            return View(appointment);
+                DiagnosisFileUrl = appointment.DiagnosisFileUrl
+            };
+
+            ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
+            ViewBag.SubDepartments = new SelectList(await _context.SubDepartments.Where(s => s.DepartmentId == appointment.DepartmentId).ToListAsync(), "Id", "Name");
+            ViewBag.Doctors = new SelectList(await _context.Doctors.Where(d => d.DepartmentId == appointment.DepartmentId).ToListAsync(), "Id", "Name");
+
+            return View(model);
         }
 
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSchedule(int id, Appointment appointment, IFormFile diagnosisFile)
+        public async Task<IActionResult> EditSchedule(EditAppointmentViewModel model, IFormFile DiagnosisFile)
         {
-            if (id != appointment.Id)
-            {
-                return NotFound();
-            }
-
-            var existingAppointment = await _context.Appointments.FindAsync(id);
-            if (existingAppointment == null)
-            {
-                return NotFound();
-            }
-
-            // التحقق من صلاحية المريض (من الجلسة)
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId) || userId != existingAppointment.UserId)
-            {
-                return Unauthorized();
-            }
-
             if (!ModelState.IsValid)
             {
-                ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name", appointment.DepartmentId);
-                ViewBag.Doctors = new SelectList(await _context.Doctors.Where(d => d.Status).ToListAsync(), "Id", "Name", appointment.DoctorId);
-                return View(appointment);
+                ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
+                ViewBag.SubDepartments = new SelectList(await _context.SubDepartments.Where(s => s.DepartmentId == model.DepartmentId).ToListAsync(), "Id", "Name");
+                ViewBag.Doctors = new SelectList(await _context.Doctors.Where(d => d.DepartmentId == model.DepartmentId).ToListAsync(), "Id", "Name");
+                return View(model);
             }
 
-            // تحديث البيانات
-            existingAppointment.DepartmentId = appointment.DepartmentId;
-            existingAppointment.DoctorId = appointment.DoctorId;
-            existingAppointment.AppointmentDate = appointment.AppointmentDate;
-            existingAppointment.AppointmentTime = appointment.AppointmentTime;
-            existingAppointment.Notes = appointment.Notes;
-            existingAppointment.UpdatedAt = DateTime.Now;
+            var appointment = await _context.Appointments.FindAsync(model.Id);
+            if (appointment == null) return NotFound();
 
-            // معالجة الملف إن تم رفعه
-            if (diagnosisFile != null && diagnosisFile.Length > 0)
+            appointment.DepartmentId = model.DepartmentId;
+            appointment.SubDepartmentId = model.SubDepartmentId;
+            appointment.DoctorId = model.DoctorId;
+            appointment.AppointmentDate = model.AppointmentDate;
+            appointment.AppointmentTime = model.AppointmentTime ?? TimeSpan.Zero;
+            appointment.Shift = model.Shift;
+            appointment.Notes = model.Notes;
+
+            if (DiagnosisFile != null && DiagnosisFile.Length > 0)
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "diagnosis");
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads/diagnosis");
                 Directory.CreateDirectory(uploadsFolder);
-
-                var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(diagnosisFile.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(DiagnosisFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await diagnosisFile.CopyToAsync(stream);
+                    await DiagnosisFile.CopyToAsync(fileStream);
                 }
-
-                // حذف الملف القديم (اختياري)
-                if (!string.IsNullOrEmpty(existingAppointment.DiagnosisFileUrl))
-                {
-                    var oldFilePath = Path.Combine(_environment.WebRootPath, existingAppointment.DiagnosisFileUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(oldFilePath))
-                        System.IO.File.Delete(oldFilePath);
-                }
-
-                existingAppointment.DiagnosisFileUrl = $"/uploads/diagnosis/{uniqueFileName}";
+                appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + fileName;
             }
 
-            try
-            {
-                _context.Update(existingAppointment);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "تم تعديل الموعد بنجاح";
-            }
-            catch (Exception ex)
-            {
-                if (!_context.Appointments.Any(e => e.Id == appointment.Id))
-                    return NotFound();
-                else
-                    throw;
-            }
+            _context.Update(appointment);
+            await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "تم تحديث الموعد بنجاح";
             return RedirectToAction(nameof(MyAppointments));
         }
 
@@ -457,6 +434,10 @@ namespace MarinaRegSystem.Controllers
             patient.ChronicDiseases = updatedPatient.ChronicDiseases;
             patient.ClosePerson = updatedPatient.ClosePerson;
             patient.PhoneNumber = updatedPatient.PhoneNumber;
+            patient.Age = updatedPatient.Age;
+            patient.City = updatedPatient.City;
+            patient.Neighborhood = updatedPatient.Neighborhood;
+
 
             await _context.SaveChangesAsync();
 
@@ -466,21 +447,24 @@ namespace MarinaRegSystem.Controllers
 
 
         [HttpPost]
-        public IActionResult CancelSchedule(int id)
+        public IActionResult CancelSchedule(int Id, string CancelReason)
         {
-            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
+            var appointment = _context.Appointments.FirstOrDefault(a => a.Id == Id);
 
             if (appointment == null)
             {
                 TempData["Error"] = "لم يتم العثور على الحجز.";
-                return RedirectToAction("MyAppointments"); // غيّر الاسم حسب عرض قائمة الحجوزات
+                return RedirectToAction("MyAppointments");
             }
 
             appointment.Status = AppointmentStatus.Cancelled;
+            appointment.CancelReason = CancelReason;
+            appointment.TimeCancel = DateTime.Now;
+
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "تم إلغاء الحجز بنجاح.";
-            return RedirectToAction("MyAppointments"); // غيّر الاسم حسب عرض قائمة الحجوزات
+            return RedirectToAction("MyAppointments");
         }
 
     }

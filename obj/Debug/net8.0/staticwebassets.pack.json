@@ -861,6 +861,22 @@
       "PackagePath": "staticwebassets\\assets\\img\\marina-logo.jpg"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo2.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo2.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo3.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo3.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo4.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo5.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo5.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\morning-img-01.png",
       "PackagePath": "staticwebassets\\assets\\img\\morning-img-01.png"
     },
@@ -12031,6 +12047,10 @@
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png",
       "PackagePath": "staticwebassets\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\3d38c9b2-c04d-4d07-9dd6-a0e20487f0c8.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\3d38c9b2-c04d-4d07-9dd6-a0e20487f0c8.jpeg"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg",

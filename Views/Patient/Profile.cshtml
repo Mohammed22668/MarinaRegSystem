@@ -10,6 +10,7 @@
 }
 
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -32,7 +33,7 @@
 
         <style>
             body {
-                background-color: #f4f6f9; 
+                background-color: #f4f6f9;
             }
 
             .profile-container {
@@ -81,55 +82,108 @@
     <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
 }
 
-<div class="profile-container">
-    <div class="card card-profile">
-        <h3 class="text-center mb-4">ملف المريض الشخصي</h3>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card card-profile shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">ملف المريض الشخصي</h3>
+                </div>
+                <div class="card-body p-4">
 
-        <div class="row g-3">
-            <div class="col-md-6">
-                <p><strong class="profile-title">الاسم الكامل:</strong> <span class="profile-data">@Model.FirstName @Model.SecondName  @Model.ThirdName @Model.FourthName </span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">تاريخ الميلاد:</strong> <span class="profile-data">@Model.DateOfBirth.ToString("yyyy-MM-dd")</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">الجنس:</strong> <span class="profile-data">@Model.Gender</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">الرقم الوطني:</strong> <span class="profile-data">@Model.NationalNumber</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">العنوان:</strong> <span class="profile-data">@Model.Address</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">المحافظة:</strong> <span class="profile-data">@Model.Province</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">البلد:</strong> <span class="profile-data">@Model.Country</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">فصيلة الدم:</strong> <span class="profile-data">@Model.BloodType</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">الحساسية:</strong> <span class="profile-data">@Model.Allergies</span></p>
-            </div>
-            <div class="col-md-6">
-                <p><strong class="profile-title">الأمراض المزمنة:</strong> <span class="profile-data">@Model.ChronicDiseases</span></p>
-            </div>
+                    <!-- اسم المريض -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الاسم الكامل:</strong> <span
+                                    class="profile-data">@Model.FirstName @Model.SecondName @Model.ThirdName
+                                    @Model.FourthName</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">تاريخ الميلاد:</strong> <span
+                                    class="profile-data">@Model.DateOfBirth.ToString("yyyy-MM-dd")</span></p>
+                        </div>
+                    </div>
 
-            <div class="col-md-6">
-                <p><strong class="profile-title">رقم الهاتف:</strong> <span class="profile-data">@Model.PhoneNumber</span></p>
-                  </div>
+                    <!-- الجنس والعمر -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الجنس:</strong> <span
+                                    class="profile-data">@Model.Gender</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">العمر:</strong> <span
+                                    class="profile-data">@Model.Age</span></p>
+                        </div>
+                    </div>
 
-                    <div class="col-md-6"></div>
-                <p><strong class="profile-title">شخص مقرب :</strong> <span class="profile-data">@Model.ClosePerson</span></p>
+                    <!-- الرقم الوطني وفصيلة الدم -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الرقم الوطني:</strong> <span
+                                    class="profile-data">@Model.NationalNumber</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">فصيلة الدم:</strong> <span
+                                    class="profile-data">@Model.BloodType</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الدولة والمحافظة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الدولة:</strong> <span
+                                    class="profile-data">@Model.Country</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">المحافظة:</strong> <span
+                                    class="profile-data">@Model.Province</span></p>
+                        </div>
+                    </div>
+
+                    <!-- المدينة والمحلة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">القضاء أو المنطقة:</strong> <span
+                                    class="profile-data">@Model.City</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">محلة / زقاق / شارع:</strong> <span
+                                    class="profile-data">@Model.Neighborhood</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الهاتف والشخص المقرب -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">رقم الهاتف:</strong> <span
+                                    class="profile-data">@Model.PhoneNumber</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الشخص المقرب:</strong> <span
+                                    class="profile-data">@Model.ClosePerson</span></p>
+                        </div>
+                    </div>
+
+                    <!-- التداخلات الدوائية والأمراض المزمنة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">التداخلات الدوائية:</strong> <span
+                                    class="profile-data">@Model.Allergies</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الأمراض المزمنة:</strong> <span
+                                    class="profile-data">@Model.ChronicDiseases</span></p>
+                        </div>
+                    </div>
+
+                    <!-- زر التعديل -->
+                    <div class="mt-4 d-grid">
+                        <a asp-action="EditProfile" class="btn btn-primary btn-edit">
+                            <i class="fas fa-user-edit me-1"></i> تعديل البيانات
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="mt-4 d-grid">
-            <a asp-action="EditProfile" class="btn btn-primary btn-edit">
-                <i class="fas fa-user-edit me-1"></i> تعديل البيانات
-            </a>
         </div>
     </div>
 </div>
@@ -143,6 +197,16 @@
 
     <!-- Feather Js -->
     <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 
     <!-- Custom JS -->
     <script src="~/assets/js/script.js"></script>
