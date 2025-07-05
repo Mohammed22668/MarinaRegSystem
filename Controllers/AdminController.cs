@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 
 
 namespace MarinaRegSystem.Controllers
@@ -490,47 +492,34 @@ namespace MarinaRegSystem.Controllers
         }
 
 
-
-        // قائمة الحجوزات
         [HttpGet]
         public IActionResult Appointments(AppointmentFilterViewModel filter)
         {
-            // جلب البيانات الأساسية
             var query = _context.Appointments
                 .Include(a => a.Doctor)
                 .Include(a => a.Department)
                 .Include(a => a.User)
-                .Include(a => a.Patient).OrderByDescending(a => a.AppointmentDate)
+                .Include(a => a.Patient)
+                .OrderByDescending(a => a.AppointmentDate)
                 .ThenByDescending(a => a.AppointmentTime)
                 .AsQueryable();
 
-            // ✅ البحث
+            // ✅ تطبيق الفلاتر مثل السابق
             if (!string.IsNullOrEmpty(filter.PatientName))
                 query = query.Where(a => a.PatientName.Contains(filter.PatientName));
-
             if (!string.IsNullOrEmpty(filter.Username))
                 query = query.Where(a => a.User.Username.Contains(filter.Username));
-
             if (!string.IsNullOrEmpty(filter.DoctorName))
                 query = query.Where(a => a.Doctor.Name.Contains(filter.DoctorName));
-
-            // ✅ الفلاتر
             if (filter.DepartmentId.HasValue)
                 query = query.Where(a => a.DepartmentId == filter.DepartmentId.Value);
-
             if (filter.AppointmentDate.HasValue)
                 query = query.Where(a => a.AppointmentDate.Date == filter.AppointmentDate.Value.Date);
-
             if (filter.Shift.HasValue)
-            {
-                var shiftValue = (ShiftType)filter.Shift.Value;
-                query = query.Where(a => a.Shift == shiftValue);
-            }
-
+                query = query.Where(a => a.Shift == (ShiftType)filter.Shift.Value);
             if (filter.Status.HasValue)
                 query = query.Where(a => a.Status == filter.Status.Value);
 
-            // تحويل النتائج إلى ViewModel
             var results = query
                 .Select(a => new AppointmentViewModel
                 {
@@ -538,17 +527,70 @@ namespace MarinaRegSystem.Controllers
                     Patient = _context.Patients.FirstOrDefault(p => p.UserId == a.UserId)
                 }).ToList();
 
-            // تعبئة القوائم المنسدلة
+            // ✅ إذا كان طلب التصدير
+            if (Request.Query["export"] == "excel")
+            {
+                var excelBytes = GenerateExcel(results);
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Appointments.xlsx");
+            }
+
+            // تعبئة القائمة المنسدلة
             filter.Results = results;
-            filter.Departments = _context.Departments
-                .Select(d => new SelectListItem
-                {
-                    Value = d.Id.ToString(),
-                    Text = d.Name
-                }).ToList();
+            filter.Departments = _context.Departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            }).ToList();
 
             return View(filter);
         }
+
+        private byte[] GenerateExcel(List<AppointmentViewModel> data)
+        {
+            using var workbook = new ClosedXML.Excel.XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Appointments");
+
+            // العناوين
+            worksheet.Cell(1, 1).Value = "اسم المريض";
+            worksheet.Cell(1, 2).Value = "العمر";
+            worksheet.Cell(1, 3).Value = "الجنس";
+            worksheet.Cell(1, 4).Value = "رقم الهاتف";
+
+            worksheet.Cell(1, 5).Value = "القسم";
+            worksheet.Cell(1, 6).Value = "القسم الفرعي";
+            worksheet.Cell(1, 7).Value = "الطبيب";
+            worksheet.Cell(1, 8).Value = "تاريخ الموعد";
+            worksheet.Cell(1, 9).Value = "وقت الموعد";
+            worksheet.Cell(1, 10).Value = "الشفت";
+            worksheet.Cell(1, 11).Value = "الحالة";
+            worksheet.Cell(1, 12).Value = "السعر";
+            worksheet.Cell(1, 13).Value = "سبب الإلغاء";
+
+            // البيانات
+            for (int i = 0; i < data.Count; i++)
+            {
+                var a = data[i].Appointment;
+                worksheet.Cell(i + 2, 1).Value = a.PatientName;
+                worksheet.Cell(i + 2, 2).Value = a.Patient?.Age;
+                worksheet.Cell(i + 2, 3).Value = a.Patient?.Gender;
+                worksheet.Cell(i + 2, 4).Value = a.User?.PhoneNumber;
+                worksheet.Cell(i + 2, 5).Value = a.Department?.Name;
+                worksheet.Cell(i + 2, 6).Value = a.SubDepartment?.Name;
+                worksheet.Cell(i + 2, 7).Value = a.Doctor?.Name;
+                worksheet.Cell(i + 2, 8).Value = a.AppointmentDate.ToString("yyyy-MM-dd");
+                worksheet.Cell(i + 2, 9).Value = a.AppointmentTime.ToString(@"hh\:mm");
+                worksheet.Cell(i + 2, 10).Value = a.Shift.ToString();
+                worksheet.Cell(i + 2, 11).Value = a.Status.ToString();
+                worksheet.Cell(i + 2, 12).Value = a.Price;
+                worksheet.Cell(i + 2, 13).Value = a.CancelReason;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
+
+
 
         // GET: تعديل حجز
         [HttpGet]

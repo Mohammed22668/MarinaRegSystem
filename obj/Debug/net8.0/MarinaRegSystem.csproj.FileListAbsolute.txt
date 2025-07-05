@@ -887,3 +887,11 @@ E:\C#_Projects\MarinaRegSystem\obj\Debug\net8.0\refint\MarinaRegSystem.dll
 E:\C#_Projects\MarinaRegSystem\obj\Debug\net8.0\MarinaRegSystem.pdb
 E:\C#_Projects\MarinaRegSystem\obj\Debug\net8.0\MarinaRegSystem.genruntimeconfig.cache
 E:\C#_Projects\MarinaRegSystem\obj\Debug\net8.0\ref\MarinaRegSystem.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\ClosedXML.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\RBush.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.IO.Packaging.dll
