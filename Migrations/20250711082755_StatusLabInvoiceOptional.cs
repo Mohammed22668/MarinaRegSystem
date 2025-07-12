@@ -5,7 +5,7 @@
 namespace MarinaRegSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateAppointmentDepartment : Migration
+    public partial class StatusLabInvoiceOptional : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

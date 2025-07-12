@@ -176,6 +176,20 @@ namespace MarinaRegSystem.Controllers
             {
                 return RedirectToAction("Index", "Admin");
             }
+            else if (user.Role == "SuperAdmin")
+            {
+                return RedirectToAction("Index", "SuperAdmin");
+            }
+
+            else if (user.Role == "LabDirector" || user.Role == "LabStaff")
+            {
+                return RedirectToAction("Index", "Lab");
+            }
+
+            else if (user.Role == "Cashier")
+            {
+                return RedirectToAction("Index", "Cashier");
+            }
             else
             {
                 // توجيه افتراضي لأي دور آخر

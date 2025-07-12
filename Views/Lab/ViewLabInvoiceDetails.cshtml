@@ -1,0 +1,327 @@
+@model LabInvoice
+
+@{
+    Layout = "_LayoutLab";
+    ViewData["Title"] = "تفاصيل الفاتورة";
+}
+
+
+
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم مختبر مارينا - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .container {
+                max-width: 900px;
+            }
+
+            /* عنوان الفاتورة */
+            .invoice-header {
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 2rem;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .invoice-title {
+                font-size: 1.75rem;
+                color: #007bff;
+                font-weight: bold;
+            }
+
+            /* زر الطباعة */
+            .btn-print {
+                background-color: #28a745;
+                color: white;
+                padding: 0.5rem 1.5rem;
+                font-size: 1rem;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-print:hover {
+                background-color: #218838;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            /* جدول التفاصيل العام */
+            .table-details th {
+                background-color: #e9ecef;
+                font-weight: bold;
+                text-align: right;
+                vertical-align: middle;
+                width: 30%;
+            }
+
+            .table-details td {
+                vertical-align: middle;
+            }
+
+            /* صورة الهوية */
+            .id-image {
+                max-width: 120px;
+                border-radius: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            /* جدول الفحوصات */
+            .invoice-table {
+                font-size: 0.95rem;
+                width: 100%;
+            }
+
+            .invoice-table thead th {
+                background-color: #007bff;
+                color: white;
+                text-align: center;
+                font-weight: bold;
+                vertical-align: middle;
+            }
+
+            .invoice-table tbody tr:hover {
+                background-color: #f1f3f6;
+            }
+
+            .invoice-table tbody td {
+                vertical-align: middle;
+                text-align: center;
+            }
+
+            .invoice-table tfoot td {
+                font-weight: bold;
+                text-align: right;
+            }
+
+            .invoice-table .text-danger {
+                color: #dc3545;
+                font-weight: bold;
+            }
+
+            .invoice-table .table-secondary {
+                background-color: #f8f9fa;
+            }
+
+            /* زر الرجوع */
+            .btn-back {
+                background-color: #6c757d;
+                color: white;
+                padding: 0.5rem 1.5rem;
+                font-size: 1rem;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-back:hover {
+                background-color: #5a6268;
+                transform: translateY(-2px);
+            }
+
+            /* تأثيرات دخول */
+            .animate__fadeInDown {
+                animation-duration: 1s;
+            }
+
+            .animate__fadeInUp {
+                animation-duration: 1s;
+            }
+        </style>
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">تفاصيل الفاتورة </a></li>
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeInDown">
+        <h2 class="mb-0 text-primary fw-bold">تفاصيل الفاتورة رقم @Model.Id</h2>
+        <a asp-action="PrintLabInvoice" asp-route-id="@Model.Id" target="_blank" class="btn btn-outline-primary">
+            <i class="bi bi-printer-fill"></i> طباعة الفاتورة
+        </a>
+    </div>
+
+    <div class="card shadow-sm p-4 animate__animated animate__fadeInUp">
+        <table class="table table-bordered table-hover align-middle">
+            <tbody>
+                <tr>
+                    <th style="width: 25%">الاسم الكامل:</th>
+                    <td>@Model.FullName</td>
+                </tr>
+                <tr>
+                    <th>العمر:</th>
+                    <td>@Model.Age</td>
+                </tr>
+                <tr>
+                    <th>اسم الطبيب:</th>
+                    <td>@(string.IsNullOrWhiteSpace(Model.DoctorName) ? "غير محدد" : Model.DoctorName)</td>
+                </tr>
+                <tr>
+                    <th>تاريخ الإنشاء:</th>
+                    <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+                <tr>
+                    <th>صورة الهوية:</th>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.NationalIdImage))
+                        {
+                            <img src="@Model.NationalIdImage" alt="صورة الهوية" class="img-thumbnail"
+                                style="max-width: 150px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">لا توجد صورة</span>
+                        }
+                    </td>
+                </tr>
+
+                @* فحوصات *@
+                <tr>
+                    <td colspan="2">
+                        @if (Model.LabInvoiceTests != null && Model.LabInvoiceTests.Any())
+                        {
+                            <div class="mt-4">
+                                <h5 class="text-center text-dark mb-3 border-bottom pb-2">تفاصيل الفحوصات</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center align-middle">
+                                        <thead class="table-light">
+                                            <tr class="table-primary">
+                                                <th>اسم الفحص</th>
+                                                <th>المدى</th>
+                                                <th>النتيجة</th>
+                                                <th>السعر</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                decimal total = 0;
+                                                foreach (var test in Model.LabInvoiceTests)
+                                                {
+                                                    var min = test.LabTest?.MinValue;
+                                                    var max = test.LabTest?.MaxValue;
+                                                    var result = test.ResultValue;
+                                                    var price = test.Price;
+                                                    total += price;
+
+                                                    string resultClass = "";
+                                                    if (result.HasValue && min.HasValue && max.HasValue)
+                                                    {
+                                                        if (result < min)
+                                                        {
+                                                            resultClass = "text-warning fw-bold";
+                                                        }
+                                                        else if (result > max)
+                                                        {
+                                                            resultClass = "text-danger fw-bold";
+                                                        }
+                                                        else
+                                                        {
+                                                            resultClass = "text-success fw-semibold";
+                                                        }
+                                                    }
+
+                                                    <tr>
+                                                        <td>@test.LabTest?.Name</td>
+                                                        <td>@(min?.ToString("0.##") ?? "-") - @(max?.ToString("0.##") ?? "-")</td>
+                                                        <td class="@resultClass">@result?.ToString("0.##")</td>
+                                                        <td>@price.ToString("N0") دينار</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-secondary fw-bold">
+                                                <td colspan="3" class="text-end">المجموع الكلي:</td>
+                                                <td>@total.ToString("N0") دينار</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center m-0">لا توجد فحوصات مسجلة لهذه الفاتورة.</div>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-4 d-flex justify-content-start">
+            <a asp-action="ListLabInvoices" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-circle"></i> رجوع إلى القائمة
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

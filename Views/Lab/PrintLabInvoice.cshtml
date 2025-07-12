@@ -1,0 +1,222 @@
+@model LabInvoice
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <title>فاتورة المختبر - @Model.Id</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif, 'Segoe UI';
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            color: #007BFF;
+            margin-bottom: 5px;
+        }
+
+        .invoice-id {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f0fbf5;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            font-size: 1.05rem;
+        }
+
+        .info-item strong {
+            color: #007BFF;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        thead {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        th,
+        td {
+            padding: 14px 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result {
+            font-weight: bold;
+        }
+
+        .high-result {
+            background-color: #ffe6e6;
+            color: red;
+        }
+
+        .low-result {
+            background-color: #fff8e6;
+            color: darkorange;
+        }
+
+        .normal-result {
+            background-color: #e6ffe6;
+            color: green;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .print-btn {
+            display: block;
+            margin: 30px auto 0;
+            padding: 12px 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .print-btn:hover {
+            background-color: #0056b3;
+        }
+
+        @@media print {
+            .print-btn {
+                display: none;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>مختبر مارينا للتحليلات المرضية</h1>
+            <p class="invoice-id">فاتورة رقم: @Model.Id</p>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-item"><strong>الاسم الكامل:</strong> @Model.FullName</div>
+            <div class="info-item"><strong>العمر:</strong> @Model.Age</div>
+            <div class="info-item"><strong>الطبيب:</strong> @(string.IsNullOrWhiteSpace(Model.DoctorName) ? "غير محدد" :
+                                Model.DoctorName)</div>
+            <div class="info-item"><strong>تاريخ الإنشاء:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</div>
+        </div>
+
+        <h3 style="text-align:center; margin-bottom: 15px;">تفاصيل الفحوصات</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم الفحص</th>
+                    <th>المدى المرجعي</th>
+                    <th>النتيجة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var test in Model.LabInvoiceTests)
+                {
+                    string resultClass = "";
+                    var result = test.ResultValue;
+
+                    if (result.HasValue)
+                    {
+                        if (result < test.LabTest.MinValue)
+                        {
+                            resultClass = "low-result";
+                        }
+                        else if (result > test.LabTest.MaxValue)
+                        {
+                            resultClass = "high-result";
+                        }
+                        else
+                        {
+                            resultClass = "normal-result";
+                        }
+                    }
+
+                    <tr>
+                        <td>@test.LabTest.Name</td>
+                        <td>@test.LabTest.MinValue - @test.LabTest.MaxValue</td>
+                        <td class="result @resultClass">@result?.ToString("0.##")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+
+        <div class="footer">
+            © @DateTime.Now.Year - مختبر مارينا للتحليلات المرضية | جميع الحقوق محفوظة
+        </div>
+    </div>
+</body>
+
+</html>

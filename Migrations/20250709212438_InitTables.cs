@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MarinaRegSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class RecreateSubDepartments : Migration
+    public partial class InitTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,26 @@ namespace MarinaRegSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Departments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LabTests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MinValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MaxValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    UsagePerPatient = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LabTests", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,16 +228,19 @@ namespace MarinaRegSystem.Migrations
                     ThirdName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FourthName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Neighborhood = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Allergies = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChronicDiseases = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClosePerson = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -253,6 +276,32 @@ namespace MarinaRegSystem.Migrations
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LabInvoices",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<long>(type: "bigint", nullable: true),
+                    DoctorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Age = table.Column<int>(type: "int", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NationalNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NationalIdImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NationalIdImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LabInvoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LabInvoices_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -293,6 +342,36 @@ namespace MarinaRegSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LabInvoiceTests",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LabInvoiceId = table.Column<long>(type: "bigint", nullable: false),
+                    LabTestId = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    QuantityUsed = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ResultValue = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LabInvoiceTests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LabInvoiceTests_LabInvoices_LabInvoiceId",
+                        column: x => x.LabInvoiceId,
+                        principalTable: "LabInvoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LabInvoiceTests_LabTests_LabTestId",
+                        column: x => x.LabTestId,
+                        principalTable: "LabTests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -302,18 +381,24 @@ namespace MarinaRegSystem.Migrations
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     SubDepartmentId = table.Column<int>(type: "int", nullable: true),
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: true),
                     AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AppointmentTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     RejectionReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CancelReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    ExplainReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    TimeCancel = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DiagnosisFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PatientId = table.Column<long>(type: "bigint", nullable: true),
-                    Shift = table.Column<int>(type: "int", nullable: false)
+                    Shift = table.Column<int>(type: "int", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -458,6 +543,21 @@ namespace MarinaRegSystem.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LabInvoices_PatientId",
+                table: "LabInvoices",
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LabInvoiceTests_LabInvoiceId",
+                table: "LabInvoiceTests",
+                column: "LabInvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LabInvoiceTests_LabTestId",
+                table: "LabInvoiceTests",
+                column: "LabTestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Patients_UserId",
                 table: "Patients",
                 column: "UserId",
@@ -494,7 +594,7 @@ namespace MarinaRegSystem.Migrations
                 name: "DoctorSchedules");
 
             migrationBuilder.DropTable(
-                name: "Patients");
+                name: "LabInvoiceTests");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -506,13 +606,22 @@ namespace MarinaRegSystem.Migrations
                 name: "Doctors");
 
             migrationBuilder.DropTable(
-                name: "cUsers");
+                name: "LabInvoices");
+
+            migrationBuilder.DropTable(
+                name: "LabTests");
 
             migrationBuilder.DropTable(
                 name: "SubDepartments");
 
             migrationBuilder.DropTable(
+                name: "Patients");
+
+            migrationBuilder.DropTable(
                 name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "cUsers");
         }
     }
 }

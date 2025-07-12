@@ -413,9 +413,6 @@ E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-arm\
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
@@ -895,3 +892,6 @@ E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\ExcelNumberFormat
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\RBush.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\SixLabors.Fonts.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.IO.Packaging.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\QRCoder.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.Private.Windows.Core.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll

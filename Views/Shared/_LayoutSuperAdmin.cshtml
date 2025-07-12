@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+    <title>مستشفى مارينا - @ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Feathericon CSS -->
+    <link rel="stylesheet" href="~/assets/css/feather.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    <style>
+        /* تنسيقات القائمة المنسدلة */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            min-width: 10rem;
+            padding: 0.5rem 0;
+            margin: 0;
+            font-size: 1rem;
+            color: #212529;
+            text-align: right;
+            list-style: none;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .15);
+            border-radius: 0.25rem;
+        }
+
+        /* تنسيقات زر الهاتف */
+        .mobile_btn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            z-index: 999;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .mobile_btn:focus {
+            outline: none;
+        }
+
+        .mobile_btn:hover {
+            opacity: 0.8;
+        }
+
+        /* تنسيقات السايد بار في وضع الهاتف */
+        @@media (max-width: 991px) {
+            .mobile_btn {
+                display: block !important;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: -280px;
+                height: 100%;
+                width: 280px;
+                z-index: 9999;
+                transition: all 0.3s ease;
+                background: #fff;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .sidebar.active {
+                right: 0;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .page-wrapper {
+                margin-right: 0;
+            }
+
+            .mobile-user-menu {
+                display: block;
+            }
+
+            .user-menu {
+                display: none;
+            }
+
+            /* إصلاح السايدبار في RTL للجوال فقط */
+            html[dir="rtl"] .sidebar {
+                left: -280px !important;
+                right: auto !important;
+            }
+
+            html[dir="rtl"] .sidebar.active {
+                left: 0 !important;
+                right: auto !important;
+            }
+        }
+
+        /* باقي التنسيقات */
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            clear: both;
+            font-weight: 400;
+            color: #212529;
+            text-align: inherit;
+            white-space: nowrap;
+            background-color: transparent;
+            border: 0;
+            text-decoration: none;
+        }
+
+        .dropdown-item:hover {
+            color: #16181b;
+            text-decoration: none;
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-menu-end {
+            right: 0;
+            left: auto;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-menu .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+
+        .sidebar {
+            position: relative;
+            right: 0;
+            left: 0;
+            width: 280px;
+            height: 100%;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            transition: none;
+        }
+    </style>
+
+    @RenderSection("Head", required: false)
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <a href="~/SuperAdmin/Index" class="logo">
+                    <img src="~/assets/img/marina-logo5.png" width="35" height="35" alt=""> <span>مستشفى مارينا
+                        الاهلي</span>
+                </a>
+            </div>
+            <a id="toggle_btn" href="javascript:void(0);"><img src="~/assets/img/icons/bar-icon.svg" alt=""></a>
+            <button id="mobile_btn" class="mobile_btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav user-menu float-end">
+                <li class="nav-item dropdown has-arrow user-profile-list">
+                    <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <div class="user-names">
+                            <h5>@ViewBag.Username</h5>
+                        </div>
+                        <span class="user-img">
+                            <img src="~/assets/img/user.jpg" alt="المريض">
+                        </span>
+                    </a>
+                    <div class="dropdown-menu">
+
+
+                        <a class="dropdown-item" href="~/Home/Logout">تسجيل خروج</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="dropdown mobile-user-menu float-end">
+                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                        class="fa-solid fa-ellipsis-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-end">
+
+
+                    <a class="dropdown-item" href="~/Home/Logout">تسجيل الخروج</a>
+                </div>
+            </div>
+        </div>
+        <!-- /Header -->
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title" style="font-weight:bolder">القائمة الرئيسية</li>
+                        <li>
+                            <a href="~/SuperAdmin/Index">
+                                <span class="menu-side"><img src="~/assets/img/icons/menu-icon-01.svg" alt=""></span>
+                                <span style="font-weight:bolder">الرئيسية</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="~/SuperAdmin/Users">
+                                <span class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></span>
+                                <span style="font-weight:bolder">المستخدمين </span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Sidebar -->
+
+        <!-- Page Content -->
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ul class="breadcrumb">
+                                @RenderSection("currentPage", required: false)
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                @RenderBody()
+            </div>
+        </div>
+        <!-- /Page Content -->
+    </div>
+
+    <div class="sidebar-overlay" data-reff=""></div>
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    @RenderSection("Footer", required: false)
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        'use strict';
+
+        $(document).ready(function () {
+            // تهيئة Slimscroll للسايدبار
+            $('.sidebar-inner').slimScroll({
+                height: '100%',
+                width: '100%',
+                position: 'right',
+                size: '7px',
+                color: '#ccc',
+                wheelStep: 10,
+                touchScrollStep: 100
+            });
+
+            // Toggle Sidebar Desktop
+            $("#toggle_btn").on("click", function (e) {
+                e.preventDefault();
+                $('body').toggleClass('mini-sidebar');
+                if ($('body').hasClass('mini-sidebar')) {
+                    $('.subdrop + ul').slideUp();
+                } else {
+                    $('.subdrop + ul').slideDown();
+                }
+            });
+
+            // Mobile Sidebar
+            $("#mobile_btn").on("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Mobile button clicked'); // للتأكد من عمل الزر
+                $('.sidebar').toggleClass('active');
+                $('.sidebar-overlay').toggleClass('active');
+            });
+
+            // إغلاق السايدبار عند الضغط على overlay
+            $(".sidebar-overlay").on("click", function () {
+                $('.sidebar').removeClass('active');
+                $('.sidebar-overlay').removeClass('active');
+            });
+
+            // إغلاق السايدبار عند الضغط خارجه على الهاتف
+            $(document).on('click', function (e) {
+                if ($(window).width() <= 991) {
+                    if (!$(e.target).closest('.sidebar, #mobile_btn').length) {
+                        $('.sidebar').removeClass('active');
+                        $('.sidebar-overlay').removeClass('active');
+                    }
+                }
+            });
+
+            // تهيئة القوائم المنسدلة
+            $('.dropdown-toggle').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $dropdown = $(this).closest('.dropdown');
+                var $menu = $dropdown.find('.dropdown-menu');
+
+                // إغلاق جميع القوائم المنسدلة الأخرى
+                $('.dropdown-menu').not($menu).removeClass('show');
+
+                // تبديل حالة القائمة الحالية
+                $menu.toggleClass('show');
+            });
+
+            // إغلاق القائمة المنسدلة عند الضغط خارجها
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

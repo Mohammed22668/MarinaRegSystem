@@ -294,10 +294,9 @@ namespace MarinaRegSystem.Controllers
         // صفحة عرض الحجوزات السابقة للمريض
         public async Task<IActionResult> MyAppointments()
         {
-            // جرب أولاً الحصول على UserId من Claim الشائع استخدامه
+
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // لو ما حصلنا على UserId من ClaimTypes.NameIdentifier جرب "UserId"
             if (string.IsNullOrEmpty(userIdClaim))
             {
                 userIdClaim = User.FindFirst("UserId")?.Value;
@@ -305,7 +304,6 @@ namespace MarinaRegSystem.Controllers
 
             if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out long userId))
             {
-                // لم يتم التعرف على المستخدم، إعادة التوجيه لتسجيل الدخول
                 return RedirectToAction("Login", "Home");
             }
 
@@ -329,15 +327,12 @@ namespace MarinaRegSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Patient patient)
         {
-            // محاولة جلب هوية المستخدم من الجلسة (Claims)
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
             {
-                // إذا لم يكن المستخدم مسجل دخول، إعادته إلى صفحة تسجيل الدخول
                 return RedirectToAction("Login", "Home");
             }
 
-            // التحقق إن كان المستخدم قد أدخل بياناته سابقًا
             var existing = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
             if (existing != null)
             {
@@ -345,17 +340,14 @@ namespace MarinaRegSystem.Controllers
                 return RedirectToAction("AddSchedule", "Patient");
             }
 
-            // التحقق من صحة البيانات المدخلة في النموذج
             if (!ModelState.IsValid)
             {
                 return View(patient);
             }
 
-            // ربط المريض بالمستخدم الحالي
             patient.UserId = userId;
             patient.CreatedAt = DateTime.Now;
 
-            // حفظ البيانات
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
 
@@ -366,7 +358,7 @@ namespace MarinaRegSystem.Controllers
         public IActionResult Departments()
         {
             var departments = _context.Departments
-                .Where(d => d.Status)  // فقط الأقسام الفعالة
+                .Where(d => d.Status)
                 .OrderBy(d => d.Name)
                 .ToList();
 
@@ -382,7 +374,7 @@ namespace MarinaRegSystem.Controllers
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
             if (patient == null)
-                return RedirectToAction("Create"); // أو صفحة إنشاء بيانات المريض
+                return RedirectToAction("Create");
 
             return View(patient);
         }

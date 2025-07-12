@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarinaRegSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250625204112_CancelReasonWithTime")]
-    partial class CancelReasonWithTime
+    [Migration("20250711081804_StatusLabInvoice")]
+    partial class StatusLabInvoice
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,10 @@ namespace MarinaRegSystem.Migrations
 
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ExplainReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
@@ -264,6 +268,127 @@ namespace MarinaRegSystem.Migrations
                     b.ToTable("DoctorSchedules");
                 });
 
+            modelBuilder.Entity("MarinaRegSystem.Models.LabInvoice", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DoctorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NationalIdImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalIdImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("PatientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("LabInvoices");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.LabInvoiceTest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("LabInvoiceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("LabTestId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("QuantityUsed")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("ResultValue")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LabInvoiceId");
+
+                    b.HasIndex("LabTestId");
+
+                    b.ToTable("LabInvoiceTests");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.LabTest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("MaxValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MinValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("UsagePerPatient")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LabTests");
+                });
+
             modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>
                 {
                     b.Property<long>("Id")
@@ -275,6 +400,9 @@ namespace MarinaRegSystem.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
                     b.Property<string>("Allergies")
                         .HasColumnType("nvarchar(max)");
 
@@ -283,6 +411,9 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChronicDiseases")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClosePerson")
@@ -314,8 +445,10 @@ namespace MarinaRegSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Neighborhood")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Province")
@@ -689,6 +822,34 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Doctor");
                 });
 
+            modelBuilder.Entity("MarinaRegSystem.Models.LabInvoice", b =>
+                {
+                    b.HasOne("MarinaRegSystem.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.LabInvoiceTest", b =>
+                {
+                    b.HasOne("MarinaRegSystem.Models.LabInvoice", "LabInvoice")
+                        .WithMany("LabInvoiceTests")
+                        .HasForeignKey("LabInvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarinaRegSystem.Models.LabTest", "LabTest")
+                        .WithMany()
+                        .HasForeignKey("LabTestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("LabInvoice");
+
+                    b.Navigation("LabTest");
+                });
+
             modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>
                 {
                     b.HasOne("MarinaRegSystem.Models.cUsers", "User")
@@ -776,6 +937,11 @@ namespace MarinaRegSystem.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("DoctorSchedules");
+                });
+
+            modelBuilder.Entity("MarinaRegSystem.Models.LabInvoice", b =>
+                {
+                    b.Navigation("LabInvoiceTests");
                 });
 
             modelBuilder.Entity("MarinaRegSystem.Models.Patient", b =>

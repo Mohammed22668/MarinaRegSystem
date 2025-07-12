@@ -27,6 +27,12 @@ namespace MarinaRegSystem.Data
 
         public DbSet<SubDepartment> SubDepartments { get; set; }
 
+        public DbSet<LabTest> LabTests { get; set; }
+
+        public DbSet<LabInvoice> LabInvoices { get; set; }
+        public DbSet<LabInvoiceTest> LabInvoiceTests { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -111,6 +117,33 @@ namespace MarinaRegSystem.Data
           .WithMany(sd => sd.Doctors)
           .HasForeignKey(d => d.SubDepartmentId)
           .OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.Entity<LabInvoiceTest>()
+                  .HasOne(lit => lit.LabInvoice)
+                  .WithMany(li => li.LabInvoiceTests)
+                  .HasForeignKey(lit => lit.LabInvoiceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<LabInvoiceTest>()
+                .HasOne(lit => lit.LabTest)
+                .WithMany()
+                .HasForeignKey(lit => lit.LabTestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<LabInvoiceTest>()
+.Property(p => p.Price)
+.HasPrecision(18, 2);
+
+            builder.Entity<LabInvoiceTest>()
+                .Property(p => p.QuantityUsed)
+                .HasPrecision(18, 2);
+
+            builder.Entity<LabInvoiceTest>()
+                .Property(p => p.ResultValue)
+                .HasPrecision(18, 2);
+
 
 
 
