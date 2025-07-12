@@ -4,6 +4,7 @@ using MarinaRegSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarinaRegSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250712080134_AddLabInventoryTable")]
+    partial class AddLabInventoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,30 +375,6 @@ namespace MarinaRegSystem.Migrations
                     b.ToTable("LabInvoiceTests");
                 });
 
-            modelBuilder.Entity("MarinaRegSystem.Models.LabStock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LabTestId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("QuantityAvailable")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LabTestId");
-
-                    b.ToTable("LabStocks");
-                });
-
             modelBuilder.Entity("MarinaRegSystem.Models.LabTest", b =>
                 {
                     b.Property<int>("Id")
@@ -421,9 +400,6 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("StockQuantity")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Unit")
@@ -905,17 +881,6 @@ namespace MarinaRegSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("LabInvoice");
-
-                    b.Navigation("LabTest");
-                });
-
-            modelBuilder.Entity("MarinaRegSystem.Models.LabStock", b =>
-                {
-                    b.HasOne("MarinaRegSystem.Models.LabTest", "LabTest")
-                        .WithMany()
-                        .HasForeignKey("LabTestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("LabTest");
                 });

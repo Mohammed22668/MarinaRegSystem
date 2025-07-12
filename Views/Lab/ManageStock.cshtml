@@ -1,8 +1,6 @@
-@model MarinaRegSystem.Models.LabTest
-
 @{
     Layout = "_LayoutLab";
-    ViewData["Title"] = ViewContext.RouteData.Values["action"].ToString() == "Create" ? "إضافة تحليل" : "تعديل تحليل";
+    ViewData["Title"] = "لوحة تحكم المختبر";
 }
 
 @section Head {
@@ -66,60 +64,39 @@
     <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الصفحة الرئيسية</a></li>
 }
 
+<div class="container py-5">
 
-<div class="container mt-4">
-    <h3>@ViewData["Title"]</h3>
 
-    <form asp-action="@ViewContext.RouteData.Values["action"]" method="post">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="Unit" class="form-label"></label>
-                <input asp-for="Unit" class="form-control" />
-            </div>
-            <div class="col-md-3">
-                <label asp-for="Price" class="form-label"></label>
-                <input asp-for="Price" class="form-control" />
-            </div>
-            <div class="col-md-3">
-                <label asp-for="MinValue" class="form-label"></label>
-                <input asp-for="MinValue" class="form-control" />
-            </div>
-            <div class="col-md-3">
-                <label asp-for="MaxValue" class="form-label"></label>
-                <input asp-for="MaxValue" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="StockQuantity" class="control-label"></label>
-                <input asp-for="StockQuantity" class="form-control" type="number" min="0" step="1" />
-                <span asp-validation-for="StockQuantity" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="UsagePerPatient" class="form-label"></label>
-                <input asp-for="UsagePerPatient" class="form-control" />
-            </div>
-            <div class="col-md-12">
-                <label asp-for="Notes" class="form-label"></label>
-                <textarea asp-for="Notes" class="form-control"></textarea>
-            </div>
-        </div>
-
-        <div class="mt-4 d-grid">
-            <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> حفظ</button>
-        </div>
-    </form>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الكمية الحالية</th>
+                <th>إضافة كمية</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var test in Model)
+            {
+                <tr>
+                    <td>@test.Name</td>
+                    <td>@test.StockQuantity</td>
+                    <td>
+                        <form asp-action="AddStock" method="post" class="d-flex align-items-center">
+                            <input type="hidden" name="id" value="@test.Id" />
+                            <input type="number" name="quantity" min="1" class="form-control me-2" placeholder="الكمية"
+                                required />
+                            <button type="submit" class="btn btn-success btn-sm">➕ إضافة</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 
 
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
 
 
 @section Footer {
