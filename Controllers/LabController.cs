@@ -147,11 +147,39 @@ namespace MarinaRegSystem.Controllers
         {
             var model = new CreateLabInvoiceViewModel
             {
-                AvailableTests = _context.LabTests.ToList()
+                AvailableLabTests = _context.LabTests.ToList(), // ✅ نستخدم هذه الآن لعرض الكمية
+                AvailableTests = _context.LabTests.ToList(),     // ✅ نُبقي على هذه لدعم أي استخدامات أخرى لديك
+                Patients = _context.Patients.ToList()            // ✅ إذا كانت هناك قائمة مرضى في الصفحة
             };
 
             return View(model);
         }
+
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult ManageStock()
+        {
+            var tests = _context.LabTests.ToList();
+            return View(tests);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "LabDirector")]
+        public async Task<IActionResult> AddStock(int id, decimal quantity)
+        {
+            var test = await _context.LabTests.FindAsync(id);
+            if (test == null)
+                return NotFound();
+
+            if (quantity > 0)
+            {
+                test.StockQuantity += quantity;
+                _context.Update(test);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("ManageStock");
+        }
+
 
 
 
@@ -164,7 +192,7 @@ namespace MarinaRegSystem.Controllers
             {
                 string? savedFileName = null;
 
-                // حفظ صورة الهوية
+                // حفظ صورة الهوية إن وجدت
                 if (model.NationalIdImageFile != null && model.NationalIdImageFile.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -182,6 +210,27 @@ namespace MarinaRegSystem.Controllers
                     savedFileName = "/uploads/" + uniqueFileName;
                 }
 
+                // تحقق من توفر الكمية في المخزون أولاً
+                foreach (var testId in model.SelectedTestIds)
+                {
+                    var labTest = await _context.LabTests.FindAsync(testId);
+                    if (labTest == null)
+                    {
+                        ModelState.AddModelError("", $"التحليل برقم {testId} غير موجود.");
+                        model.AvailableTests = _context.LabTests.ToList();
+                        return View(model);
+                    }
+
+                    decimal requiredQty = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m;
+
+                    if (labTest.StockQuantity < requiredQty)
+                    {
+                        ModelState.AddModelError("", $"الكمية المتوفرة للتحليل ({labTest.Name}) غير كافية.");
+                        model.AvailableTests = _context.LabTests.ToList();
+                        return View(model);
+                    }
+                }
+
                 // إنشاء الفاتورة
                 var invoice = new LabInvoice
                 {
@@ -193,21 +242,28 @@ namespace MarinaRegSystem.Controllers
                 };
 
                 _context.LabInvoices.Add(invoice);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // للحصول على ID
 
-                // ربط الفحوصات المختارة
+                // ربط الفحوصات وخصم الكميات
                 foreach (var testId in model.SelectedTestIds)
                 {
                     var labTest = await _context.LabTests.FindAsync(testId);
                     if (labTest != null)
                     {
+                        decimal usedQty = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m;
+
+                        // خصم الكمية من المخزن
+                        labTest.StockQuantity -= usedQty;
+
                         _context.LabInvoiceTests.Add(new LabInvoiceTest
                         {
                             LabInvoiceId = invoice.Id,
                             LabTestId = testId,
                             Price = labTest.Price,
-                            QuantityUsed = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m
+                            QuantityUsed = usedQty
                         });
+
+                        _context.LabTests.Update(labTest); // تحديث الكمية
                     }
                 }
 
@@ -219,6 +275,7 @@ namespace MarinaRegSystem.Controllers
             model.AvailableTests = _context.LabTests.ToList();
             return View(model);
         }
+
 
 
         [Authorize(Roles = "LabDirector,LabStaff")]

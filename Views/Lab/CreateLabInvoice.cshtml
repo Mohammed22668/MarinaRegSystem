@@ -38,62 +38,42 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
+        @@section Styles {
         <style>
-            body {
-                font-family: 'Tajawal', sans-serif;
-                background-color: #f8f9fa;
-                padding: 40px 0;
-            }
-
-            .container {
-                max-width: 650px;
-                margin: auto;
-            }
-
-            h2 {
-                text-align: center;
-                color: #007BFF;
-                margin-bottom: 30px;
-            }
-
-            .form-control,
             .form-select {
-                border-radius: 8px;
+                padding: 0.6rem 0.75rem;
+                font-size: 1rem;
             }
 
-            label {
-                font-weight: bold;
+            .select2-container {
+                width: 100% !important;
             }
 
-            .test-select {
-                width: 100%;
-            }
-
-            .btn-primary {
-                background-color: #007BFF;
-                border-color: #007BFF;
-                transition: all 0.3s ease;
-            }
-
-            .btn-primary:hover {
-                background-color: #0056b3;
-                transform: scale(1.03);
+            .select2-selection {
+                height: 48px !important;
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
             }
 
             .card {
-                border: none;
-                transition: all 0.3s ease;
+                border-radius: 10px;
             }
 
-            .card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+            .card-header {
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
             }
 
-            .form-group {
-                margin-bottom: 1.5rem;
+            .btn-lg {
+                font-size: 1.1rem;
+            }
+
+            .form-control-lg {
+                font-size: 1rem;
+                padding: 0.5rem 0.75rem;
             }
         </style>
+        }
 
 
     </head>
@@ -104,67 +84,95 @@
     <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">انشاء فاتورة مختبر </a>
     </li>
 }
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">إنشاء فاتورة مختبر</h4>
+                </div>
+                <div class="card-body p-4">
 
-<div class="container card p-4 shadow-sm">
-    <h2>إنشاء فاتورة مختبر</h2>
+                    <form asp-action="CreateLabInvoice" method="post" enctype="multipart/form-data">
 
-    <form asp-action="CreateLabInvoice" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label asp-for="FullName">الاسم الكامل</label>
-            <input asp-for="FullName" class="form-control" placeholder="أدخل الاسم الكامل" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
+                        <div class="form-group mb-3">
+                            <label asp-for="FullName" class="form-label">الاسم الكامل</label>
+                            <input asp-for="FullName" class="form-control form-control-lg"
+                                placeholder="أدخل الاسم الكامل" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Age" class="form-label">العمر</label>
+                            <input asp-for="Age" class="form-control form-control-lg" placeholder="أدخل العمر" />
+                            <span asp-validation-for="Age" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="DoctorName" class="form-label">اسم الطبيب (اختياري)</label>
+                            <input asp-for="DoctorName" class="form-control" placeholder="أدخل اسم الطبيب إن وجد" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="NationalIdImageFile" class="form-label">صورة الهوية (اختياري)</label>
+                            <input asp-for="NationalIdImageFile" type="file" class="form-control" accept="image/*" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label">اختر التحاليل المطلوبة</label>
+                            <select class="form-select test-select" multiple="multiple" name="SelectedTestIds">
+                                @foreach (var test in Model.AvailableLabTests)
+                                {
+                                    <option value="@test.Id" disabled="@(test.StockQuantity <= 0)">
+                                        @test.Name - السعر: @test.Price.ToString("0") دينار - الكمية: @test.StockQuantity
+                                        @if (test.StockQuantity <= 0)
+                                        {
+                                            <text>(غير متوفر)</text>
+                                        }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                            class="btn btn-lg btn-primary w-100 mt-4 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-save"></i> حفظ الفاتورة
+                        </button>
+                    </form>
+
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label asp-for="Age">العمر</label>
-            <input asp-for="Age" class="form-control" placeholder="أدخل العمر" />
-            <span asp-validation-for="Age" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="DoctorName">اسم الطبيب (اختياري)</label>
-            <input asp-for="DoctorName" class="form-control" placeholder="أدخل اسم الطبيب إن وجد" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="NationalIdImageFile">صورة الهوية (اختياري)</label>
-            <input asp-for="NationalIdImageFile" type="file" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>اختر التحاليل المطلوبة</label>
-            <select name="SelectedTestIds" class="form-control test-select" multiple>
-                @foreach (var test in Model.AvailableTests)
-                {
-                    <option value="@test.Id">
-                        @test.Name - السعر: @test.Price.ToString("0.00") د.ع
-                    </option>
-                }
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100 mt-3">💾 حفظ الفاتورة</button>
-    </form>
+    </div>
 </div>
 
 
-
 @section Scripts {
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+
 
     <script>
         $(document).ready(function () {
             $('.test-select').select2({
                 placeholder: "اختر التحاليل...",
                 allowClear: true,
-                dir: "rtl"
+                dir: "rtl",
+                language: {
+                    noResults: function () {
+                        return "لا توجد نتائج";
+                    },
+                    searching: function () {
+                        return "جاري البحث...";
+                    }
+                }
             });
         });
     </script>
 }
-
 
 
 

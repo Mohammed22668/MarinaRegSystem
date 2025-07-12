@@ -37,5 +37,10 @@ namespace MarinaRegSystem.Models
 
         [Display(Name = "تاريخ الإضافة")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+
+        [Display(Name = "الكمية في المخزن")]
+        [Range(0, double.MaxValue)]
+        public decimal StockQuantity { get; set; } = 0;
     }
 }

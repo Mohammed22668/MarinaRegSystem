@@ -32,6 +32,10 @@ namespace MarinaRegSystem.Data
         public DbSet<LabInvoice> LabInvoices { get; set; }
         public DbSet<LabInvoiceTest> LabInvoiceTests { get; set; }
 
+        public DbSet<LabInventory> LabInventory { get; set; }
+        public DbSet<LabStock> LabStocks { get; set; }
+
+
 
 
         protected override void OnModelCreating(ModelBuilder builder)
