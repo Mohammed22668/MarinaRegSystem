@@ -1,0 +1,156 @@
+@model MarinaRegSystem.Models.EditAppointmentViewModel
+
+<form asp-action="EditSchedule" method="post" enctype="multipart/form-data">
+    @Html.HiddenFor(m => m.Id)
+
+    <div id="step3" class="form-section">
+        <h5 class="step-title">تعديل تفاصيل الموعد</h5>
+
+        <div class="mb-3">
+            <label class="form-label">القسم الرئيسي<span class="text-danger">*</span></label>
+          
+               
+           <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments">
+    <option value="">اختر القسم</option>
+</select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">القسم الفرعي</label>
+          <select asp-for="SubDepartmentId" class="form-select" asp-items="ViewBag.SubDepartments">
+    <option value="">اختر القسم الفرعي</option>
+</select>
+        </div>
+
+        <div class="mb-3">
+          
+          
+                <option value="">اختر الطبيب</option>
+             <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.Doctors">
+    <option value="">اختر الطبيب</option>
+</select>
+          
+        </div>
+
+
+
+
+      @{
+    var modelDate = Model.AppointmentDate.Date;
+    var tomorrow = DateTime.Now.Date.AddDays(1);
+    var minDate = (modelDate < tomorrow ? modelDate : tomorrow).ToString("yyyy-MM-dd");
+}
+
+<div class="mb-3">
+    <label class="form-label">تاريخ الموعد</label>
+    <input type="date" name="AppointmentDate" class="form-control"
+           value="@Model.AppointmentDate.ToString("yyyy-MM-dd")"
+           min="@minDate"
+           required />
+</div>
+
+        <div class="mb-3">
+            <label class="form-label">وقت الموعد</label>
+            <input type="time" name="AppointmentTime" class="form-control" value="@(Model.AppointmentTime?.ToString(@"hh\:mm"))" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الشفت</label>
+          <select asp-for="Shift" class="form-select" asp-items="Html.GetEnumSelectList<ShiftType>()">
+    <option value="">اختر الشفت</option>
+</select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">ملاحظات</label>
+            <textarea name="Notes" class="form-control" rows="3" maxlength="500">@Model.Notes</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">تقرير طبي سابق (اختياري)</label>
+            <input type="file" name="DiagnosisFile" class="form-control" accept=".pdf,image/*" />
+            @if (!string.IsNullOrEmpty(Model.DiagnosisFileUrl))
+            {
+                <a href="@Model.DiagnosisFileUrl" target="_blank" class="d-block mt-1">عرض الملف الحالي</a>
+            }
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">تحديث الموعد</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const departmentSelect = document.getElementById("DepartmentId");
+        const subDepartmentSelect = document.getElementById("SubDepartmentId");
+        const doctorSelect = document.getElementById("DoctorId");
+
+        function loadDoctors(departmentId, subDepartmentId = null) {
+            let url = `/Patient/GetDoctorsByDepartment?departmentId=${departmentId}`;
+            if (subDepartmentId) {
+                url += `&subDepartmentId=${subDepartmentId}`;
+            }
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let options = '<option value="">اختر الطبيب</option>';
+                    data.forEach(doc => {
+                        options += `<option value="${doc.value}">${doc.text}</option>`;
+                    });
+                    doctorSelect.innerHTML = options;
+
+                    // تحديد الطبيب الحالي (إن وجد)
+                    const selectedDoctorId = '@Model.DoctorId';
+                    if (selectedDoctorId) {
+                        doctorSelect.value = selectedDoctorId;
+                    }
+                });
+        }
+
+        // عند تغيير القسم
+        departmentSelect.addEventListener("change", function () {
+            const departmentId = this.value;
+            if (!departmentId) return;
+
+            fetch(`/Patient/GetSubDepartments?departmentId=${departmentId}`)
+                .then(res => res.json())
+                .then(data => {
+                    let options = '<option value="">اختر القسم الفرعي</option>';
+                    data.forEach(sd => {
+                        options += `<option value="${sd.value}">${sd.text}</option>`;
+                    });
+                    subDepartmentSelect.innerHTML = options;
+                    doctorSelect.innerHTML = '<option value="">اختر الطبيب</option>';
+                });
+
+            // تحميل الأطباء للقسم مباشرة بدون قسم فرعي
+            setTimeout(() => {
+                if (!subDepartmentSelect.value) {
+                    loadDoctors(departmentId);
+                }
+            }, 300);
+        });
+
+        // عند تغيير القسم الفرعي
+        subDepartmentSelect.addEventListener("change", function () {
+            const departmentId = departmentSelect.value;
+            const subDepartmentId = this.value || null;
+            loadDoctors(departmentId, subDepartmentId);
+        });
+
+        // تحميل الأطباء عند الدخول للصفحة إن كان القسم موجود
+        const currentDeptId = departmentSelect.value;
+        const currentSubDeptId = subDepartmentSelect.value;
+        if (currentDeptId) {
+            loadDoctors(currentDeptId, currentSubDeptId);
+        }
+    });
+</script>
+}

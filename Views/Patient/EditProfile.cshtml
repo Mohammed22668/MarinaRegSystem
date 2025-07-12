@@ -1,0 +1,366 @@
+@model MarinaRegSystem.Models.Patient
+
+@{
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "تعديل الملف الشخصي";
+}
+
+@section currentPage {
+    <li class="breadcrumb-item active">تعديل الملف الشخصي</li>
+}
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - تعديل الملف الشخصي</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <style>
+            body {
+                background-color: #f4f6f9;
+            }
+
+            .profile-form {
+                max-width: 800px;
+                margin: 2rem auto;
+            }
+
+            .card-edit {
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                padding: 2rem;
+            }
+
+            .form-label {
+                font-weight: bold;
+            }
+
+            .btn-save {
+                border-radius: 50px;
+                padding: 0.6rem 1.5rem;
+                font-weight: bold;
+                width: 100%;
+            }
+        </style>
+    </head>
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card card-edit shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">تعديل البيانات الشخصية</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+                    }
+
+                    <form asp-action="EditProfile" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- الأسماء -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label fw-bold">الاسم الأول</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="FirstName" class="form-control" placeholder="أدخل الاسم الأول" />
+                                </div>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SecondName" class="form-label fw-bold">اسم الأب</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="SecondName" class="form-control" placeholder="ادخل اسم الأب" />
+                                </div>
+                                <span asp-validation-for="SecondName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ThirdName" class="form-label fw-bold">اسم الجد</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="ThirdName" class="form-control" placeholder="ادخل اسم الجد" />
+                                </div>
+                                <span asp-validation-for="ThirdName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="FourthName" class="form-label fw-bold">اسم جد الأب</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input asp-for="FourthName" class="form-control" placeholder="ادخل اسم جد الأب" />
+                                </div>
+                                <span asp-validation-for="FourthName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- العمر والتاريخ -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="DateOfBirth" class="form-label fw-bold">تاريخ الميلاد</label>
+                                <input asp-for="DateOfBirth" class="form-control" type="date" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="Age" class="form-label fw-bold">العمر</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-hourglass-half"></i></span>
+                                    <input type="number" id="Age" name="Age" class="form-control"
+                                        placeholder="أدخل العمر" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الجنس والرقم الوطني -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Gender" class="form-label fw-bold">الجنس</label>
+                                <select asp-for="Gender" class="form-select">
+                                    <option value="ذكر">ذكر</option>
+                                    <option value="أنثى">أنثى</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="NationalNumber" class="form-label fw-bold">الرقم الوطني</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                    <input asp-for="NationalNumber" class="form-control" placeholder="رقم الهوية" />
+                                </div>
+                                <span asp-validation-for="NationalNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- الدولة والمحافظة -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Country" class="form-label fw-bold">الدولة</label>
+                                <input asp-for="Country" class="form-control" value="العراق" readonly />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Province" class="form-label fw-bold">المحافظة</label>
+                                <select asp-for="Province" class="form-select">
+                                    <option value="">-- اختر المحافظة --</option>
+                                    <option value="بغداد">بغداد</option>
+                                    <option value="البصرة">البصرة</option>
+                                    <option value="نينوى">نينوى</option>
+                                    <option value="الأنبار">الأنبار</option>
+                                    <option value="أربيل">أربيل</option>
+                                    <option value="ذي قار">ذي قار</option>
+                                    <option value="السليمانية">السليمانية</option>
+                                    <option value="ديالى">ديالى</option>
+                                    <option value="كركوك">كركوك</option>
+                                    <option value="صلاح الدين">صلاح الدين</option>
+                                    <option value="واسط">واسط</option>
+                                    <option value="القادسية">القادسية</option>
+                                    <option value="بابل">بابل</option>
+                                    <option value="كربلاء">كربلاء</option>
+                                    <option value="النجف">النجف</option>
+                                    <option value="ميسان">ميسان</option>
+                                    <option value="المثنى">المثنى</option>
+                                    <option value="دهوك">دهوك</option>
+                                </select>
+                                <span asp-validation-for="Province" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- القضاء والمحلة -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="City" class="form-label fw-bold">القضاء أو المنطقة</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input asp-for="City" class="form-control" placeholder="مثال: بغداد / الكرادة" />
+                                </div>
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Neighborhood" class="form-label fw-bold">محلة / زقاق / سكن</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input asp-for="Neighborhood" class="form-control"
+                                        placeholder="مثال: شارع الرسالة - بناية 25" />
+                                </div>
+                                <span asp-validation-for="Neighborhood" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- فصيلة الدم والشخص المقرب -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="BloodType" class="form-label fw-bold">فصيلة الدم</label>
+                                <select asp-for="BloodType" class="form-select">
+                                    <option value="">-- اختر فصيلة الدم --</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                                <span asp-validation-for="BloodType" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ClosePerson" class="form-label fw-bold">شخص مقرب</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-biohazard"></i></span>
+                                    <input asp-for="ClosePerson" class="form-control" placeholder="مثال: أحمد محمد" />
+                                </div>
+                                <span asp-validation-for="ClosePerson" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- رقم الهاتف والحساسية -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">رقم هاتف إضافي</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="مثال: 07701234567" />
+                                </div>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Allergies" class="form-label fw-bold">التداخلات الدوائية</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-pills"></i></span>
+                                    <input asp-for="Allergies" class="form-control"
+                                        placeholder="مثال: حساسية البنسلين" />
+                                </div>
+                                <span asp-validation-for="Allergies" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- الأمراض المزمنة -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-12">
+                                <label asp-for="ChronicDiseases" class="form-label fw-bold">الأمراض المزمنة</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
+                                    <input asp-for="ChronicDiseases" class="form-control"
+                                        placeholder="مثال: السكري، ضغط الدم" />
+                                </div>
+                                <span asp-validation-for="ChronicDiseases" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- زر الحفظ -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-save">
+                                <i class="fas fa-save me-2"></i> حفظ التعديلات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function calculateAgeFromDOB(dobStr) {
+            const dob = new Date(dobStr);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function calculateDOBFromAge(age) {
+            const today = new Date();
+            const year = today.getFullYear() - age;
+            return `${year}-07-01`;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const dobInput = document.getElementById("DateOfBirth");
+            const ageInput = document.getElementById("Age");
+
+            if (!dobInput || !ageInput) return;
+
+            // إذا تم تغيير تاريخ الميلاد => حساب العمر
+            dobInput.addEventListener("change", function () {
+                const age = calculateAgeFromDOB(this.value);
+                if (!isNaN(age)) {
+                    ageInput.value = age;
+                }
+            });
+
+            // إذا تم إدخال عمر => حساب تاريخ الميلاد
+            ageInput.addEventListener("input", function () {
+                const age = parseInt(this.value);
+                if (!isNaN(age) && age >= 0) {
+                    dobInput.value = calculateDOBFromAge(age);
+                }
+            });
+
+            // التهيئة الأولية عند تحميل الصفحة
+            if (dobInput.value) {
+                const age = calculateAgeFromDOB(dobInput.value);
+                if (!isNaN(age)) {
+                    ageInput.value = age;
+                }
+            }
+        });
+    </script>
+}
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

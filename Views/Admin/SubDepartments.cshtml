@@ -1,0 +1,249 @@
+@model SubDepartmentFilterViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "الأقسام الفرعية";
+}
+
+
+@section Head {
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="~/assets/img/favicon.png">
+    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
+     <style>
+    .table th {
+        background-color: #f1f4f7;
+        color: #3b3f5c;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-avatar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .table-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .rating i {
+        font-size: 1rem;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .bg-success-light {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .bg-danger-light {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-primary i {
+        margin-left: 5px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #3b3f5c;
+        font-size: 1.75rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 50px;
+    }
+</style>
+
+</head>
+}
+
+
+<h2 class="mb-4 text-center">الأقسام الفرعية</h2>
+
+<!-- نموذج البحث والفلترة -->
+<form asp-action="SubDepartments" method="get" class="row mb-4">
+    <div class="col-md-4 mb-2">
+        <input type="text" name="SubDepartmentName" value="@Model.SubDepartmentName" class="form-control" placeholder="اسم القسم الفرعي" />
+    </div>
+    <div class="col-md-4 mb-2">
+        <select name="DepartmentId" class="form-control">
+            <option value="">-- اختر القسم الرئيسي --</option>
+          @foreach (var dept in Model.Departments)
+{
+    if (dept.Value == Model.DepartmentId?.ToString())
+    {
+        <option value="@dept.Value" selected>@dept.Text</option>
+    }
+    else
+    {
+        <option value="@dept.Value">@dept.Text</option>
+    }
+}
+        </select>
+    </div>
+    <div class="col-md-4 mb-2 text-end">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i> بحث
+        </button>
+        <a asp-action="CreateSubDepartment" class="btn btn-success">
+            <i class="fas fa-plus-circle me-1"></i> إضافة قسم فرعي
+        </a>
+    </div>
+</form>
+
+<!-- جدول النتائج -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered text-center">
+        <thead class="table-light">
+            <tr>
+                <th>اسم القسم الفرعي</th>
+                <th>القسم الرئيسي</th>
+                <th>عدد الأطباء</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Results.Any())
+            {
+                foreach (var item in Model.Results)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Department?.Name</td>
+                        <td>@(item.Doctors?.Count ?? 0)</td>
+                        <td>
+                            <a asp-action="EditSubDepartment" asp-route-id="@item.Id" class="btn btn-sm btn-primary me-1">تعديل</a>
+
+                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn" data-id="@item.Id" title="إلغاء الحجز">
+    <i class="fas fa-times me-1"></i> إلغاء
+</a>
+                            
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">لا توجد نتائج لعرضها.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+
+            deleteButtons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const id = this.getAttribute("data-id");
+
+                    Swal.fire({
+                        title: 'هل أنت متأكد؟',
+                        text: "لن تتمكن من التراجع عن هذا الإجراء!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'نعم، احذفه!',
+                        cancelButtonText: 'إلغاء'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // إعادة التوجيه إلى الرابط المسؤول عن الحذف
+                            window.location.href = `/Admin/DeleteSubDepartment/${id}`;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

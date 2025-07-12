@@ -1,46 +1,293 @@
-@model IEnumerable<MarinaRegSystem.Models.Appointment>
-
+@model List<MarinaRegSystem.Models.Appointment>
+@using MarinaRegSystem.Helpers;
 @{
-    ViewData["Title"] = "حجوزاتي السابقة";
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "الحجوزات";
 }
 
-<h2>@ViewData["Title"]</h2>
+@section currentPage {
+    <li class="breadcrumb-item active">الصفحة الرئيسية</li>
+}
+@section Head {
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>تاريخ الموعد</th>
-            <th>وقت الموعد</th>
-            <th>الطبيب</th>
-            <th>القسم</th>
-            <th>الخدمة</th>
-            <th>الحالة</th>
-            <th>السعر</th>
-            <th>ملاحظات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!Model.Any())
-        {
-            <tr>
-                <td colspan="8" class="text-center">لا توجد حجوزات سابقة</td>
-            </tr>
-        }
-        else
-        {
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                    <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
-                    <td>@item.Doctor?.Name</td>
-                    <td>@item.Department?.Name</td>
-                    <td>@item.Service?.Name</td>
-                    <td>@item.Status.ToString()</td>
-                    <td>@item.Price.ToString("C")</td>
-                    <td>@item.Notes</td>
-                </tr>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
-        }
-    </tbody>
-</table>
+
+            .appointments-card {
+                border-radius: 15px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 2rem;
+                margin-top: 2rem;
+                background-color: white;
+            }
+
+            .table-rounded {
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .status-badge {
+                padding: 0.4em 0.6em;
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: bold;
+            }
+
+            .text-pending {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+
+            .text-confirmed {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .text-rejected {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            .text-completed {
+                background-color: #cce5ff;
+                color: #004085;
+            }
+
+            .text-cancelled {
+                background-color: #e9ecef;
+                color: #343a40;
+            }
+
+            .btn-custom {
+                border-radius: 50px;
+                padding: 0.5rem 1.2rem;
+            }
+
+            .modal-content {
+                border-radius: 15px;
+            }
+
+            .modal-header.bg-danger {
+                background-color: #e63946 !important;
+                color: white;
+            }
+
+            .form-select-lg {
+                font-size: 1rem;
+                padding: 0.6rem 1rem;
+                border-radius: 0.5rem;
+            }
+
+            .btn-close-white .btn-close-icon {
+                filter: invert(1);
+            }
+        </style>
+    </head>
+}
+
+
+
+<div class="container appointments-card">
+    <h2 class="mb-4 text-center">حجوزاتي</h2>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="~/Patient/AddSchedule" class="btn btn-success btn-custom">
+            <i class="fas fa-plus-circle me-1"></i> تقديم حجز جديد
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover table-rounded align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>التاريخ</th>
+                    <th>الوقت</th>
+                    <th>القسم</th>
+                    <th>الطبيب</th>
+
+                    <th>الحالة</th>
+                    <th>ملاحظات</th>
+                    <th>تفاصيل</th>
+                    <th>الغاء الحجز</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appt in Model)
+                {
+                    var statusClass = appt.Status switch
+                    {
+                        AppointmentStatus.Pending => "text-pending",
+                        AppointmentStatus.Confirmed => "text-confirmed",
+                        AppointmentStatus.Rejected => "text-rejected",
+                        AppointmentStatus.Completed => "text-completed",
+                        AppointmentStatus.Cancelled => "text-cancelled",
+                        _ => ""
+                    };
+                    bool isEditable = appt.Status == AppointmentStatus.Pending;
+
+                    <tr>
+                        <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                        <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                        <td>@appt.Department?.Name</td>
+                        <td>@appt.Doctor?.Name </td>
+
+
+
+                        <td>
+                            <span class="status-badge @statusClass">@appt.Status.GetDisplayName()</span>
+                        </td>
+                        <td>@(string.IsNullOrEmpty(appt.Notes) ? "-" : appt.Notes)</td>
+                        <td>
+                            @if (isEditable)
+                            {
+                                <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-primary me-1" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-secondary me-1" disabled title="لا يمكن التعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            }
+                        </td>
+                        <td>
+                            @if (isEditable)
+                            {
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#cancelModal" data-id="@appt.Id">
+                                    <i class="fas fa-times me-1"></i> إلغاء
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-secondary" disabled title="لا يمكن الإلغاء">
+                                    <i class="fas fa-times me-1"></i> إلغاء
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="~/Patient/Index" class="btn btn-outline-primary btn-custom">
+            <i class="fas fa-home me-1"></i> العودة إلى الصفحة الرئيسية
+        </a>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <form id="cancelForm" method="post" asp-action="CancelSchedule" asp-controller="Patient">
+                <div class="modal-header bg-danger text-white rounded-top">
+                    <h5 class="modal-title" id="cancelModalLabel">إلغاء الحجز</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" name="Id" id="cancelAppointmentId" />
+
+                    <div class="mb-3">
+                        <label for="CancelReason" class="form-label fw-bold">اختر سبب الإلغاء:</label>
+                        <select class="form-select form-select-lg" name="CancelReason" required>
+                            <option value="">اختر السبب</option>
+                            <option value="تم تأجيل الموعد">تم تأجيل الموعد</option>
+                            <option value="تم الحجز بالخطأ">تم الحجز بالخطأ</option>
+                            <option value="ظرف طارئ">ظرف طارئ</option>
+                            <option value="تأخر في الرد على الحجز">تأخر في الرد على الحجز</option>
+                            <option value="تغير الحالة الصحية">تغير الحالة الصحية</option>
+                            <option value="سبب آخر">سبب آخر</option>
+                        </select>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2"
+                        data-bs-dismiss="modal">إغلاق</button>
+                    <button type="submit" class="btn btn-danger px-4 py-2 d-flex align-items-center gap-2">
+                        <i class="fas fa-times-circle"></i> تأكيد الإلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var cancelModal = document.getElementById('cancelModal');
+        cancelModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var appointmentId = button.getAttribute('data-id');
+            document.getElementById('cancelAppointmentId').value = appointmentId;
+        });
+    </script>
+}
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

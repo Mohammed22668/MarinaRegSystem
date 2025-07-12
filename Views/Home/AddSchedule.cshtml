@@ -2,6 +2,7 @@
     ViewData["Title"] = "Home Page";
 }
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -28,7 +29,7 @@
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
     </head>
 }
-@section Footer{
+@section Footer {
     <script src="~/assets/js/jquery-3.7.1.min.js"></script>
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/js/feather.min.js"></script>
@@ -41,10 +42,11 @@
 
     <script src="~/assets/js/app.js"></script>
 }
-@section cuurnetPage
+@section currentPage
 {
     <li class="menu-side"><img src="~/assets/img/icons/menu-icon-05.svg" alt=""></li>
-    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الحجز الالكتروني </a></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الحجز
+            الالكتروني </a></li>
 }
 <div class="card bg-white">
     <div class="row">
@@ -56,12 +58,13 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4 style="font-weight:bolder">حجز موعد مع الدكتور</h4>
+                                    <h4 style="font-weight:bolder">حجز موعد مع الطبيب</h4>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">اسم الدكتور<span class="login-danger">*</span></label>
+                                    <label style="font-weight:bolder">اسم الطبيب<span
+                                            class="login-danger">*</span></label>
                                     <select class="form-control select">
                                         <option>دكتور رقم 1 (رقم 1)</option>
                                         <option>دكتور رقم 2 (رقم 2)</option>
@@ -72,13 +75,15 @@
                             </div>
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms cal-icon">
-                                    <label style="font-weight:bolder">تحديد موعد الزيارة<span class="login-danger">*</span></label>
+                                    <label style="font-weight:bolder">تحديد موعد الزيارة<span
+                                            class="login-danger">*</span></label>
                                     <input class="form-control datetimepicker" type="text">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-xl-4">
                                 <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">تحديد ساعة الحجز <span class="login-danger">*</span></label>
+                                    <label style="font-weight:bolder">تحديد ساعة الحجز <span
+                                            class="login-danger">*</span></label>
                                     <div class="time-icon">
                                         <input type="text" class="form-control" id="datetimepicker3">
                                     </div>
@@ -92,7 +97,8 @@
                             </div>
                             <div class="col-12">
                                 <div class="doctor-submit text-end">
-                                    <button style="font-weight:bolder" type="submit" class="btn btn-primary submit-form me-2">حجز الموعد</button>
+                                    <button style="font-weight:bolder" type="submit"
+                                        class="btn btn-primary submit-form me-2">حجز الموعد</button>
                                 </div>
                             </div>
                         </div>

@@ -1,15 +1,23 @@
 @model MarinaRegSystem.Models.DoctorSchedule
-
 @{
-    ViewData["Title"] = "إضافة جدول طبيب";
+     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "إضافة جدول الطبيب";
 }
+
+<h3 class="mb-4 text-center">إضافة جدول دوام طبيب</h3>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
 
 @section Head {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
         <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-        <title>مستشفى مارينا - إضافة جدول طبيب</title>
+        <title>مستشفى مارينا - الرئيسية</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
@@ -22,130 +30,122 @@
         <!-- Select2 CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
 
-        <!-- Datetimepicker CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-datetimepicker.min.css">
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
 
         <!-- Feathericon CSS -->
         <link rel="stylesheet" href="~/assets/css/feather.css">
 
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
     </head>
 }
 
-@section cuurnetPage {
-    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
-    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة جدول طبيب</a></li>
+
+
+<form asp-action="AddDoctorSchedule" method="post" class="row g-3">
+
+    <div class="col-md-6">
+        <label asp-for="DoctorId" class="form-label"></label>
+        <select asp-for="DoctorId" asp-items="ViewBag.Doctors" class="form-select">
+            <option value="">اختر الطبيب</option>
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="DayOfWeek" class="form-label"></label>
+         <select asp-for="DayOfWeek" class="form-select">
+       <option value="">اختر اليوم</option>
+@foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+{
+    if (Model != null && day.Equals(Model.DayOfWeek))
+    {
+        <option value="@( (int)day )" selected>@day</option>
+    }
+    else
+    {
+        <option value="@( (int)day )">@day</option>
+    }
+}
+        </select> 
+        <span asp-validation-for="DayOfWeek" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StartTime" class="form-label"></label>
+        <input asp-for="StartTime" type="time" class="form-control" />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="EndTime" class="form-label"></label>
+        <input asp-for="EndTime" type="time" class="form-control" />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="AppointmentDuration" class="form-label"></label>
+        <input asp-for="AppointmentDuration" class="form-control" />
+        <span asp-validation-for="AppointmentDuration" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="BreakDuration" class="form-label"></label>
+        <input asp-for="BreakDuration" class="form-control" />
+        <span asp-validation-for="BreakDuration" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="MaxAppointmentsPerDay" class="form-label"></label>
+        <input asp-for="MaxAppointmentsPerDay" class="form-control" />
+        <span asp-validation-for="MaxAppointmentsPerDay" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="IsActive" class="form-label"></label>
+        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">حفظ الجدول</button>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-<div class="card bg-white">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <form asp-action="AddDoctorSchedule" method="post">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-heading">
-                                    <h4 style="font-weight:bolder">إضافة جدول طبيب جديد</h4>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">الطبيب<span class="login-danger">*</span></label>
-                                    <select asp-for="DoctorId" class="form-control select" asp-items="@(new SelectList(ViewBag.Doctors, "Id", "Name"))" required>
-                                        <option value="">اختر الطبيب</option>
-                                    </select>
-                                    <span asp-validation-for="DoctorId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">اليوم<span class="login-danger">*</span></label>
-                                    <select asp-for="DayOfWeek" class="form-control select" required>
-                                        <option value="">اختر اليوم</option>
-                                        <option value="0">الأحد</option>
-                                        <option value="1">الإثنين</option>
-                                        <option value="2">الثلاثاء</option>
-                                        <option value="3">الأربعاء</option>
-                                        <option value="4">الخميس</option>
-                                        <option value="5">الجمعة</option>
-                                        <option value="6">السبت</option>
-                                    </select>
-                                    <span asp-validation-for="DayOfWeek" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">وقت البدء<span class="login-danger">*</span></label>
-                                    <input asp-for="StartTime" class="form-control datetimepicker" type="text" required>
-                                    <span asp-validation-for="StartTime" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">وقت الانتهاء<span class="login-danger">*</span></label>
-                                    <input asp-for="EndTime" class="form-control datetimepicker" type="text" required>
-                                    <span asp-validation-for="EndTime" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">مدة الموعد (بالدقائق)<span class="login-danger">*</span></label>
-                                    <input asp-for="AppointmentDuration" class="form-control" type="number" required>
-                                    <span asp-validation-for="AppointmentDuration" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">عدد المواعيد اليومية<span class="login-danger">*</span></label>
-                                    <input asp-for="MaxAppointmentsPerDay" class="form-control" type="number" required>
-                                    <span asp-validation-for="MaxAppointmentsPerDay" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="doctor-submit text-end">
-                                    <button style="font-weight:bolder" type="submit" class="btn btn-primary submit-form me-2">حفظ</button>
-                                    <a asp-action="DoctorSchedules" class="btn btn-secondary">إلغاء</a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-@section Footer {
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Feather Js -->
-    <script src="~/assets/js/feather.min.js"></script>
 
-    <!-- Slimscroll -->
-    <script src="~/assets/js/jquery.slimscroll.js"></script>
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Select2 Js -->
-    <script src="~/assets/js/select2.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Datetimepicker Js -->
-    <script src="~/assets/js/moment.min.js"></script>
-    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
 
-    <!-- Custom JS -->
-    <script src="~/assets/js/app.js"></script>
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('.datetimepicker').datetimepicker({
-                format: 'HH:mm',
-                stepping: 15
-            });
-        });
-    </script>
-} 
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

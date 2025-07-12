@@ -1,15 +1,18 @@
 @model MarinaRegSystem.Models.Doctor
+@using MarinaRegSystem.Helpers
 
 @{
+     Layout = "_LayoutAdmin";
     ViewData["Title"] = "إضافة طبيب";
 }
+
 
 @section Head {
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
         <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-        <title>مستشفى مارينا - إضافة طبيب</title>
+        <title>مستشفى مارينا - الرئيسية</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
@@ -22,21 +25,27 @@
         <!-- Select2 CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
 
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
         <!-- Feathericon CSS -->
         <link rel="stylesheet" href="~/assets/css/feather.css">
 
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
     </head>
 }
+
+
 
 @section currentPage {
     <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
     <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة طبيب</a></li>
 }
 
-<div class="page-wrapper">
-    <div class="content">
+<div >
+    <div >
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -87,6 +96,31 @@
                                     </div>
                                 </div>
 
+                                  
+                                  <div class="col-12 col-md-6 col-xl-6">
+    <div class="input-block local-forms">
+        <label asp-for="SubDepartmentId" style="font-weight:bolder">القسم الفرعي</label>
+        <select asp-for="SubDepartmentId" class="form-control" id="SubDepartmentSelect">
+            <option value="">اختر القسم الفرعي</option>
+        </select>
+        <span asp-validation-for="SubDepartmentId" class="text-danger"></span>
+    </div>
+</div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+    <div class="input-block local-forms">
+        <label asp-for="Shift" style="font-weight:bolder">شفت الدوام</label>
+        <select asp-for="Shift" class="form-control">
+            <option value="">اختر الشفت</option>
+            @foreach (ShiftType shift in Enum.GetValues(typeof(ShiftType)))
+    {
+        <option value="@shift">@EnumExtensions.GetDisplayName(shift)</option>
+    }
+        </select>
+        <span asp-validation-for="Shift" class="text-danger"></span>
+    </div>
+</div>
+
                                 <div class="col-12">
                                     <div class="input-block local-forms">
                                         <label asp-for="Bio" style="font-weight:bolder">نبذة عن الطبيب</label>
@@ -126,34 +160,63 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const departmentSelect = document.querySelector('[name="DepartmentId"]');
+        const subDepartmentSelect = document.getElementById('SubDepartmentSelect');
+
+        departmentSelect.addEventListener('change', function () {
+            const deptId = this.value;
+
+            subDepartmentSelect.innerHTML = '<option value="">اختر القسم الفرعي</option>';
+
+            if (deptId) {
+                fetch(`/Admin/GetSubDepartmentsByDepartment/${deptId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(sub => {
+                            const option = document.createElement('option');
+                            option.value = sub.id;
+                            option.textContent = sub.name;
+                            subDepartmentSelect.appendChild(option);
+                        });
+                    });
+            }
+        });
+    });
+</script>
+
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
-@section Footer {
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Feather Js -->
-    <script src="~/assets/js/feather.min.js"></script>
 
-    <!-- Slimscroll -->
-    <script src="~/assets/js/jquery.slimscroll.js"></script>
 
-    <!-- Select2 Js -->
-    <script src="~/assets/js/select2.min.js"></script>
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Custom JS -->
-    <script src="~/assets/js/app.js"></script>
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $('.select').select2({
-                minimumResultsForSearch: -1,
-                width: '100%'
-            });
-        });
-    </script>
-} 
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

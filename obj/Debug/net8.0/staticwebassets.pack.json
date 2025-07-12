@@ -109,6 +109,14 @@
       "PackagePath": "staticwebassets\\assets\\img\\activity-03.jpg"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\add-appointments.png",
+      "PackagePath": "staticwebassets\\assets\\img\\add-appointments.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\appointments-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\appointments-icon.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\arrow.svg",
       "PackagePath": "staticwebassets\\assets\\img\\arrow.svg"
     },
@@ -229,8 +237,20 @@
       "PackagePath": "staticwebassets\\assets\\img\\clock.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\dashboard-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\dashboard-icon.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\departments-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\departments-icon.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\doctor-03.jpg",
       "PackagePath": "staticwebassets\\assets\\img\\doctor-03.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\doctor-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\doctor-icon.png"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\error-01.png",
@@ -837,6 +857,26 @@
       "PackagePath": "staticwebassets\\assets\\img\\logo.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo.jpg",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo2.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo2.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo3.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo3.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo4.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\marina-logo5.png",
+      "PackagePath": "staticwebassets\\assets\\img\\marina-logo5.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\morning-img-01.png",
       "PackagePath": "staticwebassets\\assets\\img\\morning-img-01.png"
     },
@@ -851,6 +891,10 @@
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-bg.jpg",
       "PackagePath": "staticwebassets\\assets\\img\\profile-bg.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-icon.png",
+      "PackagePath": "staticwebassets\\assets\\img\\profile-icon.png"
     },
     {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\assets\\img\\profile-user-01.jpg",
@@ -11981,12 +12025,104 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\0d9dd8af-61b5-4c57-8cef-53608647ca19.png",
+      "PackagePath": "staticwebassets\\uploads\\0d9dd8af-61b5-4c57-8cef-53608647ca19.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\225edfa6-f7f3-4b4c-b36c-8611c585edde.png",
+      "PackagePath": "staticwebassets\\uploads\\225edfa6-f7f3-4b4c-b36c-8611c585edde.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\27b287cc-796c-4b37-b0fe-584ee1425baf.png",
+      "PackagePath": "staticwebassets\\uploads\\27b287cc-796c-4b37-b0fe-584ee1425baf.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\499dafd5-e81c-4d60-8be9-a02ef21a3925.png",
+      "PackagePath": "staticwebassets\\uploads\\499dafd5-e81c-4d60-8be9-a02ef21a3925.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\5b995a0c-e2c7-43a4-a123-0ef11e04a6f0.png",
+      "PackagePath": "staticwebassets\\uploads\\5b995a0c-e2c7-43a4-a123-0ef11e04a6f0.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\90df1fdc-f2d8-4322-833e-ffe47d66f970.png",
+      "PackagePath": "staticwebassets\\uploads\\90df1fdc-f2d8-4322-833e-ffe47d66f970.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\b03644fc-41ca-41a1-bc26-9288507dac69.png",
+      "PackagePath": "staticwebassets\\uploads\\b03644fc-41ca-41a1-bc26-9288507dac69.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\b80f8385-4be3-49bc-8fc0-69cb719b2f0b.png",
+      "PackagePath": "staticwebassets\\uploads\\b80f8385-4be3-49bc-8fc0-69cb719b2f0b.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\diagnosis\\03e46ef1-eb59-4f1c-b38c-cc44a3101201_2222.png",
       "PackagePath": "staticwebassets\\uploads\\diagnosis\\03e46ef1-eb59-4f1c-b38c-cc44a3101201_2222.png"
     },
     {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\diagnosis\\0c41e34f-292a-44f5-b447-ae9c422caf3f.pdf",
+      "PackagePath": "staticwebassets\\uploads\\diagnosis\\0c41e34f-292a-44f5-b447-ae9c422caf3f.pdf"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\diagnosis\\81da158c-11da-4be2-8e1d-0d6e22865785.png",
+      "PackagePath": "staticwebassets\\uploads\\diagnosis\\81da158c-11da-4be2-8e1d-0d6e22865785.png"
+    },
+    {
       "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\diagnosis\\bc233e73-d6f6-4dd5-b379-abd06f14dc08_10.png",
       "PackagePath": "staticwebassets\\uploads\\diagnosis\\bc233e73-d6f6-4dd5-b379-abd06f14dc08_10.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\2f53c132-55be-4379-91df-420cdca2d6ea.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\2f53c132-55be-4379-91df-420cdca2d6ea.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\363e80ac-86f5-4491-b3fc-9a84bb9e72b4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\3d38c9b2-c04d-4d07-9dd6-a0e20487f0c8.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\3d38c9b2-c04d-4d07-9dd6-a0e20487f0c8.jpeg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\4366e6b7-685b-4382-9fbf-ad5dea707b56.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\576dcf88-85f0-4a4c-ad32-8d76baeb9373.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\576dcf88-85f0-4a4c-ad32-8d76baeb9373.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\64f4ee00-b8d3-4c1f-a1a4-f1461ad7a4c4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\64f4ee00-b8d3-4c1f-a1a4-f1461ad7a4c4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\7a44feac-0485-43c2-b40d-6427cc6c19e6.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\7a44feac-0485-43c2-b40d-6427cc6c19e6.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\7c0ae6a6-acd7-450b-b4f2-838e40f58af3.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\7c0ae6a6-acd7-450b-b4f2-838e40f58af3.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\7ca6c8d2-a8d9-46e9-b230-b2a2efb4e93f.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\7ca6c8d2-a8d9-46e9-b230-b2a2efb4e93f.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\88aea6bf-7284-4f09-8db9-78bee4a06043.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\98360513-f87b-43d5-9926-a4b4e18f7ff4.png",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\98360513-f87b-43d5-9926-a4b4e18f7ff4.png"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\9ed0fb99-87ed-46c1-978f-16a4a524d7dd.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\9ed0fb99-87ed-46c1-978f-16a4a524d7dd.jpg"
+    },
+    {
+      "Id": "E:\\C#_Project\\MarinaRegSystem\\MarinaRegSystem\\wwwroot\\uploads\\doctors\\ed626b98-5834-40cc-931e-27aa86e786d9.jpg",
+      "PackagePath": "staticwebassets\\uploads\\doctors\\ed626b98-5834-40cc-931e-27aa86e786d9.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MarinaRegSystem.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

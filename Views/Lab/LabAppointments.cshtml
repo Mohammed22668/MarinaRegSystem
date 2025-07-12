@@ -1,0 +1,206 @@
+@using MarinaRegSystem.Helpers
+@model List<MarinaRegSystem.Models.Appointment>
+
+@{
+    Layout = "_LayoutLab";
+    ViewData["Title"] = "حجوزات المختبر";
+}
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم مختبر مارينا - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <style>
+            .card {
+                transition: all 0.3s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+            }
+
+            .card-body .display-4 {
+                transition: all 0.3s ease;
+            }
+
+            .card:hover .card-body .display-4 {
+                transform: scale(1.1);
+            }
+        </style>
+
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">حجوزات المختبر </a></li>
+}
+
+
+<div class="container py-5">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>رقم الحجز</th>
+                <th>اسم المريض</th>
+                <th>تاريخ الموعد</th>
+                <th>وقت الموعد</th>
+                <th>الطبيب</th>
+                <th>الحالة</th>
+                <th>الملاحظات</th>
+                <th>تحديث</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Id</td>
+                    <td>@app.PatientName</td>
+                    <td>@app.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                    <td>@app.AppointmentTime.ToString(@"hh\:mm")</td>
+                    <td>@app.Doctor?.Name</td>
+                    <td>@app.Status.GetDisplayName()</td>
+                    <td>@app.Notes</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateModal" data-id="@app.Id"
+                            data-date="@app.AppointmentDate.ToString("yyyy-MM-dd")"
+                            data-time="@app.AppointmentTime.ToString(@"hh\:mm")" data-status="@app.Status"
+                            data-notes="@app.Notes">
+                            تحديث
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" asp-action="UpdateAppointment" asp-controller="Lab">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">تحديث بيانات الحجز</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" id="modalId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الموعد</label>
+                        <input type="date" name="AppointmentDate" id="modalDate" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">وقت الموعد</label>
+                        <input type="time" name="AppointmentTime" id="modalTime" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">الحالة</label>
+                        <select name="Status" id="modalStatus" class="form-select" required>
+                            <option value="Pending">قيد الانتظار</option>
+                            <option value="Confirmed">تم التأكيد</option>
+                            <option value="Rejected">مرفوض</option>
+                            <option value="Cancelled">ملغي</option>
+                            <option value="Completed">مكتمل</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الملاحظات</label>
+                        <textarea name="Notes" id="modalNotes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var updateModal = document.getElementById('updateModal');
+        updateModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+
+            var id = button.getAttribute('data-id');
+            var date = button.getAttribute('data-date');
+            var time = button.getAttribute('data-time');
+            var status = button.getAttribute('data-status');
+            var notes = button.getAttribute('data-notes');
+
+            document.getElementById('modalId').value = id;
+            document.getElementById('modalDate').value = date;
+            document.getElementById('modalTime').value = time;
+            document.getElementById('modalStatus').value = status;
+            document.getElementById('modalNotes').value = notes || '';
+        });
+    </script>
+}
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using MarinaRegSystem.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MarinaRegSystem.Controllers
 {
@@ -24,7 +25,7 @@ namespace MarinaRegSystem.Controllers
                 currentUser = _context.cUsers.FirstOrDefault(u => u.Token == token);
                 if (currentUser != null)
                 {
-                    ViewBag.Username = currentUser.FullName;
+                    ViewBag.Username = currentUser.Username;
                     return true;
                 }
             }
@@ -41,7 +42,7 @@ namespace MarinaRegSystem.Controllers
                 currentUser = _context.cUsers.FirstOrDefault(u => u.Token == token);
                 if (currentUser != null)
                 {
-                    ViewBag.Username = currentUser.FullName;
+                    ViewBag.Username = currentUser.Username;
                     if (currentUser.Role == requiredRole)
                         return true;
                 }
@@ -50,13 +51,13 @@ namespace MarinaRegSystem.Controllers
         }
 
 
-        public IActionResult Index()
-{
-    var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-    ViewBag.Role = role;
-    ViewBag.Username = User.Identity.Name;
+        public virtual Task<IActionResult> Index()
+        {
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            ViewBag.Role = role;
+            ViewBag.Username = User.Identity.Name;
 
-    return View();
-}
+            return Task.FromResult<IActionResult>(View());
+        }
     }
 }

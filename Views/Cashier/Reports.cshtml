@@ -1,0 +1,247 @@
+@model ReportFilterViewModel
+
+@{
+    Layout = "_LayoutCashier";
+    ViewData["Title"] = "تقرير الفواتير";
+}
+
+
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم الكاشير - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <style>
+            .filter-form {
+                background-color: #f8f9fa;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .card-custom {
+                transition: all 0.3s ease;
+                border-radius: 10px;
+                overflow: hidden;
+                border: none;
+            }
+
+            .card-custom:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, .12);
+            }
+
+            .table thead th {
+                background-color: #e9ecef;
+                font-weight: bold;
+            }
+
+            .status-paid {
+                color: green;
+            }
+
+            .status-pending {
+                color: orange;
+            }
+
+            .status-canceled {
+                color: red;
+            }
+
+            .print-btn {
+                font-size: 1.1rem;
+            }
+
+            @@media print {
+                body * {
+                    visibility: hidden;
+                }
+
+                #printableArea,
+                #printableArea * {
+                    visibility: visible;
+                }
+
+                #printableArea {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                }
+            }
+        </style>
+
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الصفحة الرئيسية</a></li>
+}
+
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="filter-form mb-4 animate__animated animate__fadeInUp">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="FromDate" class="form-label">من تاريخ</label>
+                        <input asp-for="FromDate" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ToDate" class="form-label">إلى تاريخ</label>
+                        <input asp-for="ToDate" class="form-control" type="date" />
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel"></i> تصفية
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <form asp-action="PrintReport" method="get" target="_blank" id="printableArea">
+                <input type="hidden" name="fromDate" value="@Model.FromDate?.ToString("yyyy-MM-dd")" />
+                <input type="hidden" name="toDate" value="@Model.ToDate?.ToString("yyyy-MM-dd")" />
+                <button type="submit" class="btn btn-outline-primary print-btn mb-3">
+                    <i class="bi bi-printer"></i> طباعة التقرير
+                </button>
+            </form>
+
+            @if (Model.FilteredInvoices != null && Model.FilteredInvoices.Any())
+            {
+                <div class="card card-custom shadow-sm animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-4">قائمة الفواتير</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>الاسم</th>
+                                        <th>القسم</th>
+                                        <th>الحالة</th>
+                                        <th>المبلغ</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var invoice in Model.FilteredInvoices)
+                                    {
+                                        <tr>
+                                            <td>@invoice.Id</td>
+                                            <td>@invoice.FullName</td>
+                                            <td>مختبر</td>
+                                            <td>
+                                                @{
+                                                    string statusClass = invoice.Status switch
+                                                    {
+                                                        "مدفوع" => "status-paid",
+                                                        "قيد الانتظار" => "status-pending",
+                                                        "ملغي" => "status-canceled",
+                                                        _ => ""
+                                                    };
+                                                }
+                                                <span class="@statusClass">@invoice.Status</span>
+                                            </td>
+                                            <td>@invoice.LabInvoiceTests.Sum(t => t.Price).ToString("0") دينار</td>
+                                            <td>@invoice.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-custom mt-4 animate__animated animate__fadeInUp">
+                    <div class="card-body bg-light">
+                        <h5 class="text-center mb-3">إحصائيات التقرير</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="alert alert-success mb-0">
+                                    ✅ مدفوع<br><strong>@Model.TotalPaid.ToString("0") دينار</strong>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-warning mb-0">
+                                    ⏳ قيد الانتظار<br><strong>@Model.TotalPending.ToString("0") دينار</strong>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-danger mb-0">
+                                    ❌ ملغي<br><strong>@Model.TotalCanceled.ToString("0") دينار</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center animate__animated animate__fadeInUp">
+                    لا توجد فواتير ضمن هذا النطاق الزمني.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -17,22 +17,29 @@ namespace MarinaRegSystem.Data
 
         public DbSet<cUsers> cUsers { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Service> Services { get; set; }
+
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<DoctorSchedule> DoctorSchedules { get; set; }
-        public DbSet<DoctorService> DoctorServices { get; set; }
+
         public DbSet<Appointment> Appointments { get; set; }
+
+        public DbSet<Patient> Patients { get; set; }
+
+        public DbSet<SubDepartment> SubDepartments { get; set; }
+
+        public DbSet<LabTest> LabTests { get; set; }
+
+        public DbSet<LabInvoice> LabInvoices { get; set; }
+        public DbSet<LabInvoiceTest> LabInvoiceTests { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             // تكوين العلاقات والقيود
-            builder.Entity<Service>()
-                .HasOne(s => s.Department)
-                .WithMany(d => d.Services)
-                .HasForeignKey(s => s.DepartmentId)
-                .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<DoctorSchedule>()
                 .HasOne(ds => ds.Doctor)
@@ -40,17 +47,9 @@ namespace MarinaRegSystem.Data
                 .HasForeignKey(ds => ds.DoctorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<DoctorService>()
-                .HasOne(ds => ds.Doctor)
-                .WithMany(d => d.DoctorServices)
-                .HasForeignKey(ds => ds.DoctorId)
-                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<DoctorService>()
-                .HasOne(ds => ds.Service)
-                .WithMany(s => s.DoctorServices)
-                .HasForeignKey(ds => ds.ServiceId)
-                .OnDelete(DeleteBehavior.Cascade);
+
+
 
             builder.Entity<Appointment>()
                 .HasOne(a => a.User)
@@ -64,11 +63,6 @@ namespace MarinaRegSystem.Data
                 .HasForeignKey(a => a.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Appointment>()
-                .HasOne(a => a.Service)
-                .WithMany(s => s.Appointments)
-                .HasForeignKey(a => a.ServiceId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Appointment>()
                 .HasOne(a => a.Doctor)
@@ -89,9 +83,6 @@ namespace MarinaRegSystem.Data
                 .Property(d => d.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
 
-            builder.Entity<Service>()
-                .Property(s => s.CreatedAt)
-                .HasDefaultValueSql("GETDATE()");
 
             builder.Entity<Doctor>()
                 .Property(d => d.CreatedAt)
@@ -101,9 +92,62 @@ namespace MarinaRegSystem.Data
                 .Property(ds => ds.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
 
-            builder.Entity<DoctorService>()
-                .Property(ds => ds.CreatedAt)
+
+            builder.Entity<Appointment>()
+            .HasOne(a => a.Patient)
+            .WithMany(p => p.Appointments)
+            .HasForeignKey(a => a.PatientId)
+            .OnDelete(DeleteBehavior.Restrict);// أو Cascade حسب ما تراه مناسبًا
+
+
+            builder.Entity<SubDepartment>()
+    .HasOne(sd => sd.Department)
+    .WithMany(d => d.SubDepartments)
+    .HasForeignKey(sd => sd.DepartmentId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SubDepartment>()
+                .Property(sd => sd.CreatedAt)
                 .HasDefaultValueSql("GETDATE()");
+
+
+
+            builder.Entity<Doctor>()
+          .HasOne(d => d.SubDepartment)
+          .WithMany(sd => sd.Doctors)
+          .HasForeignKey(d => d.SubDepartmentId)
+          .OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.Entity<LabInvoiceTest>()
+                  .HasOne(lit => lit.LabInvoice)
+                  .WithMany(li => li.LabInvoiceTests)
+                  .HasForeignKey(lit => lit.LabInvoiceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<LabInvoiceTest>()
+                .HasOne(lit => lit.LabTest)
+                .WithMany()
+                .HasForeignKey(lit => lit.LabTestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<LabInvoiceTest>()
+.Property(p => p.Price)
+.HasPrecision(18, 2);
+
+            builder.Entity<LabInvoiceTest>()
+                .Property(p => p.QuantityUsed)
+                .HasPrecision(18, 2);
+
+            builder.Entity<LabInvoiceTest>()
+                .Property(p => p.ResultValue)
+                .HasPrecision(18, 2);
+
+
+
+
+
         }
     }
 }

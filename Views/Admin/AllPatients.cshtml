@@ -1,0 +1,170 @@
+@model IEnumerable<MarinaRegSystem.Models.Patient>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "قائمة المرضى";
+}
+
+@section Head {
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" href="~/assets/img/favicon.png">
+    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Feathericon CSS -->
+    <link rel="stylesheet" href="~/assets/css/feather.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+     body {
+    background-color: #f4f6f9;
+    font-family: 'Tajawal', sans-serif;
+}
+
+.table thead th {
+    font-weight: bold;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f3f7;
+    transition: all 0.3s ease;
+}
+
+.table td, .table th {
+    vertical-align: middle !important;
+    text-align: center;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.badge-status {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 50px;
+}
+</head>
+}
+  
+
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">@ViewData["Title"]</h3>
+      
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center py-4" role="alert">
+            لا يوجد مرضى حتى الآن.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">الاسم الرباعي</th>
+                                <th class="text-center">تاريخ الميلاد</th>
+                                <th class="text-center">الجنس</th>
+                                <th class="text-center">المحافظة</th>
+                                <th class="text-center">رقم الهوية</th>
+                                <th class="text-center">رقم الهاتف</th>
+                                <th class="text-center">فصيلة الدم</th>
+                                <th class="text-center">الحساسية</th>
+                                <th class="text-center">الأمراض المزمنة</th>
+                                <th class="text-center">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var patient in Model)
+                            {
+                                <tr>
+                                    <td>@patient.FirstName @patient.SecondName @patient.ThirdName @patient.FourthName</td>
+                                    <td class="text-center">@patient.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-center">@patient.Gender</td>
+                                    <td class="text-center">@patient.Province</td>
+                                    <td class="text-center">@patient.NationalNumber</td>
+                                    <td class="text-center">@patient.User?.PhoneNumber</td>
+                                    <td class="text-center">@patient.BloodType</td>
+                                    <td class="text-center">@patient.Allergies</td>
+                                    <td class="text-center">@patient.ChronicDiseases</td>
+                                    <td class="text-center">
+                                        <div class="btn-group gap-2">
+                                            <a href="~/Admin/Profile/@patient.Id" class="btn btn-outline-info btn-sm rounded-pill" title="عرض الملف">
+                                                <i class="fas fa-user me-1"></i> عرض
+                                            </a>
+                                       
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a href="~/Admin/Index" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-1"></i> العودة إلى الصفحة الرئيسية
+        </a>
+    </div>
+</div>
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

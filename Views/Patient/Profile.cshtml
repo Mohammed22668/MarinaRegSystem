@@ -1,0 +1,217 @@
+@model MarinaRegSystem.Models.Patient
+
+@{
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "الصفحة الشخصية";
+}
+
+@section currentPage {
+    <li class="breadcrumb-item active">الصفحة الشخصية</li>
+}
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الصفحة الشخصية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <style>
+            body {
+                background-color: #f4f6f9;
+            }
+
+            .profile-container {
+                max-width: 800px;
+                margin: 2rem auto;
+            }
+
+            .card-profile {
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease;
+                padding: 2rem;
+            }
+
+            .card-profile:hover {
+                transform: translateY(-5px);
+            }
+
+            .profile-title {
+                font-weight: bold;
+                color: #333;
+            }
+
+            .profile-data {
+                font-size: 1.1rem;
+                color: #555;
+            }
+
+            .btn-edit {
+                border-radius: 50px;
+                padding: 0.6rem 1.5rem;
+                font-weight: bold;
+                width: 100%;
+            }
+
+            .alert-success {
+                max-width: 800px;
+                margin: 1rem auto;
+            }
+        </style>
+    </head>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card card-profile shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">ملف المريض الشخصي</h3>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- اسم المريض -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الاسم الكامل:</strong> <span
+                                    class="profile-data">@Model.FirstName @Model.SecondName @Model.ThirdName
+                                    @Model.FourthName</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">تاريخ الميلاد:</strong> <span
+                                    class="profile-data">@Model.DateOfBirth.ToString("yyyy-MM-dd")</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الجنس والعمر -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الجنس:</strong> <span
+                                    class="profile-data">@Model.Gender</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">العمر:</strong> <span
+                                    class="profile-data">@Model.Age</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الرقم الوطني وفصيلة الدم -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الرقم الوطني:</strong> <span
+                                    class="profile-data">@Model.NationalNumber</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">فصيلة الدم:</strong> <span
+                                    class="profile-data">@Model.BloodType</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الدولة والمحافظة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الدولة:</strong> <span
+                                    class="profile-data">@Model.Country</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">المحافظة:</strong> <span
+                                    class="profile-data">@Model.Province</span></p>
+                        </div>
+                    </div>
+
+                    <!-- المدينة والمحلة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">القضاء أو المنطقة:</strong> <span
+                                    class="profile-data">@Model.City</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">محلة / زقاق / شارع:</strong> <span
+                                    class="profile-data">@Model.Neighborhood</span></p>
+                        </div>
+                    </div>
+
+                    <!-- الهاتف والشخص المقرب -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">رقم الهاتف:</strong> <span
+                                    class="profile-data">@Model.PhoneNumber</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الشخص المقرب:</strong> <span
+                                    class="profile-data">@Model.ClosePerson</span></p>
+                        </div>
+                    </div>
+
+                    <!-- التداخلات الدوائية والأمراض المزمنة -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">التداخلات الدوائية:</strong> <span
+                                    class="profile-data">@Model.Allergies</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong class="profile-title">الأمراض المزمنة:</strong> <span
+                                    class="profile-data">@Model.ChronicDiseases</span></p>
+                        </div>
+                    </div>
+
+                    <!-- زر التعديل -->
+                    <div class="mt-4 d-grid">
+                        <a asp-action="EditProfile" class="btn btn-primary btn-edit">
+                            <i class="fas fa-user-edit me-1"></i> تعديل البيانات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

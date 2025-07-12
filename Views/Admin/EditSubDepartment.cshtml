@@ -1,0 +1,29 @@
+@model MarinaRegSystem.Models.SubDepartment
+@{
+    ViewData["Title"] = "تعديل قسم فرعي";
+}
+
+<h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="EditSubDepartment" method="post">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepartmentId" class="form-label">القسم الرئيسي</label>
+        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select"></select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+
+       <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">حفظ</button>
+    <a asp-action="Index" class="btn btn-secondary">عودة</a>
+</form>

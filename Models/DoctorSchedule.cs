@@ -32,7 +32,7 @@ namespace MarinaRegSystem.Models
         public TimeSpan EndTime { get; set; }
 
         [Display(Name = "مدة الموعد (بالدقائق)")]
-        [Range(5, 120, ErrorMessage = "مدة الموعد يجب أن تكون بين 5 و 120 دقيقة")]
+        [Range(5, 480, ErrorMessage = "مدة الموعد يجب أن تكون بين 5 و 480 دقيقة")]
         public int AppointmentDuration { get; set; } = 30;
 
         [Display(Name = "فترة الراحة (بالدقائق)")]
@@ -55,4 +55,4 @@ namespace MarinaRegSystem.Models
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
     }
-} 
+}

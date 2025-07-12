@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مستشفى مارينا - @ViewData["Title"]</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+    <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png" >
+    
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    
+    @RenderSection("Head", required: false)
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Page Content -->
+       
+         
+                @RenderBody()
+            
+        
+        <!-- /Page Content -->
+    </div>
+
+    @RenderSection("Footer", required: false)
+    @RenderSection("Scripts", required: false)
+</body>
+</html> 

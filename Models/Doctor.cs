@@ -45,15 +45,41 @@ namespace MarinaRegSystem.Models
         [ForeignKey("DepartmentId")]
         public Department Department { get; set; }
 
+
+        public int? SubDepartmentId { get; set; }
+
+        [ForeignKey("SubDepartmentId")]
+        public virtual SubDepartment SubDepartment { get; set; }
+
+        [Display(Name = "شفت الدوام")]
+        public ShiftType Shift { get; set; }
+
         [Display(Name = "تاريخ الإنشاء")]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         [Display(Name = "تاريخ التحديث")]
         public DateTime? UpdatedAt { get; set; }
 
+
+
         // العلاقات
-        public virtual ICollection<DoctorService> DoctorServices { get; set; }
         public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; }
     }
-} 
+
+
+    public enum ShiftType
+    {
+        [Display(Name = "صباحي")]
+        Morning = 0,
+
+        [Display(Name = "مسائي")]
+        Evening = 1,
+
+        [Display(Name = "خفر")]
+        Night = 2
+    }
+
+
+
+}

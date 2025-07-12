@@ -1,0 +1,144 @@
+@model CashierDashboardViewModel
+
+@{
+    Layout = "_LayoutCashier";
+    ViewData["Title"] = "لوحة تحكم الكاشير";
+}
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم الكاشير - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <style>
+            .card {
+                transition: all 0.3s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+            }
+
+            .card-body .display-4 {
+                transition: all 0.3s ease;
+            }
+
+            .card:hover .card-body .display-4 {
+                transform: scale(1.1);
+            }
+        </style>
+
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الصفحة الرئيسية</a></li>
+}
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">لوحة تحكم الكاشير</h2>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">عدد الفواتير</h5>
+                    <h2 class="card-text">@Model.TotalInvoices</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">الإجمالي المدفوع</h5>
+                    <h2 class="card-text">@Model.TotalPaidAmount.ToString("0") د.ع</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-dark bg-warning shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">الفواتير المعلقة</h5>
+                    <h2 class="card-text">@Model.PendingInvoices</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">الفواتير الملغاة</h5>
+                    <h2 class="card-text">@Model.CanceledInvoices</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 text-end">
+        <a asp-action="Invoices" class="btn btn-outline-primary me-2">عرض الفواتير</a>
+        <a asp-action="Reports" class="btn btn-outline-secondary">عرض التقارير</a>
+    </div>
+</div>
+
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

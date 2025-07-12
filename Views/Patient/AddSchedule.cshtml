@@ -1,14 +1,21 @@
-@model MarinaRegSystem.Models.Appointment
+@model MarinaRegSystem.Models.CreateAppointmentViewModel
+
 @{
-    ViewData["Title"] = "حجز موعد";
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "حجز موعد جديد";
+}
+
+@section currentPage {
+    <li class="breadcrumb-item active">حجز موعد</li>
 }
 
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-        <title>مستشفى مارينا - إضافة حجز</title>
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/marina-logo5.png">
+        <title>مستشفى مارينا - @ViewData["Title"]</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
@@ -21,110 +28,362 @@
         <!-- Select2 CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
 
-        <!-- Datepicker CSS -->
-        <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
-
         <!-- Feathericon CSS -->
         <link rel="stylesheet" href="~/assets/css/feather.css">
 
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <style>
+            body {
+                background-color: #f4f6f9;
+                font-family: 'Tajawal', sans-serif;
+            }
+
+            .form-container {
+                max-width: 750px;
+                margin: 3rem auto;
+                padding: 2rem;
+                border-radius: 15px;
+                background-color: #fff;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .step-title {
+                font-size: 1.25rem;
+                font-weight: bold;
+                color: #007bff;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-label {
+                font-weight: bold;
+            }
+
+            .input-block {
+                margin-bottom: 1rem;
+            }
+
+            .btn-step {
+                border-radius: 50px;
+                padding: 0.5rem 1.5rem;
+                font-weight: bold;
+            }
+
+            .stepper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+
+            .stepper-step {
+                flex: 1;
+                text-align: center;
+                position: relative;
+                color: #6c757d;
+            }
+
+            .stepper-step.active,
+            .stepper-step.completed {
+                color: #007bff;
+                font-weight: bold;
+            }
+
+            .stepper-step span.circle {
+                display: inline-block;
+                width: 35px;
+                height: 35px;
+                line-height: 35px;
+                border-radius: 50%;
+                background-color: #e9ecef;
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .stepper-step.completed span.circle {
+                background-color: #28a745;
+                color: white;
+            }
+
+            .stepper-step.active span.circle {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .stepper-step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                top: 17px;
+                left: 50%;
+                width: 100%;
+                height: 2px;
+                background-color: #ccc;
+                z-index: -1;
+            }
+
+            .form-section {
+                display: none;
+            }
+
+            .form-section.active {
+                display: block;
+            }
+
+            .form-control,
+            .form-select {
+                border-radius: 0.5rem !important;
+                padding: 0.6rem 1rem;
+            }
+
+            .form-check-input:checked {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
+        </style>
     </head>
 }
 
-@section currentPage {
-    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
-    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">حجز موعد</a></li>
-}
+<div class="form-container">
+    <h3 class="text-center mb-4">@ViewData["Title"]</h3>
 
-<div class="card bg-white">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <form asp-action="AddSchedule" method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-heading">
-                                    <h4 style="font-weight:bolder">حجز موعد مع الدكتور</h4>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label asp-for="DepartmentId" style="font-weight:bolder">القسم<span class="login-danger">*</span></label>
-                                    <select asp-for="DepartmentId" class="form-control select" asp-items="ViewBag.Departments">
-                                        <option value="">اختر القسم</option>
-                                    </select>
-                                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label asp-for="ServiceId" style="font-weight:bolder">الخدمة<span class="login-danger">*</span></label>
-                                    <select asp-for="ServiceId" class="form-control select" asp-items="ViewBag.Services">
-                                        <option value="">اختر الخدمة</option>
-                                    </select>
-                                    <span asp-validation-for="ServiceId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label asp-for="DoctorId" style="font-weight:bolder">الدكتور<span class="login-danger">*</span></label>
-                                    <select asp-for="DoctorId" class="form-control select" asp-items="ViewBag.Doctors">
-                                        <option value="">اختر الدكتور</option>
-                                    </select>
-                                    <span asp-validation-for="DoctorId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms">
-                                    <label asp-for="PatientName" style="font-weight:bolder">اسم المريض<span class="login-danger">*</span></label>
-                                    <input asp-for="PatientName" class="form-control" type="text" required>
-                                    <span asp-validation-for="PatientName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-6">
-                                <div class="input-block local-forms cal-icon">
-                                    <label asp-for="AppointmentDate" style="font-weight:bolder">تاريخ الحجز<span class="login-danger">*</span></label>
-                                    <input asp-for="AppointmentDate" class="form-control datetimepicker" type="text" required data-date-format="DD/MM/YYYY">
-                                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6 col-xl-4">
-                                <div class="input-block local-forms">
-                                    <label asp-for="AppointmentTime" style="font-weight:bolder">وقت الحجز<span class="login-danger">*</span></label>
-                                    <div class="time-icon">
-                                        <input asp-for="AppointmentTime" type="text" class="form-control timepicker" required>
-                                    </div>
-                                    <span asp-validation-for="AppointmentTime" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-12">
-                                <div class="input-block local-forms">
-                                    <label style="font-weight:bolder">ملف التشخيص (PDF أو صورة)</label>
-                                    <input type="file" name="diagnosisFile" class="form-control" accept=".pdf,image/*">
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="doctor-submit text-end">
-                                    <button style="font-weight:bolder" type="submit" class="btn btn-primary submit-form me-2">حجز الموعد</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <div class="stepper">
+        <div class="stepper-step active" data-step="1">
+            <span class="circle">1</span>
+            <div>البيانات الأساسية</div>
+        </div>
+        <div class="stepper-step" data-step="2">
+            <span class="circle">2</span>
+            <div>بيانات المريض</div>
+        </div>
+        <div class="stepper-step" data-step="3">
+            <span class="circle">3</span>
+            <div>تفاصيل الموعد</div>
         </div>
     </div>
+
+    <form id="multiStepForm" asp-action="AddSchedule" method="post" enctype="multipart/form-data">
+        <!-- المرحلة 1 -->
+        <div id="step1" class="form-section active">
+            <div class="mb-4">
+                <label class="form-label d-block">هل تريد الحجز لنفسك؟</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="IsBookingForSelf" value="true" checked>
+                    <label class="form-check-label">نعم، لنفسي</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="IsBookingForSelf" value="false">
+                    <label class="form-check-label"> لأحد افراد العائلة</label>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-step btn-lg w-100 mt-3"
+                onclick="nextStep(2)">التالي</button>
+        </div>
+
+        <!-- المرحلة 2 -->
+        <div id="step2" class="form-section">
+            <h5 class="step-title">بيانات المريض</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">الاسم الأول</label>
+                    <input type="text" name="FirstName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">الاسم الاب</label>
+                    <input type="text" name="SecondName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">الاسم الجد</label>
+                    <input type="text" name="ThirdName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">الاسم الرابع </label>
+                    <input type="text" name="FourthName" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">الجنس</label>
+                    <select name="Gender" class="form-select">
+                        <option value="">اختر الجنس</option>
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">تاريخ الميلاد</label>
+                    <input type="date" name="DateOfBirth" class="form-control" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">فصيلة الدم</label>
+                    <select asp-for="BloodType" class="form-control">
+                        <option value="">-- اختر --</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(1)">رجوع</button>
+                <button type="button" class="btn btn-primary btn-step" onclick="nextStep(3)">التالي</button>
+            </div>
+        </div>
+
+        <!-- المرحلة 3 -->
+        <div id="step3" class="form-section">
+            <h5 class="step-title">تفاصيل الموعد</h5>
+
+            <div class="mb-3">
+                <label class="form-label">القسم الرئيسي<span class="text-danger">*</span></label>
+                <select id="DepartmentId" name="DepartmentId" class="form-select" required>
+                    <option value="">اختر القسم</option>
+                    @foreach (var dept in ViewBag.Departments as SelectList)
+                    {
+                        <option value="@dept.Value">@dept.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">القسم الفرعي</label>
+                <select id="SubDepartmentId" name="SubDepartmentId" class="form-select">
+                    <option value="">اختر القسم الفرعي</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الطبيب</label>
+                <select id="DoctorId" name="DoctorId" class="form-select">
+                    <option value="">اختر الطبيب</option>
+                </select>
+            </div>
+
+            @{
+                var tomorrow = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+            }
+
+            <div class="mb-3">
+                <label class="form-label">التاريخ <span class="text-danger">*</span></label>
+                <input type="date" name="AppointmentDate" class="form-control" required value="@tomorrow"
+                    min="@tomorrow" />
+                <span class="text-danger"> الحجز قبل يوم أو اكثر من الموعد</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">الوقت </label>
+                <input type="time" name="AppointmentTime" class="form-control" />
+            </div>
+
+            @* <div class="mb-3">
+                <label class="form-label">الشفت</label>
+                <select name="Shift" class="form-select">
+                    <option value="">اختر الشفت</option>
+                    <option value="0">صباحي</option>
+                    <option value="1">مسائي</option>
+                    <option value="2">خفر</option>
+                </select>
+            </div> *@
+
+            <div class="mb-3">
+                <label class="form-label">الملاحظات والاستفسارات</label>
+                <textarea name="Notes" class="form-control" rows="3" maxlength="500"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">تقرير طبي سابق (اختياري)</label>
+                <input type="file" name="DiagnosisFile" class="form-control" accept=".pdf,image/*" />
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-step" onclick="prevStep(2)">رجوع</button>
+                <button type="submit" class="btn btn-success btn-step">تثبيت الحجز </button>
+            </div>
+        </div>
+    </form>
 </div>
+
+@section Scripts {
+    <script>
+        let currentStep = 1;
+
+        function showStep(step) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // تحديث الخطوات في Stepper
+            document.querySelectorAll('.stepper-step').forEach((el, i) => {
+                el.classList.remove('active', 'completed');
+                if (i + 1 < step) {
+                    el.classList.add('completed');
+                } else if (i + 1 === step) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function nextStep(step) {
+            const isBookingForSelf = document.querySelector('input[name="IsBookingForSelf"]:checked').value === 'true';
+            if (step === 2 && isBookingForSelf) {
+                // تخطي المرحلة الثانية
+                currentStep = 3;
+                showStep(currentStep);
+            } else {
+                currentStep = step;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep(step) {
+            currentStep = step;
+            showStep(currentStep);
+        }
+
+        showStep(currentStep);
+
+        // AJAX للحصول على الأقسام الفرعية والأطباء
+        document.getElementById("DepartmentId").addEventListener("change", function () {
+            const departmentId = this.value;
+            fetch(`@Url.Action("GetSubDepartments", "Patient")?departmentId=${departmentId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const subDepSelect = document.getElementById("SubDepartmentId");
+                    subDepSelect.innerHTML = '<option value="">اختر القسم الفرعي</option>';
+                    data.forEach(d => {
+                        subDepSelect.innerHTML += `<option value="${d.value}">${d.text}</option>`;
+                    });
+                });
+        });
+
+        document.getElementById("SubDepartmentId").addEventListener("change", function () {
+            const departmentId = document.getElementById("DepartmentId").value;
+            const subDepartmentId = this.value || 0;
+            fetch(`@Url.Action("GetDoctorsByDepartment", "Patient")?departmentId=${departmentId}&subDepartmentId=${subDepartmentId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const doctorSelect = document.getElementById("DoctorId");
+                    doctorSelect.innerHTML = '<option value="">اختر الطبيب</option>';
+                    data.forEach(d => {
+                        doctorSelect.innerHTML += `<option value="${d.value}">${d.text}</option>`;
+                    });
+                });
+        });
+    </script>
+}
+
+
+
 
 @section Footer {
     <!-- jQuery -->
     <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Bootstrap Core JS -->
+    <!-- Bootstrap JS -->
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
     <!-- Feather Js -->
@@ -136,107 +395,14 @@
     <!-- Select2 Js -->
     <script src="~/assets/js/select2.min.js"></script>
 
-    <!-- Datepicker Core JS -->
+    <!-- Datepicker JS -->
     <script src="~/assets/plugins/moment/moment.min.js"></script>
     <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 
     <!-- Custom JS -->
-    <script src="~/assets/js/app.js"></script>
+    <script src="~/assets/js/script.js"></script>
 
     <!-- Validation Scripts -->
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }
-
-<script>
-    $(document).ready(function() {
-        // تهيئة Select2
-        $('.select').select2();
-
-        // تهيئة Datepicker
-        $('.datetimepicker').datetimepicker({
-            format: 'DD/MM/YYYY',
-            locale: 'ar',
-            useCurrent: false,
-            minDate: moment(),
-            icons: {
-                time: 'fa fa-clock-o',
-                date: 'fa fa-calendar',
-                up: 'fa fa-chevron-up',
-                down: 'fa fa-chevron-down',
-                previous: 'fa fa-chevron-right',
-                next: 'fa fa-chevron-left',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-        });
-
-        // تهيئة Timepicker
-        $('.timepicker').datetimepicker({
-            format: 'HH:mm',
-            locale: 'ar',
-            stepping: 30,
-            minTime: '08:00',
-            maxTime: '20:00',
-            defaultTime: '08:00',
-            useCurrent: false,
-            showTodayButton: false,
-            showClear: false,
-            showClose: true,
-            toolbarPlacement: 'bottom',
-            widgetPositioning: {
-                horizontal: 'left',
-                vertical: 'bottom'
-            },
-            icons: {
-                time: 'fa fa-clock-o',
-                date: 'fa fa-calendar',
-                up: 'fa fa-chevron-up',
-                down: 'fa fa-chevron-down',
-                previous: 'fa fa-chevron-right',
-                next: 'fa fa-chevron-left',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-        });
-
-        // فلترة الخدمات حسب القسم
-        $('#DepartmentId').change(function() {
-            var departmentId = $(this).val();
-            if (departmentId) {
-                $.get('/Appointment/GetServicesByDepartment', { departmentId: departmentId }, function(data) {
-                    var serviceSelect = $('#ServiceId');
-                    serviceSelect.empty();
-                    serviceSelect.append($('<option></option>').val('').text('اختر الخدمة'));
-                    $.each(data, function(index, item) {
-                        serviceSelect.append($('<option></option>').val(item.id).text(item.name));
-                    });
-                    serviceSelect.trigger('change');
-                });
-            } else {
-                $('#ServiceId').empty().append($('<option></option>').val('').text('اختر الخدمة'));
-                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
-            }
-        });
-
-        // فلترة الأطباء حسب الخدمة
-        $('#ServiceId').change(function() {
-            var serviceId = $(this).val();
-            if (serviceId) {
-                $.get('/Appointment/GetDoctorsByService', { serviceId: serviceId }, function(data) {
-                    var doctorSelect = $('#DoctorId');
-                    doctorSelect.empty();
-                    doctorSelect.append($('<option></option>').val('').text('اختر الدكتور'));
-                    $.each(data, function(index, item) {
-                        doctorSelect.append($('<option></option>').val(item.id).text(item.name));
-                    });
-                    doctorSelect.trigger('change');
-                });
-            } else {
-                $('#DoctorId').empty().append($('<option></option>').val('').text('اختر الدكتور'));
-            }
-        });
-    });
-</script> 

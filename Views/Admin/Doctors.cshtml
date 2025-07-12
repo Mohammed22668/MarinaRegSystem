@@ -1,7 +1,104 @@
-@model IEnumerable<MarinaRegSystem.Models.Doctor>
+@model DoctorFilterViewModel
 
 @{
+     Layout = "_LayoutAdmin";
     ViewData["Title"] = "الأطباء";
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+
+        <style>
+    .table th {
+        background-color: #f1f4f7;
+        color: #3b3f5c;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-avatar a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .table-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .rating i {
+        font-size: 1rem;
+    }
+
+    .actions .btn {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .bg-success-light {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .bg-danger-light {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-primary i {
+        margin-left: 5px;
+    }
+
+    .page-title {
+        font-weight: 700;
+        color: #3b3f5c;
+        font-size: 1.75rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 50px;
+    }
+</style>
+
+    </head>
 }
 
 @section currentPage {
@@ -9,16 +106,66 @@
     <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأطباء</a></li>
 }
 
-<div class="page-wrapper">
-    <div class="content">
+
+<form asp-action="Doctors" method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <input name="Name" class="form-control" placeholder="اسم الطبيب" value="@Model.Name" />
+        </div>
+        <div class="col-md-3">
+            <input name="Speciality" class="form-control" placeholder="التخصص" value="@Model.Speciality" />
+        </div>
+        <div class="col-md-2">
+            <select name="DepartmentId" class="form-control">
+                <option value="">-- اختر القسم --</option>
+                @foreach (var dept in Model.Departments)
+{
+    var isSelected = dept.Value == Model.DepartmentId?.ToString() ? "selected" : "";
+    @:<option value="@dept.Value" @isSelected>@dept.Text</option>
+}
+</select>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="SubDepartmentId" class="form-control">
+                <option value="">-- القسم الفرعي --</option>
+              @foreach (var sub in Model.SubDepartments)
+{
+    var isSelected = sub.Value == Model.SubDepartmentId?.ToString() ? "selected" : "";
+    @:<option value="@sub.Value" @isSelected>@sub.Text</option>
+}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="Shift" class="form-control">
+                <option value="">-- الشفت --</option>
+                   @foreach (ShiftType shift in Enum.GetValues(typeof(ShiftType)))
+        {
+            var isSelected = shift == Model.Shift ? "selected" : "";
+            var displayName = MarinaRegSystem.Helpers.EnumExtensions.GetDisplayName(shift);
+
+            @:<option value="@shift" @isSelected>@displayName</option>
+        }
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3 text-end">
+        <button type="submit" class="btn btn-primary">بحث</button>
+        <a asp-action="Doctors" class="btn btn-secondary">إعادة ضبط</a>
+    </div>
+</form>
+
+<div >
+    <div >
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
                     <h3 class="page-title">قائمة الأطباء</h3>
                     <div class="text-end">
-                        <a asp-action="AddDoctor" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> إضافة طبيب
-                        </a>
+                     <a asp-action="AddDoctor" class="btn btn-success" style="font-weight: bold; border-radius: 10px;">
+    <i class="fas fa-user-md me-2"></i>  اضافة طبيب جديد
+       </a>
                     </div>
                 </div>
             </div>
@@ -35,14 +182,18 @@
                                         <th>الاسم</th>
                                         <th>التخصص</th>
                                         <th>القسم</th>
+                                           <th>القسم الفرعي</th>
                                         <th>سنوات الخبرة</th>
                                         <th>التقييم</th>
+                                         <th>الشفت</th> 
+                                          <th>الحجوزات</th> 
+                                       
                                         <th>الحالة</th>
                                         <th>الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model)
+                                   @foreach (var item in Model.Results)
                                     {
                                         <tr>
                                             <td>
@@ -55,6 +206,7 @@
                                             </td>
                                             <td>@item.Speciality</td>
                                             <td>@item.Department?.Name</td>
+                                             <td>@item.SubDepartment?.Name</td>
                                             <td>@item.Experience سنوات</td>
                                             <td>
                                                 <div class="rating">
@@ -64,6 +216,19 @@
                                                     }
                                                 </div>
                                             </td>
+
+                                              <td>
+                @* إذا كان Shift من نوع Enum وتريد عرض اسمه المعروض *@
+                @MarinaRegSystem.Helpers.EnumExtensions.GetDisplayName(item.Shift)
+            </td>
+
+                                            <td>
+                                                <span class="badge bg-primary">
+                                                    @(item.Appointments?.Count ?? 0)
+                                                </span>
+                                            </td>
+         
+         
                                             <td>
                                                 <span class="badge bg-@(item.Status ? "success" : "danger")">
                                                     @(item.Status ? "نشط" : "غير نشط")
@@ -74,9 +239,9 @@
                                                     <a asp-action="EditDoctor" asp-route-id="@item.Id" class="btn btn-sm bg-success-light me-2">
                                                         <i class="fas fa-pencil-alt"></i> تعديل
                                                     </a>
-                                                    <a asp-action="DeleteDoctor" asp-route-id="@item.Id" class="btn btn-sm bg-danger-light" onclick="return confirm('هل أنت متأكد من حذف هذا الطبيب؟');">
-                                                        <i class="fas fa-trash"></i> حذف
-                                                    </a>
+                                                   <a href="#" data-id="@item.Id" class="btn btn-sm bg-danger-light delete-doctor-btn">
+    <i class="fas fa-trash"></i> حذف
+     </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -90,17 +255,87 @@
         </div>
     </div>
 </div>
+ 
 
-@section Footer {
-    <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+@section Scripts {
 
-    <!-- Bootstrap Core JS -->
-    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Slimscroll JS -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
 
-    <!-- Custom JS -->
-    <script src="~/assets/js/script.js"></script>
-} 
+    <script>
+    @if (TempData["Success"] != null)
+    {
+        <text>
+        Swal.fire({
+            icon: 'success',
+            title: 'تم بنجاح',
+            text: '@TempData["Success"]',
+            timer: 2500,
+            showConfirmButton: false
+        });
+        </text>
+    }
+</script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.delete-doctor-btn').click(function (e) {
+                e.preventDefault();
+
+                var doctorId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'هل أنت متأكد؟',
+                    text: "لن تتمكن من التراجع عن هذا الإجراء!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'نعم، احذف الطبيب!',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // قم بعمل إعادة توجيه إلى أكشن الحذف
+                        window.location.href = '@Url.Action("DeleteDoctor", "Admin")/' + doctorId;
+                    }
+                })
+            });
+        });
+    </script>
+}
+
+
+
+
+
+@section Footer{
+   <!-- jQuery -->
+<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+<!-- Feather Js -->
+<script src="~/assets/js/feather.min.js"></script>
+
+<!-- Slimscroll -->
+<script src="~/assets/js/jquery.slimscroll.js"></script>
+
+<!-- Select2 Js -->
+<script src="~/assets/js/select2.min.js"></script>
+
+<!-- Datepicker JS -->
+<script src="~/assets/plugins/moment/moment.min.js"></script>
+<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+<!-- Custom JS -->
+<script src="~/assets/js/script.js"></script>
+
+
+
+
+<!-- Validation Scripts -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

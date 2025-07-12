@@ -139,7 +139,6 @@ namespace MarinaRegSystem.Controllers
         {
             var appointments = await _context.Appointments
                 .Include(a => a.Department)
-                .Include(a => a.Service)
                 .Include(a => a.Doctor)
                 .ToListAsync();
             return View(appointments);
@@ -203,26 +202,8 @@ namespace MarinaRegSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetServicesByDepartment(int departmentId)
-        {
-            var services = await _context.Services
-                .Where(s => s.DepartmentId == departmentId)
-                .Select(s => new { s.Id, s.Name })
-                .ToListAsync();
-            return Json(services);
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> GetDoctorsByService(int serviceId)
-        {
-            var doctors = await _context.DoctorServices
-                .Where(ds => ds.ServiceId == serviceId)
-                .Select(ds => ds.Doctor)
-                .Where(d => d.Status == true)
-                .Select(d => new { d.Id, d.Name })
-                .ToListAsync();
-            return Json(doctors);
-        }
+
+
     }
-} 
+}

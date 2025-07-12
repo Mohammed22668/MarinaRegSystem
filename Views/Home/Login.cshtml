@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "التسجيل";
+    ViewData["Title"] = "تسجيل الدخول";
     Layout = null;
 }
 <!DOCTYPE html>
@@ -9,7 +9,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-    <title>مستشفى مارينا - التسجيل</title>
+     <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png" >
+    <title>مستشفى مارينا الاهلي - تسجيل الدخول</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
@@ -29,6 +30,8 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+   
 
 </head>
 <body>
@@ -53,8 +56,9 @@
                         <div class="loginbox">
                             <div class="login-right">
                                 <div class="login-right-wrap">
-                                    <div class="account-logo">
-                                        <a href="#"><img src="~/assets/img/login-logo.png" alt=""></a>
+                                     <div class="account-logo text-center">
+                                        <a href="#"><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100" height="100"></a>
+                                        <h2> مستشفى مارينا الاهلي</h2>
                                     </div>
                                     <h2>تسجيل الدخول</h2>
                                     <!-- Form -->
@@ -62,7 +66,7 @@
                                         <div class="row">
                                             <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                                 <label style="font-weight:bolder">رقم الهاتف<span class="login-danger">*</span></label>
-                                                <input required name="PhoneNumber" class="form-control" type="text">
+                                                <input required name="PhoneNumber" placeholder="077xxxxxxxx" class="form-control" type="text">
                                             </div>
                                             <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12">
                                                 <label style="font-weight:bolder">الرمز السري <span class="login-danger">*</span></label>

@@ -1,0 +1,249 @@
+@model CreateLabInvoiceViewModel
+
+@{
+    Layout = "_LayoutLab";
+    ViewData["Title"] = "تعديل فاتورة مختبر";
+}
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم مختبر مارينا - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+
+            .container {
+                max-width: 900px;
+            }
+
+            .card {
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+            }
+
+            .form-control:focus {
+                border-color: #6c757d;
+                box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+                font-weight: bold;
+                margin-bottom: 1rem;
+                color: #343a40;
+                border-bottom: 2px solid #dee2e6;
+                padding-bottom: 0.5rem;
+            }
+
+            .test-result-group {
+                background-color: #fff;
+                padding: 1rem;
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                margin-bottom: 1rem;
+            }
+
+            .btn-submit {
+                background-color: #007bff;
+                color: white;
+                padding: 0.6rem 2rem;
+                font-size: 1.1rem;
+                border-radius: 8px;
+                transition: background-color 0.3s ease;
+            }
+
+            .btn-submit:hover {
+                background-color: #0056b3;
+            }
+
+            /* Select2 Customization */
+            .select2-container--default .select2-selection--multiple {
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                padding: 0.5rem;
+            }
+
+            .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                background-color: #007bff;
+                color: white;
+                border-radius: 4px;
+                margin-right: 5px;
+                margin-top: 5px;
+            }
+
+            .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+                line-height: normal;
+            }
+        </style>
+
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الصفحة الرئيسية</a></li>
+}
+
+
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 animate__animated animate__fadeInUp">
+        <h3 class="text-center mb-4" style="color: #007bff;">تعديل الفاتورة رقم @Model.Id</h3>
+
+        <form asp-action="EditLabInvoice" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" asp-for="Id" />
+
+            <!-- بيانات المريض -->
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Age" class="form-label"></label>
+                    <input asp-for="Age" class="form-control" />
+                    <span asp-validation-for="Age" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="DoctorName" class="form-label"></label>
+                    <input asp-for="DoctorName" class="form-control" />
+                    <span asp-validation-for="DoctorName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold text-primary mb-2">الفحوصات المطلوبة</label>
+
+                <select asp-for="SelectedTestIds" class="form-select select2 shadow-sm border-primary" multiple
+                    asp-items="@(new MultiSelectList(Model.AvailableLabTests, "Id", "Name", Model.SelectedTestIds))">
+                </select>
+
+                <div class="form-text text-muted mt-1">
+                    يمكنك اختيار أكثر من فحص بالضغط على Ctrl أو من القائمة المنسدلة.
+                </div>
+            </div>
+
+
+            <!-- نتائج الفحوصات -->
+            <div class="mb-4">
+                <label class="section-title">نتائج الفحوصات</label>
+                @for (int i = 0; i < Model.TestsWithResults.Count; i++)
+                {
+                    <div class="test-result-group">
+                        <input type="hidden" asp-for="TestsWithResults[i].LabTestId" />
+                        <input type="hidden" asp-for="TestsWithResults[i].LabTestName" />
+                        <input type="hidden" asp-for="TestsWithResults[i].MinValue" />
+                        <input type="hidden" asp-for="TestsWithResults[i].MaxValue" />
+
+                        <label class="fw-bold">@Model.TestsWithResults[i].LabTestName</label>
+
+                        <input asp-for="TestsWithResults[i].ResultValue" class="form-control mt-2"
+                            placeholder="أدخل النتيجة هنا" />
+                        <small class="text-muted d-block mt-1">
+                            الحد الأدنى: @Model.TestsWithResults[i].MinValue | الحد الأعلى:
+                            @Model.TestsWithResults[i].MaxValue
+                        </small>
+                    </div>
+                }
+            </div>
+
+            <!-- زر الحفظ -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-submit">حفظ التغييرات</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- Select2 JS -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Initialize Select2 -->
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'اختر الفحوصات...',
+                allowClear: true,
+                dir: 'rtl'
+            });
+        });
+    </script>
+}
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

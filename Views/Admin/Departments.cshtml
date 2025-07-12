@@ -1,94 +1,196 @@
 @model IEnumerable<MarinaRegSystem.Models.Department>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "الأقسام";
 }
 
-@section currentPage {
-    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
-    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">الأقسام</a></li>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
-<div class="page-wrapper">
-    <div class="content">
-        <div class="page-header">
-            <div class="row">
-                <div class="col-sm-12">
-                    <h3 class="page-title">قائمة الأقسام</h3>
-                    <div class="text-end">
-                        <a asp-action="AddDepartment" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> إضافة قسم
-                        </a>
-                    </div>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@section Head {
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الأقسام</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+     
+    </head>
+}
+
+
+<h2>@ViewData["Title"]</h2>
+
+<div >
+    <div>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="page-title mb-0">قائمة الأقسام الطبية</h3>
+            <a asp-action="AddDepartment" class="btn btn-primary btn-action">
+                <i class="fas fa-plus me-1"></i> إضافة قسم جديد
+            </a>
+        </div>
+
+        <!-- Departments Table -->
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">الأقسام</h5>
+                <span class="text-muted">إجمالي: @Model.Count()</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>الوصف</th>
+                                <th>عدد الأطباء</th>
+                                 <th>عدد الحجوزات</th>
+                                <th>الحالة</th>
+                                <th class="text-center">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        لا توجد أقسام حتى الآن.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><strong>@item.Name</strong></td>
+                                        <td class="text-muted">@item.Description</td>
+                                        <td>@(item.Doctors?.Count()?? 0)</td>
+                                          <td>@(item.Appointments?.Count()?? 0)</td>
+                                        <td>
+                                            <span class="badge bg-@(item.Status ? "success" : "danger") status-badge">
+                                                @(item.Status ? "نشط" : "غير نشط")
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group gap-2">
+                                                <a asp-action="EditDepartment" asp-route-id="@item.Id"
+                                                   class="btn btn-outline-success btn-sm btn-action">
+                                                    <i class="fas fa-pencil-alt me-1"></i> تعديل
+                                                </a>
+                                             <button type="button" 
+        class="btn btn-outline-danger btn-sm btn-action btn-delete"
+        @( ((item.Doctors?.Count() ?? 0) > 0 || (item.Appointments?.Count() ?? 0) > 0) ? "disabled" : "") 
+        data-id="@item.Id" data-name="@item.Name">
+    <i class="fas fa-trash me-1"></i> حذف
+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>الاسم</th>
-                                        <th>الوصف</th>
-                                        <th>عدد الأطباء</th>
-                                        <th>عدد الخدمات</th>
-                                        <th>الحالة</th>
-                                        <th>الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <h2 class="table-avatar">
-                                                    <a href="#">@item.Name</a>
-                                                </h2>
-                                            </td>
-                                            <td>@item.Description</td>
-                                            <td>@(item.Doctors?.Count ?? 0)</td>
-                                            <td>@(item.Services?.Count ?? 0)</td>
-                                            <td>
-                                                <span class="badge bg-@(item.Status ? "success" : "danger")">
-                                                    @(item.Status ? "نشط" : "غير نشط")
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="actions">
-                                                    <a asp-action="EditDepartment" asp-route-id="@item.Id" class="btn btn-sm bg-success-light me-2">
-                                                        <i class="fas fa-pencil-alt"></i> تعديل
-                                                    </a>
-                                                    <a asp-action="DeleteDepartment" asp-route-id="@item.Id" class="btn btn-sm bg-danger-light" onclick="return confirm('هل أنت متأكد من حذف هذا القسم؟');">
-                                                        <i class="fas fa-trash"></i> حذف
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
 @section Footer {
     <!-- jQuery -->
-    <script src="~/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-    <!-- Bootstrap Core JS -->
+    <!-- Bootstrap JS -->
     <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Slimscroll JS -->
-    <script src="~/assets/js/jquery.slimscroll.min.js"></script>
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datatables JS -->
+    <script src="~/assets/plugins/datatables/datatables.min.js"></script>
 
     <!-- Custom JS -->
     <script src="~/assets/js/script.js"></script>
-} 
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+
+
+
+
+@section Scripts {
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const departmentId = this.getAttribute('data-id');
+                const departmentName = this.getAttribute('data-name');
+
+                Swal.fire({
+                    title: `هل أنت متأكد من حذف القسم "${departmentName}"؟`,
+                    text: "لن تتمكن من التراجع عن هذه العملية!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'نعم، احذف!',
+                    cancelButtonText: 'إلغاء'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // إعادة التوجيه لرابط الحذف مع إرسال المعرف كـ query string
+                        window.location.href = `@Url.Action("DeleteDepartment", "Admin")?id=${departmentId}`;
+                    }
+                });
+            });
+        });
+    });
+</script>
+}    

@@ -1,31 +1,199 @@
 @model IEnumerable<MarinaRegSystem.Models.Doctor>
 
 @{
+    Layout = "_LayoutPatient";
     ViewData["Title"] = "قائمة الأطباء";
 }
 
-<h2 class="mb-4">قائمة الأطباء</h2>
+@section currentPage {
+    <li class="breadcrumb-item active">الأطباء</li>
+}
 
-<div class="row">
-    @foreach (var doctor in Model)
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الأطباء</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <style>
+            body {
+                background-color: #f4f6f9;
+                font-family: 'Tajawal', sans-serif;
+            }
+
+            .doctor-card {
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease;
+                border: none;
+                overflow: hidden;
+                height: 100%;
+                background-color: white;
+            }
+
+            .doctor-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .doctor-image {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 50%;
+                margin: auto;
+                display: block;
+                border: 4px solid #007bff;
+                box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            }
+
+            .card-body {
+                text-align: center;
+            }
+
+            .card-title {
+                font-weight: bold;
+                color: #007bff;
+            }
+
+            .card-subtitle {
+                color: #6c757d;
+            }
+
+            .info-item {
+                font-size: 0.95rem;
+                color: #555;
+            }
+
+            .info-item i {
+                color: #007bff;
+                width: 20px;
+                text-align: center;
+            }
+
+            .btn-book {
+                border-radius: 50px;
+                padding: 0.5rem 1.2rem;
+                font-weight: bold;
+                width: 100%;
+            }
+
+            .doctor-card .btn-book:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+        </style>
+    </head>
+}
+
+<div class="container py-5">
+    <h2 class="mb-5 text-center">@ViewData["Title"]</h2>
+
+    @if (!Model.Any())
     {
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">@doctor.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">القسم: @doctor.Department?.Name</h6>
-                    <p class="card-text">
-                        @if (!string.IsNullOrEmpty(doctor.Speciality))
-                        {
-                            <strong>الاختصاص:</strong> @doctor.Speciality<br />
-                        }
-                        @if (!string.IsNullOrEmpty(doctor.Phone))
-                        {
-                            <strong>الهاتف:</strong> @doctor.Phone
-                        }
-                    </p>
-                </div>
-            </div>
+        <div class="alert alert-info text-center">
+            لا يوجد أطباء متاحين في الوقت الحالي.
         </div>
     }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var doctor in Model)
+            {
+                <div class="col-md-4 col-sm-6">
+                    <div class="card shadow-sm doctor-card h-100">
+                        <div class="card-body d-flex flex-column align-items-center text-center p-4">
+                            <!-- صورة الطبيب -->
+                            <img class="doctor-image mb-3"
+                                src="@(string.IsNullOrEmpty(doctor.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : doctor.ImageUrl)"
+                                alt="@doctor.Name">
+
+
+                            @* class="doctor-image mb-3" *@
+
+                            <!-- اسم الطبيب -->
+                            <h5 class="card-title">@doctor.Name</h5>
+
+                            <!-- القسم -->
+                            <p class="card-subtitle mb-3">
+                                <i class="fas fa-stethoscope"></i> @doctor.Department?.Name
+                            </p>
+
+                            <!-- التخصص -->
+                            @if (!string.IsNullOrEmpty(doctor.Speciality))
+                            {
+                                <p class="info-item">
+                                    <i class="fas fa-user-md"></i> <strong>التخصص:</strong> @doctor.Speciality
+                                </p>
+                            }
+
+                            <!-- الهاتف -->
+                            @if (!string.IsNullOrEmpty(doctor.Phone))
+                            {
+                                <p class="info-item">
+                                    <i class="fas fa-phone"></i> <strong>الهاتف:</strong> @doctor.Phone
+                                </p>
+                            }
+
+                            <!-- زر الحجز -->
+                            <a href="@Url.Action("AddSchedule", "Patient", new { doctorId = doctor.Id })"
+                                class="btn btn-primary btn-book mt-3">
+                                <i class="fas fa-calendar-check me-1"></i> حجز موعد
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="text-center mt-5">
+        <a href="@Url.Action("Index", "Patient")" class="btn btn-outline-secondary btn-book">
+            <i class="fas fa-arrow-left me-1"></i> العودة إلى الصفحة الرئيسية
+        </a>
+    </div>
 </div>
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

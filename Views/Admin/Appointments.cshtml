@@ -1,0 +1,325 @@
+@* @model IEnumerable<MarinaRegSystem.Models.Appointment> *@
+@model MarinaRegSystem.Models.AppointmentFilterViewModel
+@using MarinaRegSystem.Helpers
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "الحجوزات";
+}
+
+
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+
+        <style>
+            .table th {
+                background-color: #f1f4f7;
+                color: #3b3f5c;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .table td {
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .table-avatar a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+            }
+
+            .table-avatar img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .rating i {
+                font-size: 1rem;
+            }
+
+            .actions .btn {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+                border-radius: 6px;
+            }
+
+            .bg-success-light {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .bg-danger-light {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            .btn-primary i {
+                margin-left: 5px;
+            }
+
+            .page-title {
+                font-weight: 700;
+                color: #3b3f5c;
+                font-size: 1.75rem;
+            }
+
+            .badge {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+                border-radius: 50px;
+            }
+        </style>
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الحجوزات </a></li>
+}
+
+
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- 🔍 نموذج البحث والفلترة -->
+<form method="get" asp-action="Appointments" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <input type="text" name="PatientName" value="@Model.PatientName" class="form-control"
+            placeholder="اسم المريض" />
+    </div>
+
+    <div class="col-md-3">
+        <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control" placeholder="اسم الطبيب" />
+    </div>
+    <div class="col-md-3">
+        <select name="DepartmentId" class="form-select">
+            <option value="">-- اختر القسم --</option>
+            @foreach (var dept in Model.Departments)
+            {
+                <option value="@dept.Value" selected="@(dept.Value == Model.DepartmentId?.ToString())">@dept.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="AppointmentDate" value="@(Model.AppointmentDate?.ToString("yyyy-MM-dd"))"
+            class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <select name="Shift" class="form-select">
+            <option value="">-- اختر الشفت --</option>
+            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.ShiftType>())
+            {
+                <option value="@item.Value" selected="@(item.Value == Model.Shift?.ToString())">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="Status" class="form-select">
+            <option value="">-- اختر الحالة --</option>
+            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.AppointmentStatus>())
+            {
+                <option value="@item.Value" selected="@(item.Value == Model.Status?.ToString())">@item.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 d-grid">
+        <button type="submit" class="btn btn-primary">بحث</button>
+    </div>
+
+
+    <div class="col-md-3 d-grid">
+        <button type="submit" name="export" value="excel" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> تصدير إلى Excel
+        </button>
+    </div>
+</form>
+
+<!-- جدول عرض الحجوزات -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                        <thead>
+                            <tr class="text-center ">
+                                <th>المستخدم</th>
+                                <th>اسم المريض</th>
+                                <th>القسم</th>
+                                <th>الطبيب</th>
+                                <th>تاريخ الموعد</th>
+                                <th>وقت الموعد</th>
+                                <th>الشفت</th>
+                                <th>الحالة</th>
+
+                                <th>السعر</th>
+                                <th>سبب الالغاء</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Results)
+                            {
+                                var appt = item.Appointment;
+
+                                <tr>
+                                    <td class="text-center">@appt.User?.Username</td>
+                                    <td class="text-center">@appt.PatientName</td>
+                                    <td class="text-center">@appt.Department?.Name</td>
+                                    <td class="text-center">@appt.Doctor?.Name</td>
+                                    <td class="text-center">@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-center">@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                                    <td class="text-center">@appt.Shift.GetDisplayName()</td>
+
+                                    <td class="text-center">
+                                        <span
+                                            class="badge bg-@(appt.Status == MarinaRegSystem.Models.AppointmentStatus.Confirmed ? "success" : "danger")">
+                                            @appt.Status.GetDisplayName()
+                                        </span>
+                                    </td>
+                                    <td class="text-center">@($"{appt.Price:##,##0} د.ع")</td>
+
+                                    <td class="text-center">@appt.CancelReason</td>
+                                    <td class="text-center">
+                                        <a asp-action="EditAppointment" asp-route-id="@appt.Id"
+                                            class="btn btn-sm bg-success-light me-2">
+                                            <i class="fas fa-pencil-alt"></i> تعديل
+                                        </a>
+                                        <button type="button" class="btn btn-sm bg-danger-light btn-delete"
+                                            data-id="@appt.Id">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const appointmentId = this.getAttribute('data-id');
+
+                    Swal.fire({
+                        title: 'هل أنت متأكد؟',
+                        text: "لن تتمكن من التراجع عن هذا الحذف!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'نعم، احذف!',
+                        cancelButtonText: 'إلغاء'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // ارسال طلب الحذف عن طريق الفورم برمجياً أو إعادة توجيه
+                            // الطريقة الأسهل: عمل فورم وحذف برمجي
+
+                            // إنشاء فورم مؤقت للحذف (POST)
+                            const form = document.createElement('form');
+                            form.method = 'post';
+                            form.action = `/Admin/DeleteAppointment/${appointmentId}`;
+
+                            // إضافة مفتاح الحماية ضد الهجمات CSRF (إذا كنت تستخدمه)
+                            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+                            if (token) {
+                                const hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = '__RequestVerificationToken';
+                                hiddenInput.value = token.value;
+                                form.appendChild(hiddenInput);
+                            }
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+
+}
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
