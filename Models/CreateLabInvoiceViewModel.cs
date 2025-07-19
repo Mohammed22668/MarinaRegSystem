@@ -32,11 +32,11 @@ public class CreateLabInvoiceViewModel
 
     // تستخدم في صفحة الإنشاء/التعديل
     [NotMapped]
-    public List<LabTest> AvailableLabTests { get; set; } = new List<LabTest>();
+    public List<LabTestWithStockViewModel> AvailableLabTests { get; set; }
 
     // تستخدم في صفحة الإنشاء فقط (اختياري)
     [NotMapped]
-    public List<LabTest> AvailableTests { get; set; }
+    public List<LabTestWithStockViewModel> AvailableTests { get; set; }
 
     [NotMapped]
     public List<Patient> Patients { get; set; }

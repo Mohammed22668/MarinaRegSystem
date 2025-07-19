@@ -2,12 +2,13 @@
 @using MarinaRegSystem.Helpers
 
 @{
-     Layout = "_LayoutAdmin";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "إضافة طبيب";
 }
 
 
 @section Head {
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -41,11 +42,12 @@
 
 @section currentPage {
     <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
-    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة طبيب</a></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#" style="font-weight:bolder">إضافة
+            طبيب</a></li>
 }
 
-<div >
-    <div >
+<div>
+    <div>
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-12">
@@ -64,7 +66,8 @@
                             <div class="row">
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <label asp-for="Name" style="font-weight:bolder">اسم الطبيب<span class="login-danger">*</span></label>
+                                        <label asp-for="Name" style="font-weight:bolder">اسم الطبيب<span
+                                                class="login-danger">*</span></label>
                                         <input asp-for="Name" class="form-control" type="text" required>
                                         <span asp-validation-for="Name" class="text-danger"></span>
                                     </div>
@@ -72,7 +75,8 @@
 
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <label asp-for="Speciality" style="font-weight:bolder">التخصص<span class="login-danger">*</span></label>
+                                        <label asp-for="Speciality" style="font-weight:bolder">التخصص<span
+                                                class="login-danger">*</span></label>
                                         <input asp-for="Speciality" class="form-control" type="text" required>
                                         <span asp-validation-for="Speciality" class="text-danger"></span>
                                     </div>
@@ -80,7 +84,17 @@
 
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <label asp-for="Experience" style="font-weight:bolder">سنوات الخبرة<span class="login-danger">*</span></label>
+                                        <label asp-for="Phone" style="font-weight:bolder">رقم الهاتف<span
+                                                class="login-danger">*</span></label>
+                                        <input asp-for="Phone" class="form-control" type="text" required>
+                                        <span asp-validation-for="Phone" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Experience" style="font-weight:bolder">سنوات الخبرة<span
+                                                class="login-danger">*</span></label>
                                         <input asp-for="Experience" class="form-control" type="number" required>
                                         <span asp-validation-for="Experience" class="text-danger"></span>
                                     </div>
@@ -88,38 +102,40 @@
 
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
-                                        <label asp-for="DepartmentId" style="font-weight:bolder">القسم<span class="login-danger">*</span></label>
-                                        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.Departments" required>
+                                        <label asp-for="DepartmentId" style="font-weight:bolder">القسم<span
+                                                class="login-danger">*</span></label>
+                                        <select asp-for="DepartmentId" class="form-control"
+                                            asp-items="ViewBag.Departments" required>
                                             <option value="">اختر القسم</option>
                                         </select>
                                         <span asp-validation-for="DepartmentId" class="text-danger"></span>
                                     </div>
                                 </div>
 
-                                  
-                                  <div class="col-12 col-md-6 col-xl-6">
-    <div class="input-block local-forms">
-        <label asp-for="SubDepartmentId" style="font-weight:bolder">القسم الفرعي</label>
-        <select asp-for="SubDepartmentId" class="form-control" id="SubDepartmentSelect">
-            <option value="">اختر القسم الفرعي</option>
-        </select>
-        <span asp-validation-for="SubDepartmentId" class="text-danger"></span>
-    </div>
-</div>
 
                                 <div class="col-12 col-md-6 col-xl-6">
-    <div class="input-block local-forms">
-        <label asp-for="Shift" style="font-weight:bolder">شفت الدوام</label>
-        <select asp-for="Shift" class="form-control">
-            <option value="">اختر الشفت</option>
-            @foreach (ShiftType shift in Enum.GetValues(typeof(ShiftType)))
-    {
-        <option value="@shift">@EnumExtensions.GetDisplayName(shift)</option>
-    }
-        </select>
-        <span asp-validation-for="Shift" class="text-danger"></span>
-    </div>
-</div>
+                                    <div class="input-block local-forms">
+                                        <label asp-for="SubDepartmentId" style="font-weight:bolder">القسم الفرعي</label>
+                                        <select asp-for="SubDepartmentId" class="form-control" id="SubDepartmentSelect">
+                                            <option value="">اختر القسم الفرعي</option>
+                                        </select>
+                                        <span asp-validation-for="SubDepartmentId" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-6">
+                                    <div class="input-block local-forms">
+                                        <label asp-for="Shift" style="font-weight:bolder">شفت الدوام</label>
+                                        <select asp-for="Shift" class="form-control">
+                                            <option value="">اختر الشفت</option>
+                                            @foreach (ShiftType shift in Enum.GetValues(typeof(ShiftType)))
+                                            {
+                                                <option value="@shift">@EnumExtensions.GetDisplayName(shift)</option>
+                                            }
+                                        </select>
+                                        <span asp-validation-for="Shift" class="text-danger"></span>
+                                    </div>
+                                </div>
 
                                 <div class="col-12">
                                     <div class="input-block local-forms">
@@ -139,7 +155,8 @@
                                 <div class="col-12 col-md-6 col-xl-6">
                                     <div class="input-block local-forms">
                                         <label asp-for="Rating" style="font-weight:bolder">التقييم</label>
-                                        <input asp-for="Rating" class="form-control" type="number" step="0.1" min="0" max="5">
+                                        <input asp-for="Rating" class="form-control" type="number" value="5" step="0.1"
+                                            min="0" max="5">
                                         <span asp-validation-for="Rating" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -160,63 +177,65 @@
 </div>
 
 @section Scripts {
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const departmentSelect = document.querySelector('[name="DepartmentId"]');
-        const subDepartmentSelect = document.getElementById('SubDepartmentSelect');
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const departmentSelect = document.querySelector('[name="DepartmentId"]');
+            const subDepartmentSelect = document.getElementById('SubDepartmentSelect');
 
-        departmentSelect.addEventListener('change', function () {
-            const deptId = this.value;
+            departmentSelect.addEventListener('change', function () {
+                const deptId = this.value;
 
-            subDepartmentSelect.innerHTML = '<option value="">اختر القسم الفرعي</option>';
+                subDepartmentSelect.innerHTML = '<option value="">اختر القسم الفرعي</option>';
 
-            if (deptId) {
-                fetch(`/Admin/GetSubDepartmentsByDepartment/${deptId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(sub => {
-                            const option = document.createElement('option');
-                            option.value = sub.id;
-                            option.textContent = sub.name;
-                            subDepartmentSelect.appendChild(option);
+                if (deptId) {
+                    fetch(`/Admin/GetSubDepartmentsByDepartment/${deptId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(sub => {
+                                const option = document.createElement('option');
+                                option.value = sub.id;
+                                option.textContent = sub.name;
+                                subDepartmentSelect.appendChild(option);
+                            });
                         });
-                    });
-            }
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
 
 
 
 
 
-@section Footer{
-   <!-- jQuery -->
-<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-<!-- Bootstrap JS -->
-<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-<!-- Feather Js -->
-<script src="~/assets/js/feather.min.js"></script>
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
 
-<!-- Slimscroll -->
-<script src="~/assets/js/jquery.slimscroll.js"></script>
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
 
-<!-- Select2 Js -->
-<script src="~/assets/js/select2.min.js"></script>
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
 
-<!-- Datepicker JS -->
-<script src="~/assets/plugins/moment/moment.min.js"></script>
-<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 
-<!-- Custom JS -->
-<script src="~/assets/js/script.js"></script>
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
 
-<!-- Validation Scripts -->
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

@@ -144,12 +144,7 @@
                             }
 
                             <!-- الهاتف -->
-                            @if (!string.IsNullOrEmpty(doctor.Phone))
-                            {
-                                <p class="info-item">
-                                    <i class="fas fa-phone"></i> <strong>الهاتف:</strong> @doctor.Phone
-                                </p>
-                            }
+
 
                             <!-- زر الحجز -->
                             <a href="@Url.Action("AddSchedule", "Patient", new { doctorId = doctor.Id })"

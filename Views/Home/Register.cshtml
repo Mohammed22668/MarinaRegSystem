@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-     <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png" >
+    <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png">
     <title>مستشفى مارينا - التسجيل</title>
 
     <!-- Bootstrap CSS -->
@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
 </head>
+
 <body>
 
     <!-- Main Wrapper -->
@@ -56,71 +57,81 @@
                             <div class="login-right">
                                 <div class="login-right-wrap">
                                     <div class="account-logo text-center">
-                                        <a href="#"><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100" height="100"></a>
+                                        <a href="#"><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100"
+                                                height="100"></a>
                                         <h2> مستشفى مارينا الاهلي</h2>
                                     </div>
                                     <h2>انشاء حساب جديد</h2>
-            <!-- Form -->
-            
-            <form asp-controller="home" asp-action="Register" method="post">
-    <div class="row">
+                                    <!-- Form -->
 
-        <!-- اسم المستخدم -->
-        <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-            <label style="font-weight:bolder">اسم المستخدم <span class="login-danger">*</span></label>
-            <input asp-for="Username" class="form-control" type="text" placeholder="ادخل اسم المستخدم" required />
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
+                                    <form asp-action="Register" method="post">
+                                        @Html.AntiForgeryToken() <!-- حماية CSRF -->
 
-        <!-- البريد الالكتروني -->
-        <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-            <label style="font-weight:bolder">البريد الإلكتروني </label>
-            <input asp-for="Email" class="form-control" type="email" placeholder="ادخل البريد الإلكتروني"  />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+                                        <!-- عرض مجمّع للأخطاء -->
+                                        <div asp-validation-summary="All" class="text-danger"></div>
 
-        <!-- رقم الهاتف -->
-        <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-            <label style="font-weight:bolder">رقم الهاتف <span class="login-danger">*</span></label>
-            <input asp-for="PhoneNumber" class="form-control" type="text" placeholder="ادخل رقم الهاتف" required />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
+                                        <!-- بقية الحقول كما هي -->
+                                        <div class="row">
 
-        <!-- كلمة المرور -->
-        <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-            <label style="font-weight:bolder"> أنشاء رمز الدخول <span class="login-danger">*</span></label>
-            <input asp-for="Password" class="form-control pass-input" type="password" placeholder="ادخل الرمز السري" required />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+                                            <!-- اسم المستخدم -->
+                                            <div class="input-block col-xl-6 mb-3">
+                                                <label>اسم المستخدم <span class="login-danger">*</span></label>
+                                                <input asp-for="Username" class="form-control"
+                                                    placeholder="ادخل اسم المستخدم" />
+                                                <span asp-validation-for="Username" class="text-danger"></span>
+                                            </div>
 
-        <!-- تأكيد كلمة المرور -->
-        <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-            <label style="font-weight:bolder">تأكيد رمز الدخول  <span class="login-danger">*</span></label>
-            <input asp-for="ConfirmPassword" class="form-control pass-input" type="password" placeholder="أكد الرمز السري" required />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
+                                            <!-- البريد -->
+                                            <div class="input-block col-xl-6 mb-3">
+                                                <label>البريد الإلكتروني</label>
+                                                <input asp-for="Email" class="form-control"
+                                                    placeholder="ادخل البريد الإلكتروني" />
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
 
-        <!-- الموافقة على الشروط -->
-        <div class="input-block col-12 mb-3">
-            <label class="custom_check d-inline-flex align-items-center" style="font-weight:bolder">
-                <input type="checkbox" name="terms" required />
-                <span class="checkmark me-2"></span>
-                الموافقة على الشروط و الأحكام الخاصة بالمستشفى
-            </label>
-        </div>
+                                            <!-- الهاتف -->
+                                            <div class="input-block col-xl-6 mb-3">
+                                                <label>رقم الهاتف <span class="login-danger">*</span></label>
+                                                <input asp-for="PhoneNumber" class="form-control"
+                                                    placeholder="ادخل رقم الهاتف" />
+                                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                            </div>
 
-        <!-- زر التسجيل -->
-        <div class="input-block col-12 text-center">
-            <button type="submit" class="btn btn-primary btn-block">تسجيل</button>
-        </div>
+                                            <!-- كلمة المرور -->
+                                            <div class="input-block col-xl-6 mb-3">
+                                                <label>أنشاء رمز الدخول <span class="login-danger">*</span></label>
+                                                <input asp-for="Password" class="form-control pass-input"
+                                                    type="password" placeholder="ادخل الرمز السري" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
 
-    </div>
-</form>
+                                            <!-- تأكيد كلمة المرور -->
+                                            <div class="input-block col-xl-6 mb-3">
+                                                <label>تأكيد رمز الدخول <span class="login-danger">*</span></label>
+                                                <input asp-for="ConfirmPassword" class="form-control pass-input"
+                                                    type="password" placeholder="أكد الرمز السري" />
+                                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                            </div>
 
+                                            <!-- الشروط -->
+                                            <div class="input-block col-12 mb-3">
+                                                <label class="custom_check">
+                                                    <input type="checkbox" name="terms" required />
+                                                    <span class="checkmark me-2"></span> الموافقة على الشروط والأحكام
+                                                </label>
+                                            </div>
+
+                                            <!-- زر التسجيل -->
+                                            <div class="input-block col-12 text-center">
+                                                <button type="submit" class="btn btn-primary btn-block">تسجيل</button>
+                                            </div>
+                                        </div>
+                                    </form>
                                     <!-- /Form -->
 
                                     <div class="next-sign">
-                                        <p class="account-subtitle">هل لديك حساب مسبقا؟ <a href="~/Home/Login">تسجيل الدخول</a></p>
+                                        <p class="account-subtitle">هل لديك حساب مسبقا؟ <a href="~/Home/Login">تسجيل
+                                                الدخول</a></p>
 
                                         <!-- Social Login -->
                                         <!-- /Social Login -->
@@ -153,4 +164,5 @@
     <script src="~/assets/js/app.js"></script>
 
 </body>
+
 </html>

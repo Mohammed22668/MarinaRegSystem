@@ -11,12 +11,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
+using System.Net.Http;
 
 namespace MarinaRegSystem.Controllers
 {
     [Authorize(Roles = "Patient")]
     public class PatientController : Controller
     {
+
+
+        private const string WhatsAppApiUrl = "http://91.227.40.38/api/create-message";
+        private const string WhatsAppAppKey = "80bfe418-f930-45de-96d4-18caab17a2ea";
+        private const string WhatsAppAuthKey = "In31s77aNxvFxvR9CvexJnM1wcWAXpJ3ltg8d8JfEuTmxTFnpG";
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
 
@@ -118,6 +124,8 @@ namespace MarinaRegSystem.Controllers
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
+            await SendAppointmentPendingMessageAsync(userId);
+
 
             TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";
             return RedirectToAction(nameof(MyAppointments));
@@ -174,6 +182,7 @@ namespace MarinaRegSystem.Controllers
                 ShiftType.Morning => "صباحي",
                 ShiftType.Evening => "مسائي",
                 ShiftType.Night => "خفر",
+                ShiftType.MorningNight => "صباحي-مسائي",
                 _ => ""
             };
         }
@@ -457,6 +466,51 @@ namespace MarinaRegSystem.Controllers
 
             TempData["SuccessMessage"] = "تم إلغاء الحجز بنجاح.";
             return RedirectToAction("MyAppointments");
+        }
+
+
+
+        private async Task SendAppointmentPendingMessageAsync(long userId)
+        {
+            var user = await _context.cUsers.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null || string.IsNullOrWhiteSpace(user.PhoneNumber))
+                return;
+
+            string receiver = NormalizePhone(user.PhoneNumber);
+
+            string message =
+                "تم استلام طلب الحجز بنجاح ✅\n" +
+                "سيتم تأكيد الحجز من قبل قسم الاستعلامات.\n\n" +
+                "📞 استفسارات اخرى الاتصال على الرقم: 07726662888";
+
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent
+    {
+        { new StringContent(WhatsAppAppKey),  "appkey"  },
+        { new StringContent(WhatsAppAuthKey), "authkey" },
+        { new StringContent(receiver),        "to"      },
+        { new StringContent(message),         "message" }
+    };
+
+            await client.PostAsync(WhatsAppApiUrl, form);
+        }
+
+        /// <summary>
+        /// يحوِّل ‎0771 234 5678 → 6947712345678 (مثال)
+        /// عدّل حسب احتياجك الفعلي.
+        /// </summary>
+        private string NormalizePhone(string phone)
+        {
+            // أزل أي محارف غير أرقام
+            var digits = new string(phone.Where(char.IsDigit).ToArray());
+
+            // إذا كان يبدأ بـ "0" نحذفها ثم نضيف "964"
+            if (digits.StartsWith("0"))
+                digits = "964" + digits.Substring(1);
+            // نحول ‎964… إلى ‎694… حسب المثال
+
+
+            return digits;
         }
 
     }

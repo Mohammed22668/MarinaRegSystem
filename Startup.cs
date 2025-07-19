@@ -42,6 +42,12 @@ namespace MarinaRegSystem
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // اختياري: مدة الجلسة
                 });
 
+            services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(10); // مدة صلاحية الجلسة المؤقتة
+    options.Cookie.HttpOnly = true;
+});
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
@@ -64,6 +70,8 @@ namespace MarinaRegSystem
             app.UseStaticFiles();
 
             app.UseRouting();
+            // ✅ تفعيل الجلسة
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

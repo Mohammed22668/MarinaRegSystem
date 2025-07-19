@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace MarinaRegSystem.Controllers
@@ -28,9 +29,9 @@ namespace MarinaRegSystem.Controllers
 
         private readonly IWebHostEnvironment _hostingEnvironment;
 
+
         public LabController(ApplicationDbContext context, IWebHostEnvironment hostingEnvironment) : base(context)
         {
-
             _hostingEnvironment = hostingEnvironment;
 
         }
@@ -39,46 +40,63 @@ namespace MarinaRegSystem.Controllers
         public override async Task<IActionResult> Index()
         {
 
-
-            // جلب إحصائيات عامة
-
             var totalAppointments = await _context.Appointments.CountAsync();
             var totalAppointmentsToday = await _context.Appointments
     .Where(a => a.AppointmentDate.Date == DateTime.Now.Date)
     .CountAsync();
-
-            // إنشاء نموذج الإحصائيات
-
-
-
-
-
-
-
             ViewBag.TotalAppointments = totalAppointments;
             ViewBag.TotalAppointmentsToday = totalAppointmentsToday;
-
-
-
-
             // تمرير النموذج إلى العرض
             ViewBag.SuccessMessage = TempData["SuccessMessage"];
             ViewBag.ErrorMessage = TempData["ErrorMessage"];
-
             return View();
-
         }
 
 
-        public async Task<IActionResult> AllLabTest()
+        public IActionResult AllLabTest(string search, int? categoryId)
         {
-            var tests = await _context.LabTests.ToListAsync();
+            var testsQuery = _context.LabTests
+                .Include(t => t.LabInvoiceTests)
+                .Include(t => t.LabTestCategory)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                testsQuery = testsQuery.Where(t => t.Name.Contains(search));
+            }
+
+            if (categoryId.HasValue)
+            {
+                testsQuery = testsQuery.Where(t => t.LabTestCategoryId == categoryId.Value);
+            }
+
+            var tests = testsQuery
+                .Select(t => new LabTestUsageViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Unit = t.Unit,
+                    Price = t.Price,
+                    LabTestCategoryName = t.LabTestCategory != null ? t.LabTestCategory.Name : "",
+                    UsagePerPatient = t.UsagePerPatient,
+
+                    MinValue = t.MinValue,
+                    MaxValue = t.MaxValue,
+                    UsageCount = t.LabInvoiceTests.Count()
+                })
+                .ToList();
+
+            ViewBag.Categories = _context.LabTestCategories.ToList();
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.Search = search;
+
             return View(tests);
         }
 
         // GET: LabTest/CreateLabTest
         public IActionResult CreateLabTest()
         {
+            ViewBag.Categories = _context.LabTestCategories.ToList();
             return View();
         }
 
@@ -101,6 +119,7 @@ namespace MarinaRegSystem.Controllers
         // GET: LabTest/Edit/5
         public async Task<IActionResult> EditLabTest(int id)
         {
+            ViewBag.Categories = _context.LabTestCategories.ToList();
             var test = await _context.LabTests.FindAsync(id);
             if (test == null)
                 return NotFound();
@@ -141,15 +160,30 @@ namespace MarinaRegSystem.Controllers
         }
 
 
-
         [Authorize(Roles = "LabDirector,LabStaff")]
         public IActionResult CreateLabInvoice()
         {
+            var labTests = _context.LabTests
+                .Select(t => new LabTestWithStockViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Unit = t.Unit,
+                    Price = t.Price,
+                    UsagePerPatient = t.UsagePerPatient,
+                    LabTestCategoryId = t.LabTestCategoryId,
+
+                    StockQuantity =
+                        (_context.StockEntries.Where(e => e.LabTestId == t.Id).Sum(e => (decimal?)e.QuantityAdded) ?? 0)
+                      - (_context.LabInvoiceTests.Where(e => e.LabTestId == t.Id).Sum(e => (decimal?)e.QuantityUsed) ?? 0)
+                })
+                .ToList();
+
             var model = new CreateLabInvoiceViewModel
             {
-                AvailableLabTests = _context.LabTests.ToList(), // ✅ نستخدم هذه الآن لعرض الكمية
-                AvailableTests = _context.LabTests.ToList(),     // ✅ نُبقي على هذه لدعم أي استخدامات أخرى لديك
-                Patients = _context.Patients.ToList()            // ✅ إذا كانت هناك قائمة مرضى في الصفحة
+                AvailableLabTests = labTests,
+                AvailableTests = labTests,
+                Patients = _context.Patients.ToList()
             };
 
             return View(model);
@@ -170,14 +204,30 @@ namespace MarinaRegSystem.Controllers
             if (test == null)
                 return NotFound();
 
-            if (quantity > 0)
-            {
-                test.StockQuantity += quantity;
-                _context.Update(test);
-                await _context.SaveChangesAsync();
-            }
+
 
             return RedirectToAction("ManageStock");
+        }
+
+
+        /// 
+        /// 
+        private List<LabTestWithStockViewModel> GetLabTestsWithStock()
+        {
+            return _context.LabTests
+                .Select(t => new LabTestWithStockViewModel
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Unit = t.Unit,
+                    Price = t.Price,
+                    UsagePerPatient = t.UsagePerPatient,
+                    LabTestCategoryId = t.LabTestCategoryId,
+                    StockQuantity =
+                        (_context.StockEntries.Where(e => e.LabTestId == t.Id).Sum(e => (decimal?)e.QuantityAdded) ?? 0)
+                      - (_context.LabInvoiceTests.Where(e => e.LabTestId == t.Id).Sum(e => (decimal?)e.QuantityUsed) ?? 0)
+                })
+                .ToList();
         }
 
 
@@ -192,7 +242,7 @@ namespace MarinaRegSystem.Controllers
             {
                 string? savedFileName = null;
 
-                // حفظ صورة الهوية إن وجدت
+                // ✅ حفظ صورة الهوية إذا تم رفعها
                 if (model.NationalIdImageFile != null && model.NationalIdImageFile.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -210,61 +260,72 @@ namespace MarinaRegSystem.Controllers
                     savedFileName = "/uploads/" + uniqueFileName;
                 }
 
-                // تحقق من توفر الكمية في المخزون أولاً
+                // ✅ التحقق من توفر الكمية لكل تحليل
                 foreach (var testId in model.SelectedTestIds)
                 {
                     var labTest = await _context.LabTests.FindAsync(testId);
                     if (labTest == null)
                     {
                         ModelState.AddModelError("", $"التحليل برقم {testId} غير موجود.");
-                        model.AvailableTests = _context.LabTests.ToList();
+                        model.AvailableTests = GetLabTestsWithStock();
+
                         return View(model);
                     }
 
                     decimal requiredQty = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m;
 
-                    if (labTest.StockQuantity < requiredQty)
+                    decimal totalInStock = _context.StockEntries
+                        .Where(e => e.LabTestId == labTest.Id)
+                        .Sum(e => (decimal?)e.QuantityAdded) ?? 0;
+
+                    decimal totalUsed = _context.LabInvoiceTests
+                        .Where(e => e.LabTestId == labTest.Id)
+                        .Sum(e => (decimal?)e.QuantityUsed) ?? 0;
+
+                    decimal availableStock = totalInStock - totalUsed;
+
+                    if (availableStock < requiredQty)
                     {
-                        ModelState.AddModelError("", $"الكمية المتوفرة للتحليل ({labTest.Name}) غير كافية.");
-                        model.AvailableTests = _context.LabTests.ToList();
+                        ModelState.AddModelError("", $"الكمية المتوفرة للتحليل ({labTest.Name}) غير كافية. الكمية المتاحة: {availableStock}");
+                        model.AvailableTests = GetLabTestsWithStock();
+
                         return View(model);
                     }
                 }
 
-                // إنشاء الفاتورة
+                // ✅ إنشاء الفاتورة
                 var invoice = new LabInvoice
                 {
                     FullName = model.FullName,
                     Age = model.Age,
                     DoctorName = model.DoctorName,
-                    NationalIdImage = savedFileName,
-                    CreatedAt = DateTime.Now
+                    NationalIdImagePath = savedFileName,
+                    CreatedAt = DateTime.Now,
+                    IsPaid = false,
+                    Status = "Pending",
+                    PatientId = model.PatientId
                 };
 
                 _context.LabInvoices.Add(invoice);
-                await _context.SaveChangesAsync(); // للحصول على ID
+                await _context.SaveChangesAsync(); // لحفظ الفاتورة أولًا قبل إضافة التحاليل
 
-                // ربط الفحوصات وخصم الكميات
+                // ✅ إضافة التحاليل إلى الفاتورة
                 foreach (var testId in model.SelectedTestIds)
                 {
                     var labTest = await _context.LabTests.FindAsync(testId);
-                    if (labTest != null)
+                    if (labTest == null) continue;
+
+                    decimal quantityUsed = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m;
+
+                    var invoiceTest = new LabInvoiceTest
                     {
-                        decimal usedQty = labTest.UsagePerPatient != 0 ? labTest.UsagePerPatient : 1m;
+                        LabInvoiceId = invoice.Id,
+                        LabTestId = labTest.Id,
+                        Price = labTest.Price,
+                        QuantityUsed = quantityUsed
+                    };
 
-                        // خصم الكمية من المخزن
-                        labTest.StockQuantity -= usedQty;
-
-                        _context.LabInvoiceTests.Add(new LabInvoiceTest
-                        {
-                            LabInvoiceId = invoice.Id,
-                            LabTestId = testId,
-                            Price = labTest.Price,
-                            QuantityUsed = usedQty
-                        });
-
-                        _context.LabTests.Update(labTest); // تحديث الكمية
-                    }
+                    _context.LabInvoiceTests.Add(invoiceTest);
                 }
 
                 await _context.SaveChangesAsync();
@@ -272,30 +333,41 @@ namespace MarinaRegSystem.Controllers
                 return RedirectToAction("ListLabInvoices");
             }
 
-            model.AvailableTests = _context.LabTests.ToList();
+            // إعادة البيانات في حالة الخطأ
+            model.AvailableTests = GetLabTestsWithStock();
+
+            model.Patients = _context.Patients.ToList();
             return View(model);
         }
 
 
 
+
+
         [Authorize(Roles = "LabDirector,LabStaff")]
-        public IActionResult ListLabInvoices(string search)
+        public IActionResult ListLabInvoices(string search, string statusFilter)
         {
-            var query = _context.LabInvoices
-                .Include(i => i.LabInvoiceTests)
-                    .ThenInclude(t => t.LabTest)
-                .AsQueryable();
+            var invoices = _context.LabInvoices
+    .Include(i => i.LabInvoiceTests)
+        .ThenInclude(t => t.LabTest)
+    .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(i =>
-                    i.FullName.Contains(search) ||
-                    i.DoctorName.Contains(search));
+                invoices = invoices.Where(i => i.FullName.Contains(search) || i.DoctorName.Contains(search));
             }
 
-            var invoices = query.OrderByDescending(i => i.CreatedAt).ToList();
-            return View(invoices);
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                invoices = invoices.Where(i => i.Status == statusFilter);
+            }
+
+            var model = invoices.ToList();
+
+            return View(model);
         }
+
+
 
 
 
@@ -341,7 +413,7 @@ namespace MarinaRegSystem.Controllers
                 DoctorName = invoice.DoctorName,
                 NationalIdImage = invoice.NationalIdImage,
                 SelectedTestIds = invoice.LabInvoiceTests.Select(t => (int)t.LabTestId).ToList(),
-                AvailableLabTests = _context.LabTests.ToList(),
+                AvailableLabTests = GetLabTestsWithStock(),
                 TestsWithResults = testsWithResults
             };
 
@@ -355,7 +427,7 @@ namespace MarinaRegSystem.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.AvailableLabTests = _context.LabTests.ToList();
+                model.AvailableLabTests = GetLabTestsWithStock();
                 model.TestsWithResults ??= new List<LabInvoiceTestViewModel>();
                 return View(model);
             }
@@ -501,6 +573,287 @@ namespace MarinaRegSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("LabAppointments");
         }
+
+
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult LabTestCategories()
+        {
+            var categories = _context.LabTestCategories.ToList();
+            return View(categories);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult CreateCategory(LabTestCategory category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.LabTestCategories.Add(category);
+                _context.SaveChanges();
+                return RedirectToAction("LabTestCategories");
+            }
+
+            return View(category);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult EditCategory(int id)
+        {
+            var category = _context.LabTestCategories.Find(id);
+            if (category == null)
+                return NotFound();
+
+            return View(category);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "LabDirector")]
+        public IActionResult EditCategory(LabTestCategory category)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.LabTestCategories.Update(category);
+                _context.SaveChanges();
+                return RedirectToAction("LabTestCategories");
+            }
+
+            return View(category);
+        }
+
+        [Authorize(Roles = "LabDirector")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteLabTestCategory(int id)
+        {
+            var category = await _context.LabTestCategories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            // تأكد من عدم وجود تحاليل مرتبطة
+            var hasTests = _context.LabTests.Any(t => t.LabTestCategoryId == id);
+            if (hasTests)
+            {
+                TempData["Error"] = "لا يمكن حذف التصنيف لأنه مرتبط بتحاليل.";
+                return RedirectToAction("LabTestCategories");
+            }
+
+            _context.LabTestCategories.Remove(category);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "تم حذف التصنيف بنجاح.";
+            return RedirectToAction("LabTestCategories");
+        }
+
+
+        // StockEntry CRUD
+
+        public IActionResult ListStockEntry()
+        {
+            var entries = _context.StockEntries
+                .Include(e => e.LabTest)
+                .Include(e => e.CreatedByUser)
+                .OrderByDescending(e => e.CreatedAt)
+                .ToList();
+
+            return View(entries);
+        }
+
+        public IActionResult CreateStockEntry()
+        {
+            // نحضّر قائمة التحاليل لعرضها في القائمة المنسدلة
+            ViewBag.LabTests = _context.LabTests.ToList();
+
+            // نعيد كائن فارغ لإنشاء إدخال جديد
+            var model = new StockEntry();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize] // تأكد أن المستخدم مسجل دخول
+        public async Task<IActionResult> CreateStockEntry(StockEntry entry)
+        {
+            if (ModelState.IsValid)
+            {
+                entry.CreatedAt = DateTime.Now;
+
+                // جلب معرف المستخدم من الكلايمز (والذي يجب أن يكون Id من نوع long)
+                var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userIdStr) || !long.TryParse(userIdStr, out long userId))
+                {
+                    TempData["Error"] = "يجب تسجيل الدخول أولاً أو تعذر التعرف على المستخدم.";
+                    return RedirectToAction("Login", "Home");
+                }
+
+                entry.CreatedByUserId = userId;
+
+                _context.StockEntries.Add(entry);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "تمت إضافة الكمية بنجاح.";
+                return RedirectToAction("ListStockEntry");
+            }
+
+            // إعادة تحميل قائمة التحاليل في حالة وجود أخطاء لعرضها في الفورم
+            ViewBag.LabTests = _context.LabTests.ToList();
+
+            return View(entry);
+        }
+
+
+
+        //edit 
+        public async Task<IActionResult> EditStockEntry(int id)
+        {
+            var entry = await _context.StockEntries
+        .Include(e => e.LabTest)
+        .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (entry == null)
+            {
+                return NotFound();
+            }
+
+            return View(entry);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStockEntry(int id, [Bind("Id,QuantityAdded,Notes")] StockEntry updatedEntry)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(updatedEntry);
+            }
+
+            var existingEntry = await _context.StockEntries.FindAsync(id);
+            if (existingEntry == null)
+            {
+                return NotFound();
+            }
+
+            existingEntry.QuantityAdded = updatedEntry.QuantityAdded;
+            existingEntry.Notes = updatedEntry.Notes;
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "تم تعديل الإدخال بنجاح.";
+            return RedirectToAction("ListStockEntry");
+        }
+
+
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> DeleteStockEntry(int id)
+        {
+            var entry = await _context.StockEntries.FindAsync(id);
+            if (entry == null)
+            {
+                TempData["Error"] = "لم يتم العثور على السجل الذي تريد حذفه.";
+                return RedirectToAction("ListStockEntry");
+            }
+
+            _context.StockEntries.Remove(entry);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "تم حذف السجل بنجاح.";
+            return RedirectToAction("ListStockEntry");
+        }
+
+
+
+        [HttpGet]
+        [Authorize(Roles = "LabDirector,LabStaff")]
+        public IActionResult CreateStockInvoice()
+        {
+            var model = new CreateStockInvoiceViewModel
+            {
+                InvoiceNumber = $"INV-{DateTime.Now.Ticks}", // توليد رقم عشوائي
+                Items = new List<StockInvoiceItemViewModel>
+        {
+            new StockInvoiceItemViewModel() // صنف واحد افتراضي
+        },
+                AvailableLabTests = _context.LabTests.ToList()
+            };
+
+            return View(model);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "LabDirector,LabStaff")]
+        public async Task<IActionResult> CreateStockInvoice(CreateStockInvoiceViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.AvailableLabTests = _context.LabTests.ToList();
+                return View(model);
+            }
+
+            // جلب بيانات المستخدم الحالي
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "يجب تسجيل الدخول أولاً.";
+                return RedirectToAction("Login", "Home");
+            }
+
+            // إنشاء الفاتورة
+            var invoice = new StockInvoice
+            {
+                InvoiceNumber = model.InvoiceNumber,
+                InvoiceDate = model.InvoiceDate,
+                CreatedByUserId = long.Parse(userId),
+                CreatedAt = DateTime.Now
+            };
+
+            _context.StockInvoices.Add(invoice);
+            await _context.SaveChangesAsync(); // لحفظ الـ ID
+
+            // إضافة التفاصيل وربطها بالفاتورة
+            foreach (var item in model.Items)
+            {
+                var invoiceItem = new StockInvoiceItem
+                {
+                    StockInvoiceId = invoice.Id,
+                    LabTestId = item.LabTestId,
+                    QuantityAdded = item.QuantityAdded,
+                    Notes = item.Notes,
+                    ExpiryDate = item.ExpiryDate
+                };
+
+                _context.StockInvoiceItems.Add(invoiceItem);
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "تم حفظ الفاتورة وإضافة الكميات بنجاح.";
+            return RedirectToAction("Index"); // أو أي صفحة مناسبة
+        }
+
+
+
 
 
     }

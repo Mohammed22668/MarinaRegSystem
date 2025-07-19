@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MarinaRegSystem.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -34,6 +34,17 @@ namespace MarinaRegSystem.Data
 
         public DbSet<LabInventory> LabInventory { get; set; }
         public DbSet<LabStock> LabStocks { get; set; }
+
+        public DbSet<LabTestCategory> LabTestCategories { get; set; }
+
+        public DbSet<StockEntry> StockEntries { get; set; }
+
+
+        public DbSet<StockInvoice> StockInvoices { get; set; }
+        public DbSet<StockInvoiceItem> StockInvoiceItems { get; set; }
+
+
+
 
 
 

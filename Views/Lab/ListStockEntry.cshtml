@@ -1,7 +1,11 @@
+@model List<MarinaRegSystem.Models.StockEntry>
+
 @{
     Layout = "_LayoutLab";
-    ViewData["Title"] = "لوحة تحكم المختبر";
+    ViewData["Title"] = "قائمة مخزون التحاليل";
 }
+
+
 
 @section Head {
 
@@ -64,36 +68,47 @@
     <li class="breadcrumb-item" style="margin-right:10px"><a href="#" style="font-weight:bolder">الصفحة الرئيسية</a></li>
 }
 
-<div class="container py-5">
 
+<div class="container mt-4">
+    <h3 class="mb-3">@ViewData["Title"]</h3>
 
-    <table class="table table-bordered table-striped">
-        <thead>
+    <a asp-action="CreateStockInvoice" class="btn btn-success mb-3"><i class="fas fa-plus"></i> إضافة كمية</a>
+
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
             <tr>
-                <th>الاسم</th>
-                <th>الكمية الحالية</th>
-                <th>إضافة كمية</th>
+                <th>التحليل</th>
+                <th>الكمية المضافة</th>
+                <th>التاريخ</th>
+
+                <th>ملاحظات</th>
+                <th>إجراء</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var test in Model)
+            @foreach (var entry in Model)
             {
                 <tr>
-                    <td>@test.Name</td>
-                    <td>@test.StockQuantity</td>
+                    <td>@entry.LabTest?.Name</td>
+                    <td>@entry.QuantityAdded</td>
+                    <td>@entry.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+
+                    <td>@entry.Notes</td>
                     <td>
-                        <form asp-action="AddStock" method="post" class="d-flex align-items-center">
-                            <input type="hidden" name="id" value="@test.Id" />
-                            <input type="number" name="quantity" min="1" class="form-control me-2" placeholder="الكمية"
-                                required />
-                            <button type="submit" class="btn btn-success btn-sm">➕ إضافة</button>
+                        <form asp-action="DeleteStockEntry" asp-route-id="@entry.Id" method="post"
+                            onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
                         </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
 </div>
+
+
+
 
 
 

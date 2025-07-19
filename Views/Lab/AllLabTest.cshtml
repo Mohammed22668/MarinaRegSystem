@@ -1,4 +1,4 @@
-@model IEnumerable<MarinaRegSystem.Models.LabTest>
+@model List<MarinaRegSystem.Models.LabTestUsageViewModel>
 
 @{
     Layout = "_LayoutLab";
@@ -70,35 +70,69 @@
 
 
 <div class="container mt-4">
-    <h3>التحاليل المخبرية</h3>
+
+    <h3>@ViewData["Title"]</h3>
+
+    <form method="get" class="row g-3 mb-3">
+        <div class="col-md-4">
+            <input type="text" name="search" value="@(ViewBag.Search ?? "")" class="form-control"
+                placeholder="ابحث عن اسم التحليل..." />
+        </div>
+        <div class="col-md-4">
+            <select name="categoryId" class="form-select">
+                <option value="">اختر التصنيف</option>
+                @foreach (var category in ViewBag.Categories as List<LabTestCategory>)
+                {
+                    if (category.Id == (int?)ViewBag.SelectedCategoryId)
+                    {
+                        <option value="@category.Id" selected="selected">@category.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">بحث</button>
+            <a href="@Url.Action("AllLabTest")" class="btn btn-secondary">إعادة تعيين</a>
+        </div>
+    </form>
 
     <a asp-action="CreateLabTest" class="btn btn-success mb-3"><i class="fas fa-plus"></i> إضافة تحليل</a>
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark text-center">
+    <table class="table table-bordered table-striped text-center">
+        <thead class="table-dark">
             <tr>
                 <th>الاسم</th>
                 <th>الوحدة</th>
+                <th>التصنيف</th>
                 <th>السعر</th>
                 <th>القيمة الطبيعية</th>
+                <th>عدد مرات الاستخدام</th>
                 <th>الكمية لكل مريض</th>
+                <th>الكمية في المخزن</th>
                 <th>إجراءات</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr class="text-center">
+                <tr>
                     <td>@item.Name</td>
                     <td>@item.Unit</td>
+                    <td>@item.LabTestCategoryName</td>
                     <td>@($"{item.Price:##,##0} د.ع")</td>
-                    <td>@($"{item.MinValue} - {item.MaxValue}")</td>
+                    <td>@item.MinValue - @item.MaxValue</td>
+                    <td>@item.UsageCount</td>
                     <td>@item.UsagePerPatient</td>
+                    <td>@item.StockQuantity</td>
                     <td>
                         <a asp-action="EditLabTest" asp-route-id="@item.Id" class="btn btn-sm btn-primary">تعديل</a>
-                        <form asp-action="DeleteLabTest" asp-route-id="@item.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-danger"
-                                onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</button>
+                        <form asp-action="DeleteLabTest" asp-route-id="@item.Id" method="post" class="d-inline"
+                            onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                            <button type="submit" class="btn btn-sm btn-danger">حذف</button>
                         </form>
                     </td>
                 </tr>

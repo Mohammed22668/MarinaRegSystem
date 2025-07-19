@@ -895,3 +895,14 @@ E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.IO.Packagi
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\QRCoder.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.Private.Windows.Core.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\BarcodeStandard.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\SkiaSharp.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\System.Resources.Extensions.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\linux-arm\native\libSkiaSharp.so
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\linux-arm64\native\libSkiaSharp.so
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\linux-musl-x64\native\libSkiaSharp.so
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\linux-x64\native\libSkiaSharp.so
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\osx\native\libSkiaSharp.dylib
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-arm64\native\libSkiaSharp.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x64\native\libSkiaSharp.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x86\native\libSkiaSharp.dll

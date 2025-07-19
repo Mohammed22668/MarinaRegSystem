@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace MarinaRegSystem.Models
 {
@@ -39,8 +41,26 @@ namespace MarinaRegSystem.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
 
-        [Display(Name = "الكمية في المخزن")]
-        [Range(0, double.MaxValue)]
-        public decimal StockQuantity { get; set; } = 0;
+        [Display(Name = "التصنيف")]
+        public int? LabTestCategoryId { get; set; }
+
+        [ForeignKey("LabTestCategoryId")]
+        public virtual LabTestCategory LabTestCategory { get; set; }
+
+        public virtual ICollection<LabInvoiceTest> LabInvoiceTests { get; set; } = new HashSet<LabInvoiceTest>();
+
+
+        public virtual ICollection<StockEntry> StockEntries { get; set; } = new HashSet<StockEntry>();
+
+
+        [NotMapped]
+        public decimal AvailableStock => StockEntries?.Sum(se => se.QuantityAdded) ?? 0;
+
+
+
+
+
+
+
     }
 }

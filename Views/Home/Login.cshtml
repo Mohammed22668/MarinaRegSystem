@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
-     <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png" >
+    <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png">
     <title>مستشفى مارينا الاهلي - تسجيل الدخول</title>
 
     <!-- Bootstrap CSS -->
@@ -31,9 +31,10 @@
     <!-- Main CSS -->
     <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
-   
+
 
 </head>
+
 <body>
 
     <!-- Main Wrapper -->
@@ -56,8 +57,9 @@
                         <div class="loginbox">
                             <div class="login-right">
                                 <div class="login-right-wrap">
-                                     <div class="account-logo text-center">
-                                        <a href="#"><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100" height="100"></a>
+                                    <div class="account-logo text-center">
+                                        <a href="#"><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100"
+                                                height="100"></a>
                                         <h2> مستشفى مارينا الاهلي</h2>
                                     </div>
                                     <h2>تسجيل الدخول</h2>
@@ -65,29 +67,36 @@
                                     <form asp-controller="home" asp-action="Login" method="post">
                                         <div class="row">
                                             <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                                <label style="font-weight:bolder">رقم الهاتف<span class="login-danger">*</span></label>
-                                                <input required name="PhoneNumber" placeholder="077xxxxxxxx" class="form-control" type="text">
+                                                <label style="font-weight:bolder">رقم الهاتف<span
+                                                        class="login-danger">*</span></label>
+                                                <input required name="PhoneNumber" placeholder="077xxxxxxxx"
+                                                    class="form-control" type="text">
                                             </div>
                                             <div class="input-block col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                                <label style="font-weight:bolder">الرمز السري <span class="login-danger">*</span></label>
-                                                <input required name="Password" class="form-control pass-input" type="password">
+                                                <label style="font-weight:bolder">الرمز السري <span
+                                                        class="login-danger">*</span></label>
+                                                <input required name="Password" class="form-control pass-input"
+                                                    type="password">
                                                 <span class="profile-views feather-eye-off toggle-password"></span>
                                             </div>
                                             @if (ViewBag.isWrong == "yes")
                                             {
                                                 <div class="mb-3">
-                                                    <label class="text-danger mb-0">● اسم المستخدم او رمز الدخول غير صحيح</label>
+                                                    <label class="text-danger mb-0">● اسم المستخدم او رمز الدخول غير
+                                                        صحيح</label>
                                                 </div>
                                             }
                                             <div class="input-block login-btn">
-                                                <button class="btn btn-primary btn-block" type="submit">تسجيل الدخول</button>
+                                                <button class="btn btn-primary btn-block" type="submit">تسجيل
+                                                    الدخول</button>
                                             </div>
                                         </div>
                                     </form>
                                     <!-- /Form -->
 
                                     <div class="next-sign">
-                                        <p class="account-subtitle">ليس لديك حساب؟ <a href="~/Home/Register">التسجيل</a></p>
+                                        <p class="account-subtitle">ليس لديك حساب؟ <a href="~/Home/Register">انشاء
+                                                حساب</a></p>
 
                                         <!-- Social Login -->
                                         <!-- /Social Login -->
@@ -120,4 +129,5 @@
     <script src="~/assets/js/app.js"></script>
 
 </body>
+
 </html>

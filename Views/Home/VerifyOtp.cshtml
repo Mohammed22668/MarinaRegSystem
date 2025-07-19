@@ -1,0 +1,208 @@
+@model string
+
+@{
+    Layout = null;
+    ViewData["Title"] = "التحقق من رقم الهاتف";
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مستشفى مارينا الأهلي - تسجيل الدخول</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="~/assets/img/marina-logo5.png">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/assets/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="~/assets/css/feather.css">
+    <link rel="stylesheet" href="~/assets/css/select2.min.css">
+    <link rel="stylesheet" href="~/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="~/assets/css/style.css">
+
+    <style>
+        body {
+            background: linear-gradient(to right, #0096c7, #023e8a);
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .otp-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeInDown 1s;
+        }
+
+        .otp-title {
+            font-weight: 700;
+            color: #023e8a;
+            margin-bottom: 25px;
+        }
+
+        .otp-logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 80px;
+        }
+
+        .otp-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .otp-group input {
+            width: 45px;
+            height: 60px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s ease;
+
+            /* ✅ أضف هذا السطر: */
+
+        }
+
+        .otp-group input:focus {
+            border-color: #0096c7;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 150, 199, 0.2);
+        }
+
+        .btn-otp {
+            background-color: #0096c7;
+            color: white;
+            border: none;
+            font-size: 18px;
+            padding: 12px;
+        }
+
+        .btn-otp:hover {
+            background-color: #007ea7;
+        }
+
+        .resend-text {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .resend-text a {
+            color: #0096c7;
+            text-decoration: underline;
+        }
+
+        .resend-text a:hover {
+            color: #007ea7;
+        }
+
+        .otp-box {
+            direction: ltr;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="otp-card animate__animated animate__fadeInDown">
+        <img src="~/assets/img/marina-logo5.png" alt="شعار المستشفى" class="otp-logo">
+        <h4 class="text-center otp-title">أدخل كود التحقق</h4>
+
+        <form asp-action="VerifyOtp" method="post" id="otpForm">
+            <input type="hidden" name="phone" value="@Model" />
+            <input type="hidden" name="otp" id="fullOtp" />
+
+            <div class="otp-group">
+                <!-- ترتيب من اليسار إلى اليمين -->
+                <input type="text" maxlength="1" name="otp1" class="otp-box" />
+                <input type="text" maxlength="1" name="otp2" class="otp-box" />
+                <input type="text" maxlength="1" name="otp3" class="otp-box" />
+                <input type="text" maxlength="1" name="otp4" class="otp-box" />
+                <input type="text" maxlength="1" name="otp5" class="otp-box" />
+                <input type="text" maxlength="1" name="otp6" class="otp-box" />
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger text-center">@ViewBag.Error</div>
+            }
+
+            <button type="submit" class="btn btn-otp w-100">تأكيد الرمز</button>
+        </form>
+
+    </div>
+
+    <!-- JS Files -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/feather.min.js"></script>
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/assets/js/select2.min.js"></script>
+    <script src="~/assets/js/app.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputs = Array.from(document.querySelectorAll(".otp-box"));
+            const fullOtp = document.getElementById("fullOtp");
+            const form = document.getElementById("otpForm");
+
+            // ضع التركيز على أول خانة يسارًا
+            inputs[0].focus();
+
+            // انتقال تلقائي
+            inputs.forEach((input, idx) => {
+                input.addEventListener("input", (e) => {
+                    // ابقِ خانة رقمية فقط
+                    input.value = input.value.replace(/[^0-9]/g, "");
+
+                    if (input.value && idx < inputs.length - 1)
+                        inputs[idx + 1].focus();
+                });
+
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Backspace" && !input.value && idx > 0)
+                        inputs[idx - 1].focus();
+                });
+
+                // دعم اللصق (Paste) لستة أرقام مرة واحدة
+                input.addEventListener("paste", (e) => {
+                    const data = (e.clipboardData || window.clipboardData)
+                        .getData("text")
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, inputs.length);
+                    if (data.length === inputs.length) {
+                        inputs.forEach((box, i) => (box.value = data[i]));
+                        inputs[inputs.length - 1].focus();
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // عند الإرسال: ادمج الأرقام بالترتيب
+            form.addEventListener("submit", () => {
+                fullOtp.value = inputs.map(i => i.value).join("");
+            });
+        });
+
+    </script>
+</body>
+
+</html>

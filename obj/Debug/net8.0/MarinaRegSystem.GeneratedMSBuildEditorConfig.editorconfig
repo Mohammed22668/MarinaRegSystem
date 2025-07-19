@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXBwb2ludG1lbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/CreatePatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlUGF0aWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/CreateSubDepartment.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlU3ViRGVwYXJ0bWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,6 +78,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/EditDoctorSchedule.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdERvY3RvclNjaGVkdWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/EditPatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFBhdGllbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/EditSubDepartment.cshtml]
@@ -152,8 +160,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Home/VerifyOtp.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxWZXJpZnlPdHAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/AllLabTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXEFsbExhYlRlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/CreateCategory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXENyZWF0ZUNhdGVnb3J5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/CreateLabInvoice.cshtml]
@@ -164,12 +180,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXENyZWF0ZUxhYlRlc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/CreateStockEntry.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXENyZWF0ZVN0b2NrRW50cnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/CreateStockInvoice.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXENyZWF0ZVN0b2NrSW52b2ljZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/EditCategory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXEVkaXRDYXRlZ29yeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/EditLabInvoice.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXEVkaXRMYWJJbnZvaWNlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/EditLabTest.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXEVkaXRMYWJUZXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/EditStockEntry.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXEVkaXRTdG9ja0VudHJ5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/Index.cshtml]
@@ -180,12 +212,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXExhYkFwcG9pbnRtZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/LabTestCategories.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXExhYlRlc3RDYXRlZ29yaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/ListLabInvoices.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXExpc3RMYWJJbnZvaWNlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/ManageStock.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXE1hbmFnZVN0b2NrLmNzaHRtbA==
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/ListStockEntry.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGFiXExpc3RTdG9ja0VudHJ5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Lab/PrintLabInvoice.cshtml]

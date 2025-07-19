@@ -29,6 +29,9 @@ namespace MarinaRegSystem.Models
         [Display(Name = "نبذة")]
         public string Bio { get; set; }
 
+
+
+
         [Display(Name = "صورة الطبيب")]
         public string ImageUrl { get; set; }
 
@@ -77,7 +80,18 @@ namespace MarinaRegSystem.Models
         Evening = 1,
 
         [Display(Name = "خفر")]
-        Night = 2
+        Night = 2,
+
+        [Display(Name = "صباحي-مسائي")]
+        MorningEvening = 3,
+
+        [Display(Name = "صباحي-خفر")]
+        MorningNight = 4,
+
+        [Display(Name = "مسائي-خفر")]
+        EveningNight = 5,
+
+
     }
 
 

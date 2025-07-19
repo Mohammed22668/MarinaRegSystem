@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using QRCoder;
+using System.Net.Http;
 
 
 
@@ -18,6 +20,10 @@ namespace MarinaRegSystem.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
+
+        private const string WhatsAppApiUrl = "http://91.227.40.38/api/create-message";
+        private const string WhatsAppAppKey = "80bfe418-f930-45de-96d4-18caab17a2ea";
+        private const string WhatsAppAuthKey = "In31s77aNxvFxvR9CvexJnM1wcWAXpJ3ltg8d8JfEuTmxTFnpG";
         public AdminController(ApplicationDbContext context) : base(context) { }
 
         [HttpGet]
@@ -615,31 +621,59 @@ namespace MarinaRegSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> EditAppointment(Appointment appointment)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var existing = await _context.Appointments.FindAsync(appointment.Id);
-                if (existing == null) return NotFound();
-
-                // تحديث الحقول المراد تعديلها
-                existing.PatientName = appointment.PatientName;
-                existing.UserId = appointment.UserId;
-                existing.DepartmentId = appointment.DepartmentId;
-                existing.DoctorId = appointment.DoctorId;
-                existing.AppointmentDate = appointment.AppointmentDate;
-                existing.AppointmentTime = appointment.AppointmentTime;
-                existing.Status = appointment.Status;
-                existing.Notes = appointment.Notes;
-                existing.RejectionReason = appointment.RejectionReason;
-                existing.Price = appointment.Price;
-                existing.UpdatedAt = DateTime.Now;
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Appointments));
+                ViewBag.Doctors = new SelectList(_context.Doctors, "Id", "Name", appointment.DoctorId);
+                ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", appointment.DepartmentId);
+                return View(appointment);
             }
 
-            ViewBag.Doctors = new SelectList(_context.Doctors, "Id", "Name", appointment.DoctorId);
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name", appointment.DepartmentId);
-            return View(appointment);
+            var existing = await _context.Appointments.FindAsync(appointment.Id);
+            if (existing == null) return NotFound();
+
+            // تحديث البيانات
+            existing.PatientName = appointment.PatientName;
+            existing.UserId = appointment.UserId;
+            existing.DepartmentId = appointment.DepartmentId;
+            existing.DoctorId = appointment.DoctorId;
+            existing.AppointmentDate = appointment.AppointmentDate;
+            existing.AppointmentTime = appointment.AppointmentTime;
+            existing.Status = appointment.Status;
+            existing.Notes = appointment.Notes;
+            existing.RejectionReason = appointment.RejectionReason;
+            existing.Price = appointment.Price;
+            existing.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            // جلب رقم المريض
+            var user = await _context.cUsers.FindAsync(existing.UserId);
+            if (user != null && !string.IsNullOrWhiteSpace(user.PhoneNumber))
+            {
+                string msg = "";
+
+                if (existing.Status == AppointmentStatus.Confirmed)
+                {
+                    var doctor = await _context.Doctors.FindAsync(existing.DoctorId);
+                    msg =
+                        "✅ تم تأكيد موعدك في مستشفى مارينا الأهلي\n\n" +
+                        $"🧑‍⚕️ الطبيب: {doctor?.Name ?? "غير محدد"}\n" +
+                        $"📅 التاريخ: {existing.AppointmentDate:yyyy-MM-dd}\n" +
+                        $"⏰ الوقت: {existing.AppointmentTime}\n";
+                }
+                if (existing.Status == AppointmentStatus.Rejected)
+
+                {
+                    msg =
+                        "❌ نأسف، تم رفض الحجز الخاص بك.\n\n" +
+                        $"📄 السبب: {existing.RejectionReason ?? "غير مذكور"}";
+                }
+
+                if (!string.IsNullOrWhiteSpace(msg))
+                    await SendMsgViaWhatsAppAsync(user.PhoneNumber, msg);
+            }
+
+            return RedirectToAction(nameof(Appointments));
         }
 
         // حذف الحجز
@@ -678,6 +712,8 @@ namespace MarinaRegSystem.Controllers
                     .ThenInclude(a => a.Doctor)
                 .Include(p => p.Appointments)
                     .ThenInclude(a => a.Department)
+                .Include(p => p.LabInvoices) // ✅ لجلب فواتير المختبر
+                    .ThenInclude(i => i.LabInvoiceTests) // لجلب تفاصيل الفاتورة
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (patient == null)
@@ -778,6 +814,142 @@ namespace MarinaRegSystem.Controllers
             _context.SaveChanges();
             return RedirectToAction(nameof(SubDepartments));
         }
+
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreatePatient()
+        {
+            return View();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePatient(Patient patient)
+        {
+            if (ModelState.IsValid)
+            {
+                // حساب العمر تلقائيًا إن لم يتم إدخاله
+                if (!patient.Age.HasValue)
+                {
+                    var today = DateTime.Today;
+                    patient.Age = today.Year - patient.DateOfBirth.Year;
+                    if (patient.DateOfBirth > today.AddYears(-patient.Age.Value))
+                        patient.Age--;
+                }
+
+                // توليد رقم مريض فريد (مثل: PT00023)
+                var lastPatient = _context.Patients
+                    .OrderByDescending(p => p.Id)
+                    .FirstOrDefault();
+
+                long nextNumber = (lastPatient?.Id ?? 0) + 1;
+                patient.PatientNumber = $"PT{nextNumber.ToString("D5")}";
+
+                _context.Patients.Add(patient);
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "تمت إضافة المريض بنجاح";
+                return RedirectToAction("AllPatients");
+            }
+
+            TempData["Error"] = "حدث خطأ أثناء حفظ البيانات";
+            return View(patient);
+        }
+
+        [HttpGet]
+        public IActionResult EditPatient(long id)
+        {
+            var patient = _context.Patients.Find(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return View(patient);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPatient(long id, Patient updatedPatient)
+        {
+            if (id != updatedPatient.Id)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var patient = await _context.Patients.FindAsync(id);
+                    if (patient == null)
+                        return NotFound();
+
+                    // تحديث الحقول
+                    _context.Entry(patient).CurrentValues.SetValues(updatedPatient);
+
+                    // تحديث العمر إذا لم يُدخل يدويًا
+                    if (!updatedPatient.Age.HasValue)
+                    {
+                        var today = DateTime.Today;
+                        patient.Age = today.Year - updatedPatient.DateOfBirth.Year;
+                        if (updatedPatient.DateOfBirth > today.AddYears(-patient.Age.Value))
+                            patient.Age--;
+                    }
+
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = "تم تحديث بيانات المريض بنجاح";
+                    return RedirectToAction("AllPatients");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "حدث خطأ أثناء التحديث: " + ex.Message);
+                }
+            }
+
+            return View(updatedPatient);
+        }
+
+
+
+        private async Task SendMsgViaWhatsAppAsync(string rawPhone, string message)
+        {
+            string receiver = NormalizePhone(rawPhone);
+
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent
+    {
+        { new StringContent(WhatsAppAppKey),  "appkey"  },
+        { new StringContent(WhatsAppAuthKey), "authkey" },
+        { new StringContent(receiver),        "to"      },
+        { new StringContent(message),         "message" }
+    };
+
+            await client.PostAsync(WhatsAppApiUrl, form);
+        }
+
+        /// <summary>
+        /// يحوِّل ‎0771 234 5678 → 6947712345678 (مثال)
+        /// عدّل حسب احتياجك الفعلي.
+        /// </summary>
+        private string NormalizePhone(string phone)
+        {
+            // أزل أي محارف غير أرقام
+            var digits = new string(phone.Where(char.IsDigit).ToArray());
+
+            // إذا كان يبدأ بـ "0" نحذفها ثم نضيف "964"
+            if (digits.StartsWith("0"))
+                digits = "964" + digits.Substring(1);
+            // نحول ‎964… إلى ‎694… حسب المثال
+
+
+            return digits;
+        }
+
+
+
+
 
 
 

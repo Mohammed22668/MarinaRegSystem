@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 
 namespace MarinaRegSystem.Controllers
@@ -19,6 +20,19 @@ namespace MarinaRegSystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+
+        // /////////////////////////////////////////////////////
+
+        // private const string ApiToken = "6faa6442-2b70-4be9-840c-0fbfeb0d2daf";
+        // private const string DeviceUuid = "cd0ded56-44f5-4100-a705-f710c34aec6b";
+        // private const string ApiUrl = "https://api.zentramsg.com/v1/messages";
+
+
+        // ///////////////////////////////////////////////////
+
+        private const string WhatsAppApiUrl = "http://91.227.40.38/api/create-message";
+        private const string WhatsAppAppKey = "80bfe418-f930-45de-96d4-18caab17a2ea";
+        private const string WhatsAppAuthKey = "In31s77aNxvFxvR9CvexJnM1wcWAXpJ3ltg8d8JfEuTmxTFnpG";
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
@@ -42,29 +56,16 @@ namespace MarinaRegSystem.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model, string DateOfBirth)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            // تحقق من صلاحية الموديل أولاً
             if (!ModelState.IsValid)
-            {
-
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage); // أو سجله في ملف
-                }
-
-
-                // إعادة عرض الفورم مع الأخطاء
                 return View(model);
-            }
 
-            if (!string.IsNullOrWhiteSpace(model.Email))
+            if (!string.IsNullOrWhiteSpace(model.Email) &&
+                _context.cUsers.Any(u => u.Email == model.Email))
             {
-                if (_context.cUsers.Any(u => u.Email == model.Email))
-                {
-                    ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم مسبقاً");
-                    return View(model);
-                }
+                ModelState.AddModelError("Email", "البريد الإلكتروني مستخدم مسبقاً");
+                return View(model);
             }
 
             if (_context.cUsers.Any(u => u.PhoneNumber == model.PhoneNumber))
@@ -73,59 +74,101 @@ namespace MarinaRegSystem.Controllers
                 return View(model);
             }
 
-            // تحويل التاريخ من سترينج إلى DateTime (إذا كان يأتي كستريغ)
+            // ⬇️ هنا نضيف كود توليد وحفظ OTP وإرسال واتساب:
+
+            var otp = new Random().Next(100000, 999999).ToString();
 
 
 
-            // إنشاء المستخدم
-            var user = new cUsers
+            var temp = new TempUserRegisterData
             {
-                Uid = Guid.NewGuid().ToString(),
                 PhoneNumber = model.PhoneNumber,
-                Password = Functions.Encrypt256(model.Password),
-                Token = Guid.NewGuid().ToString(),
-                Role = "Patient",
-                Username = model.Username, // أو يمكنك إضافة حقل منفصل للاسم في cUsers
-                Email = model.Email, // إذا تريد إضافة بريد إلكتروني مستقبلاً
+                Email = model.Email,
+                Username = model.Username,
+                Password = model.Password,
+                OTP = otp
             };
 
-            _context.cUsers.Add(user);
-            _context.SaveChanges();
+            HttpContext.Session.SetString(
+                "PendingRegister",
+                System.Text.Json.JsonSerializer.Serialize(temp));
 
-            // إذا كان لديك جدول Patient مرتبط ب cUsers:
-            // تسجيل الدخول تلقائي
-            // إنشاء Claims لتسجيل الدخول
-            var claims = new List<Claim>
+            await SendOtpViaWhatsAppAsync(model.PhoneNumber, otp);
+
+            return RedirectToAction(nameof(VerifyOtp), new { phone = model.PhoneNumber });
+        }
+
+
+
+
+
+        //  ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        private async Task SendOtpViaWhatsAppAsync(string rawPhone, string otp)
+        {
+            // تنسيق الرقم إلى الصيغة 694xxxxxxxxxxx
+            string receiver = NormalizePhone(rawPhone);
+
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent
+        {
+            { new StringContent(WhatsAppAppKey),  "appkey"  },
+            { new StringContent(WhatsAppAuthKey), "authkey" },
+            { new StringContent(receiver),        "to"      },
+            {
+                new StringContent($" الحجز الالكتروني لمستشفى مارينا الاهلي\nرمز التحقق الخاص بك هو {otp}"),
+                "message"
+            }
+        };
+
+            await client.PostAsync(WhatsAppApiUrl, form);
+        }
+
+
+        private async Task SendMsgViaWhatsAppAsync(string rawPhone, string password)
+        {
+            string receiver = NormalizePhone(rawPhone);
+
+            string loginUrl = "https://marina-hospital.com/login"; // ضع الرابط الفعلي هنا
+            string message =
+                "اكتمل إنشاء الحساب بنجاح ✅\n" +
+                "يمكنك  الدخول من خلال الرابط التالي:\n" +
+                $"{loginUrl}\n\n" +
+                $"📱 رقم الهاتف: {rawPhone}\n" +
+                $"🔑 كلمة المرور: {password}";
+
+            using var client = new HttpClient();
+            using var form = new MultipartFormDataContent
     {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, user.Username),
-        new Claim(ClaimTypes.Role, user.Role)
+        { new StringContent(WhatsAppAppKey),  "appkey"  },
+        { new StringContent(WhatsAppAuthKey), "authkey" },
+        { new StringContent(receiver),        "to"      },
+        { new StringContent(message),         "message" }
     };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-            // تعيين الكوكيز الإضافي (اختياري)
-            HttpContext.Response.Cookies.Append("Auth", user.Token, new CookieOptions()
-            {
-                Path = "/",
-                Expires = DateTime.Now.AddDays(365)
-            });
-
-            return RedirectToAction("Index", "Patient");
-
-
-
-            // // تعيين الكوكيز للتوثيق
-            // HttpContext.Response.Cookies.Append("Auth", user.Token, new CookieOptions()
-            // {
-            //     Path = "/",
-            //     Expires = DateTime.Now.AddDays(365)
-            // });
-
-            // return RedirectToAction("", "Home");
+            await client.PostAsync(WhatsAppApiUrl, form);
         }
+
+        /// <summary>
+        /// يحوِّل ‎0771 234 5678 → 6947712345678 (مثال)
+        /// عدّل حسب احتياجك الفعلي.
+        /// </summary>
+        private string NormalizePhone(string phone)
+        {
+            // أزل أي محارف غير أرقام
+            var digits = new string(phone.Where(char.IsDigit).ToArray());
+
+            // إذا كان يبدأ بـ "0" نحذفها ثم نضيف "964"
+            if (digits.StartsWith("0"))
+                digits = "964" + digits.Substring(1);
+            // نحول ‎964… إلى ‎694… حسب المثال
+
+
+            return digits;
+        }
+
+        //  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
         [HttpGet]
@@ -208,6 +251,85 @@ namespace MarinaRegSystem.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult VerifyOtp(string phone)
+        {
+            if (string.IsNullOrEmpty(phone))
+            {
+                return RedirectToAction("Register");
+            }
+
+            return View("VerifyOtp", phone);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyOtp(string phone, string otp)
+        {
+            if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(otp))
+            {
+                ViewBag.Error = "الرجاء إدخال رمز التحقق.";
+                return View("VerifyOtp", phone);
+            }
+
+            // استرجاع البيانات من الـ Session
+            var json = HttpContext.Session.GetString("PendingRegister");
+            if (string.IsNullOrEmpty(json))
+            {
+                ViewBag.Error = "انتهت صلاحية الجلسة. الرجاء إعادة التسجيل.";
+                return RedirectToAction("Register");
+            }
+
+            var tempUser = System.Text.Json.JsonSerializer.Deserialize<TempUserRegisterData>(json);
+
+            if (tempUser == null || tempUser.PhoneNumber != phone || tempUser.OTP != otp)
+            {
+                ViewBag.Error = "رمز التحقق غير صحيح.";
+                return View("VerifyOtp", phone);
+            }
+
+            // التحقق ناجح – أنشئ الحساب فعليًا
+            var user = new cUsers
+            {
+                Uid = Guid.NewGuid().ToString(),
+                PhoneNumber = tempUser.PhoneNumber,
+                Password = Functions.Encrypt256(tempUser.Password),
+                Token = Guid.NewGuid().ToString(),
+                Role = "Patient",
+                Username = tempUser.Username,
+                Email = tempUser.Email,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.cUsers.Add(user);
+            _context.SaveChanges();
+            await SendMsgViaWhatsAppAsync(user.PhoneNumber, tempUser.Password);
+
+            // حذف البيانات المؤقتة
+            HttpContext.Session.Remove("PendingRegister");
+
+            // تسجيل الدخول تلقائي
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            HttpContext.Response.Cookies.Append("Auth", user.Token, new CookieOptions()
+            {
+                Path = "/",
+                Expires = DateTime.Now.AddDays(365)
+            });
+
+            return RedirectToAction("Index", "Patient"); // أو حسب الدور
+        }
+
 
 
     }

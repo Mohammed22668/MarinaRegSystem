@@ -1,4 +1,5 @@
 @model MarinaRegSystem.Models.Patient
+
 @using MarinaRegSystem.Helpers;
 
 @{
@@ -11,30 +12,30 @@
 
 @section Head {
 
-      <meta charset="utf-8" lang="ar">
+    <meta charset="utf-8" lang="ar">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" href="~/assets/img/favicon.png">
     <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
 
-        <!-- Fontawesome CSS -->
-        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
-        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
 
-        <!-- Select2 CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
 
-        <!-- Datatables CSS -->
-        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+    <!-- Datatables CSS -->
+    <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
 
-        <!-- Feathericon CSS -->
-        <link rel="stylesheet" href="~/assets/css/feather.css">
+    <!-- Feathericon CSS -->
+    <link rel="stylesheet" href="~/assets/css/feather.css">
 
-        <!-- Main CSS -->
-        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
     <!-- Animate -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -102,76 +103,132 @@
     </style>
 }
 
+
 <div class="container">
-    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+    <h2 class="text-center mb-4">ملف المريض - @Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName</h2>
 
-    <!-- Patient Info Card -->
-    <div class="card patient-card shadow-sm">
-        <div class="card-body text-center">
-            <!-- Profile Image (Example only - optional) -->
-            <div class="mb-3">
-                <img src="~/assets/img/user.jpg" alt="صورة المريض" class="rounded-circle" style="width: 100px; height: 100px;">
-            </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3 text-center">
+                    <img src="~/assets/img/user.jpg" class="rounded-circle img-thumbnail" style="width:120px;" />
+                    <p class="mt-2 text-muted">صورة رمزية</p>
+                </div>
 
-            <!-- Full Name -->
-            <h4 class="patient-name mb-3">@Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName</h4>
-
-            <!-- Basic Info -->
-            <div class="row g-3 justify-content-center text-start" style="max-width: 600px; margin: auto;">
-                <div class="col-md-6 patient-info">
-                    <strong>الجنس:</strong> @Model.Gender
-                </div>
-                <div class="col-md-6 patient-info">
-                    <strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")
-                </div>
-                <div class="col-md-6 patient-info">
-                    <strong>رقم الهاتف:</strong> @Model.PhoneNumber
-                </div>
-                <div class="col-md-6 patient-info">
-                    <strong>فصيلة الدم:</strong> @Model.BloodType
+                <div class="col-md-9">
+                    <div class="row g-3">
+                        <div class="col-md-6"><strong>الاسم الرباعي:</strong> @Model.FirstName @Model.SecondName
+                            @Model.ThirdName @Model.FourthName</div>
+                        <div class="col-md-6"><strong>الاسم بالإنجليزية:</strong> @Model.EnglishFullName</div>
+                        <div class="col-md-6"><strong>رقم الهوية:</strong> @Model.NationalNumber</div>
+                        <div class="col-md-6"><strong>رقم الجواز:</strong> @Model.PassportNumber</div>
+                        <div class="col-md-6"><strong>رقم الضمان:</strong> @Model.InsuranceNumber</div>
+                        <div class="col-md-6"><strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")
+                        </div>
+                        <div class="col-md-6"><strong>العمر:</strong> @Model.Age</div>
+                        <div class="col-md-6"><strong>الجنس:</strong> @Model.Gender</div>
+                        <div class="col-md-6"><strong>رقم الهاتف:</strong> @Model.PhoneNumber</div>
+                        <div class="col-md-6"><strong>فصيلة الدم:</strong> @Model.BloodType</div>
+                        <div class="col-md-6"><strong>الطول:</strong> @Model.Height سم</div>
+                        <div class="col-md-6"><strong>الوزن:</strong> @Model.Weight كغم</div>
+                        <div class="col-md-6"><strong>البلد:</strong> @Model.Country</div>
+                        <div class="col-md-6"><strong>المحافظة:</strong> @Model.Province</div>
+                        <div class="col-md-6"><strong>المدينة:</strong> @Model.City</div>
+                        <div class="col-md-6"><strong>الحي:</strong> @Model.Neighborhood</div>
+                        <div class="col-md-12"><strong>العنوان:</strong> @Model.Address</div>
+                        <div class="col-md-6"><strong>الأمراض المزمنة:</strong> @Model.ChronicDiseases</div>
+                        <div class="col-md-6"><strong>الأعراض:</strong> @Model.Symptoms</div>
+                        @if (Model.Gender != "ذكر")
+                        {
+                            <div class="col-md-6">
+                                <strong>مدة الدورة الشهرية:</strong> @Model.MenstrualCycleDuration
+                            </div>
+                        }
+                        <div class="col-md-6"><strong>ملاحظات:</strong> @Model.AdditionalNotes</div>
+                        <div class="col-md-6"><strong>أقرب شخص:</strong> @Model.ClosePerson</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Appointments Table -->
+    <!-- الحجوزات السابقة -->
     <h4 class="mt-5 mb-3">الحجوزات السابقة</h4>
 
     @if (Model.Appointments != null && Model.Appointments.Any())
     {
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>التاريخ</th>
+                    <th>الوقت</th>
+                    <th>القسم</th>
+                    <th>الطبيب</th>
+                    <th>الشفت</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appt in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                {
+                    <tr>
+                        <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                        <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                        <td>@appt.Department?.Name</td>
+                        <td>@appt.Doctor?.Name</td>
+                        <td>@appt.Shift.GetDisplayName()</td>
+                        <td><span class="badge bg-info">@appt.Status.GetDisplayName()</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">لا توجد حجوزات سابقة.</div>
+    }
+
+    <h4 class="mt-5 mb-3">الفواتير المخبرية</h4>
+
+    @if (Model.LabInvoices != null && Model.LabInvoices.Any())
+    {
         <div class="table-responsive">
-            <table class="table table-hover align-middle table-rounded">
+            <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>التاريخ</th>
-                        <th>الوقت</th>
-                        <th>القسم</th>
-                        <th>الطبيب</th>
-                        <th>الشفت</th>
+                        <th>رقم الفاتورة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>عدد التحاليل</th>
+                        <th>إجمالي المبلغ</th>
                         <th>الحالة</th>
+                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var appt in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+                    @foreach (var invoice in Model.LabInvoices.OrderByDescending(i => i.CreatedAt))
                     {
-                        var statusClass = appt.Status switch
+                        var totalAmount = invoice.LabInvoiceTests?.Sum(t => t.Price) ?? 0;
+                        var statusText = invoice.Status switch
                         {
-                            AppointmentStatus.Pending => "text-pending",
-                            AppointmentStatus.Confirmed => "text-confirmed",
-                            AppointmentStatus.Rejected => "text-rejected",
-                            AppointmentStatus.Completed => "text-completed",
-                            AppointmentStatus.Cancelled => "text-cancelled",
-                            _ => ""
+                            "Pending" => "قيد الانتظار",
+                            "Confirmed" => "تم التأكيد",
+                            "Rejected" => "مرفوض",
+                            "Cancelled" => "ملغي",
+                            "Completed" => "مكتمل",
+                            _ => invoice.Status
                         };
 
                         <tr>
-                            <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                            <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
-                            <td>@appt.Department?.Name</td>
-                            <td>@appt.Doctor?.Name</td>
-                            <td>@appt.Shift.GetDisplayName()</td>
+                            <td>@invoice.Id</td>
+                            <td>@invoice.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@invoice.LabInvoiceTests?.Count ?? 0</td>
+                            <td>@totalAmount.ToString("N0") دينار</td>
+                            <td><span class="badge bg-secondary">@statusText</span></td>
                             <td>
-                                <span class="status-badge ">@appt.Status.GetDisplayName()</span>
+                                <a asp-action="ViewLabInvoiceDetails" asp-route-id="@invoice.Id"
+                                    class="btn btn-sm btn-outline-info">
+                                    عرض التفاصيل
+                                </a>
                             </td>
                         </tr>
                     }
@@ -182,44 +239,42 @@
     else
     {
         <div class="alert alert-info text-center py-3">
-            لا توجد حجوزات سابقة لهذا المريض.
+            لا توجد فواتير مخبرية مسجلة لهذا المريض.
         </div>
     }
 
-    <!-- Back Button -->
     <div class="text-center mt-4">
-        <a href="~/Admin/AllPatients" class="btn btn-outline-primary btn-custom">
+        <a href="~/Admin/AllPatients" class="btn btn-outline-secondary rounded-pill">
             <i class="fas fa-arrow-left me-1"></i> العودة إلى قائمة المرضى
         </a>
     </div>
 </div>
 
 
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-@section Footer{
-   <!-- jQuery -->
-<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-<!-- Bootstrap JS -->
-<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
 
-<!-- Feather Js -->
-<script src="~/assets/js/feather.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
 
-<!-- Slimscroll -->
-<script src="~/assets/js/jquery.slimscroll.js"></script>
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
 
-<!-- Select2 Js -->
-<script src="~/assets/js/select2.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 
-<!-- Datepicker JS -->
-<script src="~/assets/plugins/moment/moment.min.js"></script>
-<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
 
-<!-- Custom JS -->
-<script src="~/assets/js/script.js"></script>
-
-<!-- Validation Scripts -->
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

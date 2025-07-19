@@ -85,6 +85,18 @@
                 <span asp-validation-for="Unit" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label for="LabTestCategoryId">تصنيف التحليل</label>
+                <select name="LabTestCategoryId" class="form-control" required>
+                    <option value="">اختر التصنيف</option>
+                    @foreach (var category in ViewBag.Categories as List<LabTestCategory>)
+                    {
+                        <option value="@category.Id" selected="@(category.Id == Model.LabTestCategoryId)">@category.Name
+                        </option>
+                    }
+                </select>
+            </div>
+
             <div class="col-md-3">
                 <label asp-for="Price" class="form-label">السعر</label>
                 <input asp-for="Price" class="form-control" />

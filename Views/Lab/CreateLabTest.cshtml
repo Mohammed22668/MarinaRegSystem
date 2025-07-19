@@ -81,6 +81,16 @@
                 <label asp-for="Unit" class="form-label"></label>
                 <input asp-for="Unit" class="form-control" />
             </div>
+            <div class="form-group">
+                <label for="CategoryId">تصنيف التحليل</label>
+                <select name="LabTestCategoryId" class="form-control" required>
+                    <option value="">اختر التصنيف</option>
+                    @foreach (var category in ViewBag.Categories as List<LabTestCategory>)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+            </div>
             <div class="col-md-3">
                 <label asp-for="Price" class="form-label"></label>
                 <input asp-for="Price" class="form-control" />
@@ -93,11 +103,7 @@
                 <label asp-for="MaxValue" class="form-label"></label>
                 <input asp-for="MaxValue" class="form-control" />
             </div>
-            <div class="form-group">
-                <label asp-for="StockQuantity" class="control-label"></label>
-                <input asp-for="StockQuantity" class="form-control" type="number" min="0" step="1" />
-                <span asp-validation-for="StockQuantity" class="text-danger"></span>
-            </div>
+
             <div class="col-md-3">
                 <label asp-for="UsagePerPatient" class="form-label"></label>
                 <input asp-for="UsagePerPatient" class="form-control" />
