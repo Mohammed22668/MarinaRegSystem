@@ -556,7 +556,6 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BloodType")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChronicDiseases")
@@ -603,7 +602,6 @@ namespace MarinaRegSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NationalNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Neighborhood")

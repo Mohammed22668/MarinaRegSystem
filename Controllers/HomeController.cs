@@ -117,7 +117,11 @@ namespace MarinaRegSystem.Controllers
             { new StringContent(WhatsAppAuthKey), "authkey" },
             { new StringContent(receiver),        "to"      },
             {
-                new StringContent($" الحجز الالكتروني لمستشفى مارينا الاهلي\nرمز التحقق الخاص بك هو {otp}"),
+                new StringContent($"🩺 الحجز الالكتروني لمستشفى مارينا الأهلي\n\n" +
+    $"🔑 رمز التحقق:\n" +
+    $"--------------------\n" +
+    $"{otp}\n" +
+    $"--------------------\n\n"),
                 "message"
             }
         };
@@ -130,7 +134,7 @@ namespace MarinaRegSystem.Controllers
         {
             string receiver = NormalizePhone(rawPhone);
 
-            string loginUrl = "https://marina-hospital.com/login"; // ضع الرابط الفعلي هنا
+            string loginUrl = "https://marinahospital.premiumasp.net/Home/Login"; // ضع الرابط الفعلي هنا
             string message =
                 "اكتمل إنشاء الحساب بنجاح ✅\n" +
                 "يمكنك  الدخول من خلال الرابط التالي:\n" +

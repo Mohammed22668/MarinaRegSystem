@@ -906,3 +906,11 @@ E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\osx\nati
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-arm64\native\libSkiaSharp.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x64\native\libSkiaSharp.dll
 E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\runtimes\win-x86\native\libSkiaSharp.dll
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\web.config
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\appsettings.Development.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\appsettings.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\MarinaRegSystem.deps.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\MarinaRegSystem.runtimeconfig.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\MarinaRegSystem.staticwebassets.endpoints.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\wwwroot\assets\plugins\fontawesome\metadata\icons.json
+E:\C#_Project\MarinaRegSystem\MarinaRegSystem\bin\Debug\net8.0\publish\wwwroot\assets\plugins\fontawesome\metadata\shims.json

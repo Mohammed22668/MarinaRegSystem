@@ -98,6 +98,40 @@
                 background-color: #0056b3;
                 border-color: #0056b3;
             }
+
+            .doctor-card {
+                transition: all 0.3s ease;
+                background: #ffffff;
+                border: none;
+                height: 100%;
+            }
+
+            .doctor-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .card-body {
+                padding: 0.5rem;
+            }
+
+            .text-truncate {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* ضبط الصورة */
+            .doctor-image {
+                height: 80px !important;
+                width: 80px !important;
+                object-fit: cover;
+                border: 3px solid #007bff;
+                border-radius: 50%;
+                margin: 15px auto;
+                display: block;
+                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.15);
+            }
         </style>
     </head>
 }
@@ -113,43 +147,48 @@
     }
     else
     {
-        <div class="row g-4">
-            @foreach (var doctor in Model)
+        var sortedDoctors = Model.OrderByDescending(d => d.Rating).ToList();
+
+        <div class="row g-3 justify-content-center">
+            @foreach (var doctor in sortedDoctors)
             {
-                <div class="col-md-4 col-sm-6">
-                    <div class="card shadow-sm doctor-card h-100">
-                        <div class="card-body d-flex flex-column align-items-center text-center p-4">
-                            <!-- صورة الطبيب -->
-                            <img class="doctor-image mb-3"
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-4">
+                    <div class="card shadow-sm doctor-card h-200 border-0" style="border-radius: 12px; overflow: hidden;">
+                        <div class="position-relative">
+                            <img class="doctor-image w-100"
                                 src="@(string.IsNullOrEmpty(doctor.ImageUrl) ? "/assets/img/doctors/doctor-thumb-03.jpg" : doctor.ImageUrl)"
-                                alt="@doctor.Name">
+                                alt="@doctor.Name"
+                                style="height: 80px; width: 80px; object-fit: cover; border: 3px solid #007bff; border-radius: 50%; margin: 15px auto; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
 
+                            <!-- عرض التقييم -->
+                           @if (doctor.Rating > 0)
+{
+    <div class="position-absolute top-0 end-0 bg-warning text-white px-2 py-1 mt-2 rounded-start" 
+         style="font-size: 0.75rem; transform: translateY(-50%);">
+        ⭐ @doctor.Rating.ToString("0.0")
+    </div>
+}
+                        </div>
 
-                            @* class="doctor-image mb-3" *@
+                        <div class="card-body p-2 text-center">
+                            <h6 class="card-title mb-1 text-truncate" style="font-size: 0.9rem; font-weight: bold;">@doctor.Name
+                            </h6>
 
-                            <!-- اسم الطبيب -->
-                            <h5 class="card-title">@doctor.Name</h5>
-
-                            <!-- القسم -->
-                            <p class="card-subtitle mb-3">
-                                <i class="fas fa-stethoscope"></i> @doctor.Department?.Name
+                            <p class="card-subtitle mb-1" style="font-size: 0.8rem;">
+                                <i class="fas fa-stethoscope text-primary"></i> @doctor.Department?.Name
                             </p>
 
-                            <!-- التخصص -->
                             @if (!string.IsNullOrEmpty(doctor.Speciality))
                             {
-                                <p class="info-item">
-                                    <i class="fas fa-user-md"></i> <strong>التخصص:</strong> @doctor.Speciality
+                                <p class="info-item mb-1" style="font-size: 0.75rem;">
+                                    <i class="fas fa-user-md text-muted"></i> @doctor.Speciality
                                 </p>
                             }
 
-                            <!-- الهاتف -->
-
-
-                            <!-- زر الحجز -->
                             <a href="@Url.Action("AddSchedule", "Patient", new { doctorId = doctor.Id })"
-                                class="btn btn-primary btn-book mt-3">
-                                <i class="fas fa-calendar-check me-1"></i> حجز موعد
+                                class="btn btn-sm btn-outline-primary btn-book mt-2 w-100"
+                                style="font-size: 0.75rem; padding: 0.3rem 0.5rem; border-radius: 20px;">
+                                <i class="fas fa-calendar-check me-1"></i> حجز
                             </a>
                         </div>
                     </div>
@@ -159,7 +198,7 @@
     }
 
     <div class="text-center mt-5">
-        <a href="@Url.Action("Index", "Patient")" class="btn btn-outline-secondary btn-book">
+        <a href="@Url.Action("Index", "Patient")" class="btn btn-outline-secondary btn-book px-4">
             <i class="fas fa-arrow-left me-1"></i> العودة إلى الصفحة الرئيسية
         </a>
     </div>

@@ -42,15 +42,22 @@ namespace MarinaRegSystem.Controllers
             }
 
             var patient = await _context.Patients.FirstOrDefaultAsync(p => p.UserId == userId);
-            ViewBag.Patient = patient; // البيانات الخاصة بالحجز لنفسي
+            if (patient == null)
+            {
+                // تحويل إلى صفحة إنشاء المريض مع باراميتر returnUrl ليعود بعد التسجيل
+                var returnUrl = Url.Action(nameof(AddSchedule), "Patient");
+                return RedirectToAction("Create", "Patient", new { returnUrl });
+            }
 
+            ViewBag.Patient = patient; // البيانات الخاصة بالحجز لنفسي
             ViewBag.Departments = new SelectList(await _context.Departments.ToListAsync(), "Id", "Name");
 
             return View(new CreateAppointmentViewModel
             {
-                AppointmentDate = DateTime.Today // يمكن وضع تاريخ اليوم افتراضياً
+                AppointmentDate = DateTime.Today
             });
         }
+
         [HttpPost]
         public async Task<IActionResult> AddSchedule(CreateAppointmentViewModel model)
         {
@@ -334,7 +341,7 @@ namespace MarinaRegSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Patient patient)
+        public async Task<IActionResult> Create(Patient patient, string returnUrl = null)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out long userId))
@@ -361,8 +368,16 @@ namespace MarinaRegSystem.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "تم حفظ بيانات المريض بنجاح.";
+
+            // إعادة التوجيه إلى returnUrl إن وجد
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
             return RedirectToAction("AddSchedule", "Patient");
         }
+
 
         public IActionResult Departments()
         {

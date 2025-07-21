@@ -40,9 +40,9 @@ namespace MarinaRegSystem.Models
 
         public string Address { get; set; }
 
-        [Required(ErrorMessage = "رقم الهوية الوطنية مطلوب")]
+
         [Display(Name = "رقم الهوية الوطنية")]
-        public string NationalNumber { get; set; }
+        public string? NationalNumber { get; set; }
 
         [Display(Name = "البلد")]
         [Required(ErrorMessage = "البلد مطلوبة")]
@@ -60,8 +60,8 @@ namespace MarinaRegSystem.Models
         public string Neighborhood { get; set; }
 
         [Display(Name = "فصيلة الدم")]
-        [Required(ErrorMessage = "فصيلة الدم مطلوبة")]
-        public string BloodType { get; set; }
+
+        public string? BloodType { get; set; }
 
         [Display(Name = "الحساسية")]
         public string Allergies { get; set; }
