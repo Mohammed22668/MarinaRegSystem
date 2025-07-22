@@ -104,53 +104,98 @@
 }
 
 
-<div class="container">
-    <h2 class="text-center mb-4">ملف المريض - @Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName</h2>
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        <i class="fas fa-user me-2"></i>
+        <div style="font-size: 1.8rem;">@Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName</div>
+        <div class="text-secondary" style="font-size: 1.1rem;">رقم المريض: @Model.PatientNumber</div>
+    </h2>
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row g-3">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+            <div class="row g-4 align-items-start">
+
+                <!-- الصورة -->
                 <div class="col-md-3 text-center">
-                    <img src="~/assets/img/user.jpg" class="rounded-circle img-thumbnail" style="width:120px;" />
-                    <p class="mt-2 text-muted">صورة رمزية</p>
+                    <img src="~/assets/img/user.jpg" class="rounded-circle img-thumbnail shadow-sm"
+                        style="width: 130px;" />
+                    <p class="mt-2 text-muted small">صورة رمزية</p>
                 </div>
 
+                <!-- المعلومات -->
                 <div class="col-md-9">
                     <div class="row g-3">
-                        <div class="col-md-6"><strong>الاسم الرباعي:</strong> @Model.FirstName @Model.SecondName
-                            @Model.ThirdName @Model.FourthName</div>
-                        <div class="col-md-6"><strong>الاسم بالإنجليزية:</strong> @Model.EnglishFullName</div>
-                        <div class="col-md-6"><strong>رقم الهوية:</strong> @Model.NationalNumber</div>
-                        <div class="col-md-6"><strong>رقم الجواز:</strong> @Model.PassportNumber</div>
-                        <div class="col-md-6"><strong>رقم الضمان:</strong> @Model.InsuranceNumber</div>
-                        <div class="col-md-6"><strong>تاريخ الميلاد:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")
+
+                        <div class="col-md-6"><i class="fas fa-user text-primary me-1"></i> <strong>الاسم
+                                الرباعي:</strong> @Model.FirstName @Model.SecondName @Model.ThirdName @Model.FourthName
                         </div>
-                        <div class="col-md-6"><strong>العمر:</strong> @Model.Age</div>
-                        <div class="col-md-6"><strong>الجنس:</strong> @Model.Gender</div>
-                        <div class="col-md-6"><strong>رقم الهاتف:</strong> @Model.PhoneNumber</div>
-                        <div class="col-md-6"><strong>فصيلة الدم:</strong> @Model.BloodType</div>
-                        <div class="col-md-6"><strong>الطول:</strong> @Model.Height سم</div>
-                        <div class="col-md-6"><strong>الوزن:</strong> @Model.Weight كغم</div>
-                        <div class="col-md-6"><strong>البلد:</strong> @Model.Country</div>
-                        <div class="col-md-6"><strong>المحافظة:</strong> @Model.Province</div>
-                        <div class="col-md-6"><strong>المدينة:</strong> @Model.City</div>
-                        <div class="col-md-6"><strong>الحي:</strong> @Model.Neighborhood</div>
-                        <div class="col-md-12"><strong>العنوان:</strong> @Model.Address</div>
-                        <div class="col-md-6"><strong>الأمراض المزمنة:</strong> @Model.ChronicDiseases</div>
-                        <div class="col-md-6"><strong>الأعراض:</strong> @Model.Symptoms</div>
+                        <div class="col-md-6"><i class="fas fa-language text-primary me-1"></i> <strong>الاسم
+                                بالإنجليزية:</strong> @Model.EnglishFullName</div>
+                        <div class="col-md-6"><i class="fas fa-id-card text-primary me-1"></i> <strong>رقم
+                                الهوية:</strong> @Model.NationalNumber</div>
+                        <div class="col-md-6"><i class="fas fa-passport text-primary me-1"></i> <strong>رقم
+                                الجواز:</strong> @Model.PassportNumber</div>
+                        <div class="col-md-6"><i class="fas fa-shield-alt text-primary me-1"></i> <strong>رقم
+                                الضمان:</strong> @Model.InsuranceNumber</div>
+                        <div class="col-md-6"><i class="fas fa-birthday-cake text-primary me-1"></i> <strong>تاريخ
+                                الميلاد:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")</div>
+                        <div class="col-md-6"><i class="fas fa-hourglass-half text-primary me-1"></i>
+                            <strong>العمر:</strong> @Model.Age
+                        </div>
+                        <div class="col-md-6"><i class="fas fa-venus-mars text-primary me-1"></i>
+                            <strong>الجنس:</strong> @Model.Gender
+                        </div>
+                        <div class="col-md-6"><i class="fas fa-phone-alt text-primary me-1"></i> <strong>رقم
+                                الهاتف:</strong> @Model.PhoneNumber</div>
+                        <div class="col-md-6"><i class="fas fa-tint text-primary me-1"></i> <strong>فصيلة الدم:</strong>
+                            @Model.BloodType</div>
+
+                        <div class="col-md-6"><i class="fas fa-ruler-vertical text-primary me-1"></i>
+                            <strong>الطول:</strong> @Model.Height سم
+                        </div>
+                        <div class="col-md-6"><i class="fas fa-weight text-primary me-1"></i> <strong>الوزن:</strong>
+                            @Model.Weight كغم</div>
+
+                        <div class="col-md-6"><i class="fas fa-flag text-primary me-1"></i> <strong>البلد:</strong>
+                            @Model.Country</div>
+                        <div class="col-md-6"><i class="fas fa-map-marker-alt text-primary me-1"></i>
+                            <strong>المحافظة:</strong> @Model.Province
+                        </div>
+                        <div class="col-md-6"><i class="fas fa-city text-primary me-1"></i> <strong>المدينة:</strong>
+                            @Model.City</div>
+                        <div class="col-md-6"><i class="fas fa-home text-primary me-1"></i> <strong>الحي:</strong>
+                            @Model.Neighborhood</div>
+                        <div class="col-md-12"><i class="fas fa-map-pin text-primary me-1"></i>
+                            <strong>العنوان:</strong> @Model.Address
+                        </div>
+
+                        <hr class="my-3">
+
+                        <div class="col-md-6"><i class="fas fa-notes-medical text-primary me-1"></i> <strong>الأمراض
+                                المزمنة:</strong> @Model.ChronicDiseases</div>
+                        <div class="col-md-6"><i class="fas fa-stethoscope text-primary me-1"></i>
+                            <strong>الأعراض:</strong> @Model.Symptoms
+                        </div>
+
                         @if (Model.Gender != "ذكر")
                         {
-                            <div class="col-md-6">
-                                <strong>مدة الدورة الشهرية:</strong> @Model.MenstrualCycleDuration
-                            </div>
+                            <div class="col-md-6"><i class="fas fa-female text-primary me-1"></i> <strong>مدة الدورة
+                                    الشهرية:</strong> @Model.MenstrualCycleDuration</div>
                         }
-                        <div class="col-md-6"><strong>ملاحظات:</strong> @Model.AdditionalNotes</div>
-                        <div class="col-md-6"><strong>أقرب شخص:</strong> @Model.ClosePerson</div>
+
+                        <div class="col-md-6"><i class="fas fa-info-circle text-primary me-1"></i>
+                            <strong>ملاحظات:</strong> @Model.AdditionalNotes
+                        </div>
+                        <div class="col-md-6"><i class="fas fa-user-friends text-primary me-1"></i> <strong>أقرب
+                                شخص:</strong> @Model.ClosePerson</div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
+
+
 
     <!-- الحجوزات السابقة -->
     <h4 class="mt-5 mb-3">الحجوزات السابقة</h4>
@@ -164,7 +209,7 @@
                     <th>الوقت</th>
                     <th>القسم</th>
                     <th>الطبيب</th>
-                    <th>الشفت</th>
+
                     <th>الحالة</th>
                 </tr>
             </thead>
@@ -176,7 +221,7 @@
                         <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
                         <td>@appt.Department?.Name</td>
                         <td>@appt.Doctor?.Name</td>
-                        <td>@appt.Shift.GetDisplayName()</td>
+
                         <td><span class="badge bg-info">@appt.Status.GetDisplayName()</span></td>
                     </tr>
                 }

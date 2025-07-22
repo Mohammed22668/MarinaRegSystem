@@ -1,156 +1,233 @@
 @model MarinaRegSystem.Models.EditAppointmentViewModel
-
-<form asp-action="EditSchedule" method="post" enctype="multipart/form-data">
-    @Html.HiddenFor(m => m.Id)
-
-    <div id="step3" class="form-section">
-        <h5 class="step-title">تعديل تفاصيل الموعد</h5>
-
-        <div class="mb-3">
-            <label class="form-label">القسم الرئيسي<span class="text-danger">*</span></label>
-          
-               
-           <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments">
-    <option value="">اختر القسم</option>
-</select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">القسم الفرعي</label>
-          <select asp-for="SubDepartmentId" class="form-select" asp-items="ViewBag.SubDepartments">
-    <option value="">اختر القسم الفرعي</option>
-</select>
-        </div>
-
-        <div class="mb-3">
-          
-          
-                <option value="">اختر الطبيب</option>
-             <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.Doctors">
-    <option value="">اختر الطبيب</option>
-</select>
-          
-        </div>
-
-
-
-
-      @{
-    var modelDate = Model.AppointmentDate.Date;
-    var tomorrow = DateTime.Now.Date.AddDays(1);
-    var minDate = (modelDate < tomorrow ? modelDate : tomorrow).ToString("yyyy-MM-dd");
+@using MarinaRegSystem.Helpers;
+@{
+    Layout = "_LayoutPatient";
+    ViewData["Title"] = "الحجوزات";
 }
 
-<div class="mb-3">
-    <label class="form-label">تاريخ الموعد</label>
-    <input type="date" name="AppointmentDate" class="form-control"
-           value="@Model.AppointmentDate.ToString("yyyy-MM-dd")"
-           min="@minDate"
-           required />
-</div>
 
-        <div class="mb-3">
-            <label class="form-label">وقت الموعد</label>
-            <input type="time" name="AppointmentTime" class="form-control" value="@(Model.AppointmentTime?.ToString(@"hh\:mm"))" />
-        </div>
+@section currentPage {
+    <li class="breadcrumb-item active">تعديل الحجز </li>
+}
 
-        <div class="mb-3">
-            <label class="form-label">الشفت</label>
-          <select asp-for="Shift" class="form-select" asp-items="Html.GetEnumSelectList<ShiftType>()">
-    <option value="">اختر الشفت</option>
-</select>
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">ملاحظات</label>
-            <textarea name="Notes" class="form-control" rows="3" maxlength="500">@Model.Notes</textarea>
-        </div>
+@section Head {
 
-        <div class="mb-3">
-            <label class="form-label">تقرير طبي سابق (اختياري)</label>
-            <input type="file" name="DiagnosisFile" class="form-control" accept=".pdf,image/*" />
-            @if (!string.IsNullOrEmpty(Model.DiagnosisFileUrl))
-            {
-                <a href="@Model.DiagnosisFileUrl" target="_blank" class="d-block mt-1">عرض الملف الحالي</a>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+
+
+
+    </head>
+}
+
+<div class="container appointments-container py-4">
+
+    <form asp-action="EditSchedule" method="post" enctype="multipart/form-data">
+        @Html.HiddenFor(m => m.Id)
+
+        <div id="step3" class="form-section">
+            <h5 class="step-title mb-3">تعديل تفاصيل الحجز</h5>
+
+            <div class="mb-3">
+                <label class="form-label">القسم الرئيسي<span class="text-danger">*</span></label>
+
+
+                <select asp-for="DepartmentId" class="form-select" asp-items="ViewBag.Departments">
+                    <option value="">اختر القسم</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">القسم الفرعي</label>
+                <select asp-for="SubDepartmentId" class="form-select" asp-items="ViewBag.SubDepartments">
+                    <option value="">اختر القسم الفرعي</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+
+
+                <option value="">اختر الطبيب</option>
+                <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.Doctors">
+                    <option value="">اختر الطبيب</option>
+                </select>
+
+            </div>
+
+
+
+
+            @{
+                var modelDate = Model.AppointmentDate.Date;
+                var tomorrow = DateTime.Now.Date.AddDays(1);
+                var minDate = (modelDate < tomorrow ? modelDate : tomorrow).ToString("yyyy-MM-dd");
             }
-        </div>
 
-        <div class="mt-4 d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">تحديث الموعد</button>
+            <div class="mb-3">
+                <label class="form-label">تاريخ الموعد</label>
+                <input type="date" name="AppointmentDate" class="form-control"
+                    value="@Model.AppointmentDate.ToString("yyyy-MM-dd")" min="@minDate" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">وقت الموعد</label>
+                <input type="time" name="AppointmentTime" class="form-control"
+                    value="@(Model.AppointmentTime?.ToString(@"hh\:mm"))" />
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label">ملاحظات</label>
+                <textarea name="Notes" class="form-control" rows="3" maxlength="500">@Model.Notes</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">تقرير طبي سابق (اختياري)</label>
+                <input type="file" name="DiagnosisFile" class="form-control" accept=".pdf,image/*" />
+                @if (!string.IsNullOrEmpty(Model.DiagnosisFileUrl))
+                {
+                    <a href="@Model.DiagnosisFileUrl" target="_blank" class="d-block mt-1">عرض الملف الحالي</a>
+                }
+            </div>
+
+            <div class="mt-4 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">تحديث الموعد</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+
+
+</div>
 
 
 
 
 @section Scripts {
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const departmentSelect = document.getElementById("DepartmentId");
-        const subDepartmentSelect = document.getElementById("SubDepartmentId");
-        const doctorSelect = document.getElementById("DoctorId");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const departmentSelect = document.getElementById("DepartmentId");
+            const subDepartmentSelect = document.getElementById("SubDepartmentId");
+            const doctorSelect = document.getElementById("DoctorId");
 
-        function loadDoctors(departmentId, subDepartmentId = null) {
-            let url = `/Patient/GetDoctorsByDepartment?departmentId=${departmentId}`;
-            if (subDepartmentId) {
-                url += `&subDepartmentId=${subDepartmentId}`;
+            function loadDoctors(departmentId, subDepartmentId = null) {
+                let url = `/Patient/GetDoctorsByDepartment?departmentId=${departmentId}`;
+                if (subDepartmentId) {
+                    url += `&subDepartmentId=${subDepartmentId}`;
+                }
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        let options = '<option value="">اختر الطبيب</option>';
+                        data.forEach(doc => {
+                            options += `<option value="${doc.value}">${doc.text}</option>`;
+                        });
+                        doctorSelect.innerHTML = options;
+
+                        // تحديد الطبيب الحالي (إن وجد)
+                        const selectedDoctorId = '@Model.DoctorId';
+                        if (selectedDoctorId) {
+                            doctorSelect.value = selectedDoctorId;
+                        }
+                    });
             }
 
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    let options = '<option value="">اختر الطبيب</option>';
-                    data.forEach(doc => {
-                        options += `<option value="${doc.value}">${doc.text}</option>`;
-                    });
-                    doctorSelect.innerHTML = options;
+            // عند تغيير القسم
+            departmentSelect.addEventListener("change", function () {
+                const departmentId = this.value;
+                if (!departmentId) return;
 
-                    // تحديد الطبيب الحالي (إن وجد)
-                    const selectedDoctorId = '@Model.DoctorId';
-                    if (selectedDoctorId) {
-                        doctorSelect.value = selectedDoctorId;
+                fetch(`/Patient/GetSubDepartments?departmentId=${departmentId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        let options = '<option value="">اختر القسم الفرعي</option>';
+                        data.forEach(sd => {
+                            options += `<option value="${sd.value}">${sd.text}</option>`;
+                        });
+                        subDepartmentSelect.innerHTML = options;
+                        doctorSelect.innerHTML = '<option value="">اختر الطبيب</option>';
+                    });
+
+                // تحميل الأطباء للقسم مباشرة بدون قسم فرعي
+                setTimeout(() => {
+                    if (!subDepartmentSelect.value) {
+                        loadDoctors(departmentId);
                     }
-                });
-        }
+                }, 300);
+            });
 
-        // عند تغيير القسم
-        departmentSelect.addEventListener("change", function () {
-            const departmentId = this.value;
-            if (!departmentId) return;
+            // عند تغيير القسم الفرعي
+            subDepartmentSelect.addEventListener("change", function () {
+                const departmentId = departmentSelect.value;
+                const subDepartmentId = this.value || null;
+                loadDoctors(departmentId, subDepartmentId);
+            });
 
-            fetch(`/Patient/GetSubDepartments?departmentId=${departmentId}`)
-                .then(res => res.json())
-                .then(data => {
-                    let options = '<option value="">اختر القسم الفرعي</option>';
-                    data.forEach(sd => {
-                        options += `<option value="${sd.value}">${sd.text}</option>`;
-                    });
-                    subDepartmentSelect.innerHTML = options;
-                    doctorSelect.innerHTML = '<option value="">اختر الطبيب</option>';
-                });
-
-            // تحميل الأطباء للقسم مباشرة بدون قسم فرعي
-            setTimeout(() => {
-                if (!subDepartmentSelect.value) {
-                    loadDoctors(departmentId);
-                }
-            }, 300);
+            // تحميل الأطباء عند الدخول للصفحة إن كان القسم موجود
+            const currentDeptId = departmentSelect.value;
+            const currentSubDeptId = subDepartmentSelect.value;
+            if (currentDeptId) {
+                loadDoctors(currentDeptId, currentSubDeptId);
+            }
         });
+    </script>
+}
 
-        // عند تغيير القسم الفرعي
-        subDepartmentSelect.addEventListener("change", function () {
-            const departmentId = departmentSelect.value;
-            const subDepartmentId = this.value || null;
-            loadDoctors(departmentId, subDepartmentId);
-        });
 
-        // تحميل الأطباء عند الدخول للصفحة إن كان القسم موجود
-        const currentDeptId = departmentSelect.value;
-        const currentSubDeptId = subDepartmentSelect.value;
-        if (currentDeptId) {
-            loadDoctors(currentDeptId, currentSubDeptId);
-        }
-    });
-</script>
+
+
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

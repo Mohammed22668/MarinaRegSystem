@@ -13,7 +13,10 @@ namespace MarinaRegSystem.Models
 
         // الفلاتر
         public int? DepartmentId { get; set; }
-        public DateTime? AppointmentDate { get; set; }
+        //public DateTime? AppointmentDate { get; set; }
+
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
         public int? Shift { get; set; }
         public AppointmentStatus? Status { get; set; }
 

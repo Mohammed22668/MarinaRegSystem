@@ -112,115 +112,124 @@
 
 
 <div class="container mt-5">
-
-    <form asp-action="EditPatient" method="post">
+    <form asp-action="EditPatient" method="post" novalidate>
         <input type="hidden" asp-for="Id" />
 
-        <div class="row">
+        <div class="row g-4">
+            <!-- العمود الأول -->
             <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="FirstName"></label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger" />
+                <h5 class="mb-3 text-primary fw-bold border-start border-4 border-primary ps-3">معلومات الاسم والهوية
+                </h5>
+
+                <div class="mb-3">
+                    <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                    <input asp-for="FirstName" class="form-control form-control-lg" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="SecondName"></label>
-                    <input asp-for="SecondName" class="form-control" />
-                    <span asp-validation-for="SecondName" class="text-danger" />
+                <div class="mb-3">
+                    <label asp-for="SecondName" class="form-label fw-semibold"></label>
+                    <input asp-for="SecondName" class="form-control form-control-lg" />
+                    <span asp-validation-for="SecondName" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="ThirdName"></label>
-                    <input asp-for="ThirdName" class="form-control" />
-                    <span asp-validation-for="ThirdName" class="text-danger" />
+                <div class="mb-3">
+                    <label asp-for="ThirdName" class="form-label fw-semibold"></label>
+                    <input asp-for="ThirdName" class="form-control form-control-lg" />
+                    <span asp-validation-for="ThirdName" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="FourthName"></label>
-                    <input asp-for="FourthName" class="form-control" />
-                    <span asp-validation-for="FourthName" class="text-danger" />
+                <div class="mb-3">
+                    <label asp-for="FourthName" class="form-label fw-semibold"></label>
+                    <input asp-for="FourthName" class="form-control form-control-lg" />
+                    <span asp-validation-for="FourthName" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="EnglishFullName"></label>
-                    <input asp-for="EnglishFullName" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="EnglishFullName" class="form-label fw-semibold"></label>
+                    <input asp-for="EnglishFullName" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="DateOfBirth"></label>
-                    <input asp-for="DateOfBirth" class="form-control" type="date" />
-                    <span asp-validation-for="DateOfBirth" class="text-danger" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="DateOfBirth" class="form-label fw-semibold"></label>
+                        <input asp-for="DateOfBirth" class="form-control form-control-lg" type="date" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Age" class="form-label fw-semibold"></label>
+                        <input asp-for="Age" class="form-control form-control-lg" />
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Age"></label>
-                    <input asp-for="Age" class="form-control" />
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Gender"></label>
-                    <select asp-for="Gender" class="form-control">
+                <div class="mb-3 mt-3">
+                    <label asp-for="Gender" class="form-label fw-semibold"></label>
+                    <select asp-for="Gender" class="form-select form-select-lg">
                         <option value="">-- اختر --</option>
                         <option value="ذكر">ذكر</option>
                         <option value="أنثى">أنثى</option>
                     </select>
-                    <span asp-validation-for="Gender" class="text-danger" />
+                    <span asp-validation-for="Gender" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="PhoneNumber"></label>
-                    <input asp-for="PhoneNumber" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="PhoneNumber" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="NationalNumber"></label>
-                    <input asp-for="NationalNumber" class="form-control" />
-                    <span asp-validation-for="NationalNumber" class="text-danger" />
+                <div class="mb-3">
+                    <label asp-for="NationalNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="NationalNumber" class="form-control form-control-lg" />
+                    <span asp-validation-for="NationalNumber" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="PassportNumber"></label>
-                    <input asp-for="PassportNumber" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="PassportNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="PassportNumber" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="InsuranceNumber"></label>
-                    <input asp-for="InsuranceNumber" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="InsuranceNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="InsuranceNumber" class="form-control form-control-lg" />
                 </div>
             </div>
 
+            <!-- العمود الثاني -->
             <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="Country"></label>
-                    <input asp-for="Country" class="form-control" />
-                    <span asp-validation-for="Country" class="text-danger" />
+                <h5 class="mb-3 text-primary fw-bold border-start border-4 border-primary ps-3">معلومات العنوان والحالة
+                    الصحية</h5>
+
+                <div class="mb-3">
+                    <label asp-for="Country" class="form-label fw-semibold"></label>
+                    <input asp-for="Country" class="form-control form-control-lg" />
+                    <span asp-validation-for="Country" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Province"></label>
-                    <input asp-for="Province" class="form-control" />
-                    <span asp-validation-for="Province" class="text-danger" />
+                <div class="mb-3">
+                    <label asp-for="Province" class="form-label fw-semibold"></label>
+                    <input asp-for="Province" class="form-control form-control-lg" />
+                    <span asp-validation-for="Province" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="City"></label>
-                    <input asp-for="City" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="City" class="form-label fw-semibold"></label>
+                    <input asp-for="City" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Neighborhood"></label>
-                    <input asp-for="Neighborhood" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Neighborhood" class="form-label fw-semibold"></label>
+                    <input asp-for="Neighborhood" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Address"></label>
-                    <input asp-for="Address" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Address" class="form-label fw-semibold">اقرب نقطة دالة</label>
+                    <input asp-for="Address" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="BloodType"></label>
-                    <select asp-for="BloodType" class="form-control">
+                <div class="mb-3">
+                    <label asp-for="BloodType" class="form-label fw-semibold"></label>
+                    <select asp-for="BloodType" class="form-select form-select-lg">
                         <option value="">-- اختر --</option>
                         <option value="A+">A+</option>
                         <option value="A-">A-</option>
@@ -231,58 +240,104 @@
                         <option value="O+">O+</option>
                         <option value="O-">O-</option>
                     </select>
-                    <span asp-validation-for="BloodType" class="text-danger" />
+                    <span asp-validation-for="BloodType" class="text-danger small"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Allergies"></label>
-                    <input asp-for="Allergies" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Allergies" class="form-label fw-semibold"></label>
+                    <input asp-for="Allergies" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="ChronicDiseases"></label>
-                    <input asp-for="ChronicDiseases" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="ChronicDiseases" class="form-label fw-semibold"></label>
+                    <input asp-for="ChronicDiseases" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Symptoms"></label>
-                    <input asp-for="Symptoms" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Symptoms" class="form-label fw-semibold"></label>
+                    <input asp-for="Symptoms" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="MenstrualCycleDuration"></label>
-                    <input asp-for="MenstrualCycleDuration" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="MenstrualCycleDuration" class="form-label fw-semibold"></label>
+                    <input asp-for="MenstrualCycleDuration" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Height"></label>
-                    <input asp-for="Height" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Height" class="form-label fw-semibold"></label>
+                    <input asp-for="Height" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Weight"></label>
-                    <input asp-for="Weight" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="Weight" class="form-label fw-semibold"></label>
+                    <input asp-for="Weight" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="ClosePerson"></label>
-                    <input asp-for="ClosePerson" class="form-control" />
+                <div class="mb-3">
+                    <label asp-for="ClosePerson" class="form-label fw-semibold"></label>
+                    <input asp-for="ClosePerson" class="form-control form-control-lg" />
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="AdditionalNotes"></label>
-                    <textarea asp-for="AdditionalNotes" class="form-control"></textarea>
+                <div class="mb-3">
+                    <label asp-for="AdditionalNotes" class="form-label fw-semibold"></label>
+                    <textarea asp-for="AdditionalNotes" rows="3" class="form-control form-control-lg"></textarea>
                 </div>
             </div>
         </div>
 
-        <div class="form-group mt-4 text-center">
-            <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
-            <a asp-action="ListPatients" class="btn btn-secondary ml-2">عودة</a>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg px-5">حفظ التعديلات</button>
+            <a asp-action="ListPatients" class="btn btn-outline-secondary btn-lg ms-3">عودة</a>
         </div>
     </form>
-
 </div>
+
+
+@section Scripts {
+    <script>
+        function calculateAgeFromDOB(dobStr) {
+            const dob = new Date(dobStr);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function calculateDOBFromAge(age) {
+            const today = new Date();
+            const year = today.getFullYear() - age;
+            return `${year}-07-01`; // يوم 1 شهر 7 للسنة المحسوبة
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const dobInput = document.getElementById("DateOfBirth");
+            const ageInput = document.getElementById("Age");
+
+            if (!dobInput || !ageInput) return;
+
+            // عند تغيير تاريخ الميلاد => حساب العمر
+            dobInput.addEventListener("change", function () {
+                const age = calculateAgeFromDOB(this.value);
+                if (!isNaN(age)) {
+                    ageInput.value = age;
+                }
+            });
+
+            // عند تغيير العمر => حساب تاريخ الميلاد
+            ageInput.addEventListener("input", function () {
+                const age = parseInt(this.value);
+                if (!isNaN(age) && age >= 0) {
+                    dobInput.value = calculateDOBFromAge(age);
+                }
+            });
+        });
+    </script>
+}
+
+
 
 @section Footer {
     <!-- jQuery -->

@@ -291,15 +291,36 @@ namespace MarinaRegSystem.Controllers
         // - DeleteSchedule
 
         [HttpGet]
-        public async Task<IActionResult> Doctors()
+        public async Task<IActionResult> Doctors(string searchName, int? subdepartmentId)
         {
-            var doctors = await _context.Doctors
+            var query = _context.Doctors
                 .Include(d => d.Department)
-                .Where(d => d.Status == true)
+                .ThenInclude(d => d.SubDepartments)
+                .Where(d => d.Status == true);
+
+            if (!string.IsNullOrWhiteSpace(searchName))
+            {
+                query = query.Where(d => d.Name.Contains(searchName));
+            }
+
+            if (subdepartmentId.HasValue)
+            {
+                query = query.Where(d => d.SubDepartmentId == subdepartmentId);
+            }
+
+            var doctors = await query
+                .OrderByDescending(d => d.Rating) // ترتيب حسب التقييم مثلاً
                 .ToListAsync();
+
+            ViewBag.Departments = await _context.Departments
+    .Include(d => d.SubDepartments)
+    .ToListAsync();
+            ViewBag.CurrentSearch = searchName;
+            ViewBag.CurrentDepartmentId = subdepartmentId;
 
             return View(doctors);
         }
+
 
         [HttpGet]
         public IActionResult Index()

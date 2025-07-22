@@ -519,8 +519,11 @@ namespace MarinaRegSystem.Controllers
                 query = query.Where(a => a.Doctor.Name.Contains(filter.DoctorName));
             if (filter.DepartmentId.HasValue)
                 query = query.Where(a => a.DepartmentId == filter.DepartmentId.Value);
-            if (filter.AppointmentDate.HasValue)
-                query = query.Where(a => a.AppointmentDate.Date == filter.AppointmentDate.Value.Date);
+            if (filter.FromDate.HasValue)
+                query = query.Where(a => a.AppointmentDate.Date >= filter.FromDate.Value.Date);
+
+            if (filter.ToDate.HasValue)
+                query = query.Where(a => a.AppointmentDate.Date <= filter.ToDate.Value.Date);
             if (filter.Shift.HasValue)
                 query = query.Where(a => a.Shift == (ShiftType)filter.Shift.Value);
             if (filter.Status.HasValue)

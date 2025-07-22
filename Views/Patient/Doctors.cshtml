@@ -139,6 +139,42 @@
 <div class="container py-5">
     <h2 class="mb-5 text-center">@ViewData["Title"]</h2>
 
+    @{
+        var departments = ViewBag.Departments as List<MarinaRegSystem.Models.Department>;
+        var currentSubDeptId = ViewBag.CurrentDepartmentId?.ToString();
+    }
+
+    <form method="get" asp-action="Doctors" class="row g-2 mb-4 align-items-end">
+        <div class="col-md-4">
+            <label for="searchName" class="form-label">بحث بالاسم</label>
+            <input type="text" name="searchName" id="searchName" value="@ViewBag.CurrentSearch" class="form-control"
+                placeholder="أدخل اسم الطبيب" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="subdepartmentId" class="form-label">القسم الفرعي</label>
+            <select name="subdepartmentId" id="subdepartmentId" class="form-select">
+                <option value="">-- كل الأقسام الفرعية --</option>
+                @foreach (var dept in departments)
+                {
+                    foreach (var sub in dept.SubDepartments)
+                    {
+                        var selected = sub.Id.ToString() == currentSubDeptId ? "selected" : "";
+                        <option value="@sub.Id" selected="@(sub.Id.ToString() == currentSubDeptId ? "selected" : null)">
+                            @sub.Name (@dept.Name)
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search me-1"></i> بحث
+            </button>
+        </div>
+    </form>
+
     @if (!Model.Any())
     {
         <div class="alert alert-info text-center">
@@ -161,13 +197,7 @@
                                 style="height: 80px; width: 80px; object-fit: cover; border: 3px solid #007bff; border-radius: 50%; margin: 15px auto; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
 
                             <!-- عرض التقييم -->
-                           @if (doctor.Rating > 0)
-{
-    <div class="position-absolute top-0 end-0 bg-warning text-white px-2 py-1 mt-2 rounded-start" 
-         style="font-size: 0.75rem; transform: translateY(-50%);">
-        ⭐ @doctor.Rating.ToString("0.0")
-    </div>
-}
+
                         </div>
 
                         <div class="card-body p-2 text-center">

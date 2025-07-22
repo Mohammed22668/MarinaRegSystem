@@ -46,52 +46,52 @@
 
             .appointments-card {
                 border-radius: 15px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
                 padding: 2rem;
                 margin-top: 2rem;
                 background-color: white;
             }
 
-            .table-rounded {
-                border-radius: 10px;
-                overflow: hidden;
-            }
-
             .status-badge {
-                padding: 0.4em 0.6em;
+                padding: 0.5em 0.8em;
                 border-radius: 50px;
-                font-size: 0.9rem;
-                font-weight: bold;
+                font-size: 0.875rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.3rem;
+                white-space: nowrap;
             }
 
             .text-pending {
-                background-color: #fff3cd;
-                color: #856404;
+                background-color: #fff9c4;
+                color: #5d4037;
             }
 
             .text-confirmed {
-                background-color: #d4edda;
-                color: #155724;
+                background-color: #dcedc8;
+                color: #33691e;
             }
 
             .text-rejected {
-                background-color: #f8d7da;
-                color: #721c24;
+                background-color: #ffcdd2;
+                color: #b71c1c;
             }
 
             .text-completed {
-                background-color: #cce5ff;
-                color: #004085;
+                background-color: #bbdefb;
+                color: #0d47a1;
             }
 
             .text-cancelled {
-                background-color: #e9ecef;
-                color: #343a40;
+                background-color: #f5f5f5;
+                color: #616161;
             }
 
             .btn-custom {
                 border-radius: 50px;
                 padding: 0.5rem 1.2rem;
+                font-weight: 500;
             }
 
             .modal-content {
@@ -112,119 +112,384 @@
             .btn-close-white .btn-close-icon {
                 filter: invert(1);
             }
+
+            /* تبويبات محسّنة */
+            .nav-tabs {
+                margin-bottom: 1.5rem;
+                border-bottom: 2px solid #dee2e6;
+            }
+
+            .nav-tabs .nav-link {
+                color: #495057;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                border-top: 3px solid transparent;
+                border-radius: 0 !important;
+            }
+
+            .nav-tabs .nav-link:hover {
+                color: #0d6efd;
+            }
+
+            .nav-tabs .nav-link.active {
+                color: #0d6efd;
+                border-color: #0d6efd;
+                border-top: 3px solid #0d6efd;
+                background-color: transparent;
+            }
+
+            /* استجابة للجوال */
+            @@media (max-width: 576px) {
+
+                .table td,
+                .table th {
+                    font-size: 0.85rem;
+                    padding: 0.5rem;
+                }
+
+                .btn-sm {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 0.75rem;
+                }
+
+                .status-badge {
+                    font-size: 0.8rem;
+                    padding: 0.4em 0.6em;
+                }
+
+                .btn-custom {
+                    padding: 0.4rem 1rem;
+                    font-size: 0.9rem;
+                }
+            }
         </style>
     </head>
 }
 
+<div class="container appointments-container py-4">
+    <h2 class="mb-4 text-center fw-bold">حجوزاتي</h2>
 
-
-<div class="container appointments-card">
-    <h2 class="mb-4 text-center">حجوزاتي</h2>
-
-    <div class="d-flex justify-content-end mb-3">
-        <a href="~/Patient/AddSchedule" class="btn btn-success btn-custom">
-            <i class="fas fa-plus-circle me-1"></i> تقديم حجز جديد
+    <!-- زر إضافة حجز جديد -->
+    <div class="d-flex justify-content-end mb-4">
+        <a href="~/Patient/AddSchedule" class="btn btn-success btn-lg px-4 rounded-pill shadow-sm">
+            <i class="fas fa-plus-circle me-2"></i> تقديم حجز جديد
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-rounded align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>القسم</th>
-                    <th>الطبيب</th>
-                    <th>التاريخ</th>
-                    <th>الوقت</th>
+    <!-- تبويبات الحجوزات -->
+    <ul class="nav nav-pills nav-fill mb-4 border-0" id="appointmentTabs" role="tablist">
+        <li class="nav-item position-relative" role="presentation">
+            <!-- التبويب: الحجوزات النشطة -->
+            <button class="nav-link active shadow-sm px-4 py-3 rounded-pill fw-semibold" id="active-tab"
+                data-bs-toggle="tab" data-bs-target="#active-appointments" type="button" role="tab"
+                aria-controls="active-appointments" aria-selected="true" style="z-index: 2;">
+                <i class="fas fa-clock me-2 transition-icon"></i>
+                <span>الحجوزات النشطة</span>
+            </button>
+        </li>
+        <li class="nav-item position-relative" role="presentation">
+            <!-- التبويب: الحجوزات السابقة -->
+            <button class="nav-link shadow-sm px-4 py-3 rounded-pill fw-semibold " id="closed-tab" data-bs-toggle="tab"
+                data-bs-target="#closed-appointments" type="button" role="tab" aria-controls="closed-appointments"
+                aria-selected="false" style="z-index: 2;">
+                <i class="fas fa-history me-2 transition-icon"></i>
+                <span>الحجوزات السابقة</span>
+            </button>
+        </li>
 
-                    <th>الحالة</th>
-                    <th>ملاحظات</th>
-                    <th>تفاصيل</th>
-                    <th>الغاء الحجز</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var appt in Model)
-                {
-                    var statusClass = appt.Status switch
+        <!-- خط تحتي متحرك (مؤشر) -->
+        <li class="position-absolute bottom-0 start-0 p-0 w-50 transition-all duration-300 z-1" id="tab-indicator"
+            style="height: 3px; background: #0d6efd; transform: translateX(0);"></li>
+    </ul>
+
+    <!-- محتوى التبويبات -->
+    <div class="tab-content" id="appointmentTabsContent">
+
+        <!-- التبويب الأول: الحجوزات النشطة (قيد الانتظار + مقبول) -->
+        <div class="tab-pane fade show active" id="active-appointments" role="tabpanel" aria-labelledby="active-tab">
+            @if (Model.Any(a => a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Confirmed))
+            {
+                <div class="table-responsive shadow-sm rounded-3 overflow-hidden d-none d-md-block">
+                    <table class="table table-hover align-middle mb-0 bg-white">
+                        <thead class="bg-gradient-primary text-white">
+                            <tr>
+                                <th>القسم</th>
+                                <th>الطبيب</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الحالة</th>
+                                <th>ملاحظات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appt in Model
+                                                    .Where(a => a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Confirmed)
+                                                    .OrderByDescending(a => a.AppointmentDate)
+                                                    .ThenByDescending(a => a.AppointmentTime))
+                            {
+                                var statusClass = appt.Status switch
+                                {
+                                    AppointmentStatus.Pending => "text-warning-emphasis bg-warning-subtle",
+                                    AppointmentStatus.Confirmed => "text-success-emphasis bg-success-subtle",
+                                    _ => ""
+                                };
+                                bool isEditable = appt.Status == AppointmentStatus.Pending;
+
+                                <tr class="border-bottom">
+                                    <td>@appt.Department?.Name</td>
+                                    <td>@appt.Doctor?.Name</td>
+                                    <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        <span class="status-badge px-2 py-1 rounded-pill fw-semibold @statusClass"
+                                            style="font-size: 0.8rem;">
+                                            <i
+                                                class="fas @(appt.Status == AppointmentStatus.Pending ? "fa-clock" : "fa-check-circle") me-1"></i>
+                                            @appt.Status.GetDisplayName()
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">@(!string.IsNullOrEmpty(appt.Notes) ? appt.Notes : "—")</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            @if (isEditable)
+                                            {
+                                                <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-outline-primary"
+                                                    title="تعديل">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                                    data-bs-target="#cancelModal" data-id="@appt.Id" title="إلغاء">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-secondary" disabled title="غير قابل للتعديل">
+                                                    <i class="fas fa-lock"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ✅ عرض كـ Cards على الهاتف فقط -->
+                <div class="d-md-none">
+                    @foreach (var appt in Model
+                                    .Where(a => a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Confirmed)
+                                    .OrderByDescending(a => a.AppointmentDate)
+                                    .ThenByDescending(a => a.AppointmentTime))
                     {
-                        AppointmentStatus.Pending => "text-pending",
-                        AppointmentStatus.Confirmed => "text-confirmed",
-                        AppointmentStatus.Rejected => "text-rejected",
-                        AppointmentStatus.Completed => "text-completed",
-                        AppointmentStatus.Cancelled => "text-cancelled",
-                        _ => ""
-                    };
-                    bool isEditable = appt.Status == AppointmentStatus.Pending;
+                        var statusClass = appt.Status switch
+                        {
+                            AppointmentStatus.Pending => "text-warning-emphasis bg-warning-subtle",
+                            AppointmentStatus.Confirmed => "text-success-emphasis bg-success-subtle",
+                            _ => ""
+                        };
+                        bool isEditable = appt.Status == AppointmentStatus.Pending;
 
-                    <tr>
-                        <td>@appt.Department?.Name</td>
-                        <td>@appt.Doctor?.Name </td>
-                        <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                        <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                        <div class="card mb-3 shadow-sm border-0 rounded-4">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-primary mb-2">@appt.Department?.Name - @appt.Doctor?.Name</h6>
+                                <p class="mb-1"><i class="fas fa-calendar-alt me-1 text-secondary"></i>
+                                    @appt.AppointmentDate.ToString("yyyy-MM-dd")</p>
+                                <p class="mb-1"><i class="fas fa-clock me-1 text-secondary"></i>
+                                    @appt.AppointmentTime.ToString(@"hh\:mm")</p>
+                                <p class="mb-1">
+                                    <span class="badge @statusClass px-2 py-1 rounded-pill">
+                                        <i
+                                            class="fas @(appt.Status == AppointmentStatus.Pending ? "fa-clock" : "fa-check-circle") me-1"></i>
+                                        @appt.Status.GetDisplayName()
+                                    </span>
+                                </p>
+                                @if (!string.IsNullOrEmpty(appt.Notes))
+                                {
+                                    <p class="text-muted small mt-2"><i class="fas fa-sticky-note me-1"></i> @appt.Notes</p>
+                                }
 
+                                <div class="d-flex gap-2 mt-3">
+                                    @if (isEditable)
+                                    {
+                                        <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-outline-primary w-50">
+                                            <i class="fas fa-edit me-1"></i> تعديل
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger w-50" data-bs-toggle="modal"
+                                            data-bs-target="#cancelModal" data-id="@appt.Id">
+                                            <i class="fas fa-times me-1"></i> إلغاء
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-secondary w-100" disabled>
+                                            <i class="fas fa-lock me-1"></i> غير قابل للتعديل
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
 
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-check text-muted" style="font-size: 3rem; opacity: 0.5;"></i>
+                    <p class="mt-3 text-muted fs-5">لا توجد حجوزات نشطة حالياً</p>
+                </div>
+            }
+        </div>
 
-                        <td>
-                            <span class="status-badge @statusClass">@appt.Status.GetDisplayName()</span>
-                        </td>
-                        <td>@(string.IsNullOrEmpty(appt.Notes) ? "-" : appt.Notes)</td>
-                        <td>
-                            @if (isEditable)
+        <!-- التبويب الثاني: الحجوزات المغلقة (مكتمل، مرفوض، ملغي) -->
+        <div class="tab-pane fade" id="closed-appointments" role="tabpanel" aria-labelledby="closed-tab">
+            @if (Model.Any(a => a.Status == AppointmentStatus.Completed ||
+                        a.Status == AppointmentStatus.Rejected ||
+                        a.Status == AppointmentStatus.Cancelled))
+            {
+                <!-- ✅ عرض الجدول للشاشات المتوسطة فما فوق -->
+                <div class="table-responsive shadow-sm rounded-3 overflow-hidden d-none d-md-block">
+                    <table class="table table-hover align-middle mb-0 bg-white">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>القسم</th>
+                                <th>الطبيب</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>الحالة</th>
+                                <th>ملاحظات</th>
+                                <th>التفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appt in Model
+                                                    .Where(a =>
+                                                    a.Status == AppointmentStatus.Completed ||
+                                                    a.Status == AppointmentStatus.Rejected ||
+                                                    a.Status == AppointmentStatus.Cancelled)
+                                                    .OrderByDescending(a => a.AppointmentDate)
+                                                    .ThenByDescending(a => a.AppointmentTime))
                             {
-                                <a href="~/Patient/EditSchedule/@appt.Id" class="btn btn-sm btn-primary me-1" title="تعديل">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+                                var statusIcon = appt.Status switch
+                                {
+                                    AppointmentStatus.Completed => "fa-check-double text-success",
+                                    AppointmentStatus.Rejected => "fa-times-circle text-danger",
+                                    AppointmentStatus.Cancelled => "fa-trash-alt text-secondary",
+                                    _ => "fa-info-circle text-muted"
+                                };
+
+                                <tr class="opacity-75">
+                                    <td>@appt.Department?.Name</td>
+                                    <td>@appt.Doctor?.Name</td>
+                                    <td>@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        <span class="d-flex align-items-center text-muted">
+                                            <i class="fas @statusIcon me-2"></i>
+                                            @appt.Status.GetDisplayName()
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">
+                                        @(string.IsNullOrEmpty(appt.Notes) ? "—" : appt.Notes)
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="collapse"
+                                            data-bs-target="#notes-@appt.Id" title="عرض/إخفاء الملاحظات">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <div class="collapse mt-2" id="notes-@appt.Id">
+                                            <div class="alert alert-info p-2 small mb-0">
+                                                <strong>ملاحظات:</strong>
+                                                @(string.IsNullOrEmpty(appt.Notes) ? "لا توجد ملاحظات." : appt.Notes)
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             }
-                            else
-                            {
-                                <button class="btn btn-sm btn-secondary me-1" disabled title="لا يمكن التعديل">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            }
-                        </td>
-                        <td>
-                            @if (isEditable)
-                            {
-                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#cancelModal" data-id="@appt.Id">
-                                    <i class="fas fa-times me-1"></i> إلغاء
-                                </button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-sm btn-secondary" disabled title="لا يمكن الإلغاء">
-                                    <i class="fas fa-times me-1"></i> إلغاء
-                                </button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ✅ عرض على الجوال كـ Cards -->
+                <div class="d-md-none">
+                    @foreach (var appt in Model
+                                    .Where(a =>
+                                    a.Status == AppointmentStatus.Completed ||
+                                    a.Status == AppointmentStatus.Rejected ||
+                                    a.Status == AppointmentStatus.Cancelled)
+                                    .OrderByDescending(a => a.AppointmentDate)
+                                    .ThenByDescending(a => a.AppointmentTime))
+                    {
+                        var statusIcon = appt.Status switch
+                        {
+                            AppointmentStatus.Completed => "fa-check-double text-success",
+                            AppointmentStatus.Rejected => "fa-times-circle text-danger",
+                            AppointmentStatus.Cancelled => "fa-trash-alt text-secondary",
+                            _ => "fa-info-circle text-muted"
+                        };
+
+                        <div class="card mb-3 shadow-sm border-0 rounded-4 opacity-75">
+                            <div class="card-body">
+                                <h6 class="fw-bold text-primary mb-2">@appt.Department?.Name - @appt.Doctor?.Name</h6>
+                                <p class="mb-1"><i class="fas fa-calendar-alt me-1 text-secondary"></i>
+                                    @appt.AppointmentDate.ToString("yyyy-MM-dd")</p>
+                                <p class="mb-1"><i class="fas fa-clock me-1 text-secondary"></i>
+                                    @appt.AppointmentTime.ToString(@"hh\:mm")</p>
+                                <p class="mb-1">
+                                    <span class="d-flex align-items-center text-muted">
+                                        <i class="fas @statusIcon me-2"></i>
+                                        @appt.Status.GetDisplayName()
+                                    </span>
+                                </p>
+
+                                @if (!string.IsNullOrEmpty(appt.Notes))
+                                {
+                                    <div class="alert alert-info p-2 mt-2 small mb-0">
+                                        <strong>ملاحظات:</strong> @appt.Notes
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-archive text-muted" style="font-size: 3rem; opacity: 0.5;"></i>
+                    <p class="mt-3 text-muted fs-5">لا توجد حجوزات مغلقة حتى الآن</p>
+                </div>
+            }
+        </div>
     </div>
 
-    <div class="text-center mt-4">
-        <a href="~/Patient/Index" class="btn btn-outline-primary btn-custom">
-            <i class="fas fa-home me-1"></i> العودة إلى الصفحة الرئيسية
+    <!-- زر العودة إلى الصفحة الرئيسية -->
+    <div class="text-center mt-5">
+        <a href="~/Patient/Index" class="btn btn-outline-primary btn-lg px-5 rounded-pill">
+            <i class="fas fa-home me-2"></i> العودة إلى الصفحة الرئيسية
         </a>
     </div>
 </div>
 
-
-
-<!-- Modal -->
+<!-- نموذج إلغاء الحجز (Modal) -->
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4">
             <form id="cancelForm" method="post" asp-action="CancelSchedule" asp-controller="Patient">
                 <div class="modal-header bg-danger text-white rounded-top">
-                    <h5 class="modal-title" id="cancelModalLabel">إلغاء الحجز</h5>
+                    <h5 class="modal-title" id="cancelModalLabel">تأكيد إلغاء الحجز</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="إغلاق"></button>
                 </div>
                 <div class="modal-body p-4">
                     <input type="hidden" name="Id" id="cancelAppointmentId" />
-
+                    <p class="text-center text-danger fw-bold">
+                        هل أنت متأكد أنك تريد إلغاء هذا الحجز؟
+                    </p>
                     <div class="mb-3">
                         <label for="CancelReason" class="form-label fw-bold">اختر سبب الإلغاء:</label>
                         <select class="form-select form-select-lg" name="CancelReason" required>
@@ -237,13 +502,10 @@
                             <option value="سبب آخر">سبب آخر</option>
                         </select>
                     </div>
-
-
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary px-4 py-2"
-                        data-bs-dismiss="modal">إغلاق</button>
-                    <button type="submit" class="btn btn-danger px-4 py-2 d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="submit" class="btn btn-danger px-4 d-flex align-items-center gap-2">
                         <i class="fas fa-times-circle"></i> تأكيد الإلغاء
                     </button>
                 </div>
@@ -254,11 +516,20 @@
 
 @section Scripts {
     <script>
+        // ربط معرف الحجز بالنموذج عند فتح النافذة المنبثقة
         var cancelModal = document.getElementById('cancelModal');
         cancelModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var appointmentId = button.getAttribute('data-id');
             document.getElementById('cancelAppointmentId').value = appointmentId;
+        });
+    </script>
+
+    <!-- تحسين التبويبات -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = new bootstrap.Tab('#active-tab');
+            // يمكنك إضافة المزيد من التفاعلات هنا إذا لزم الأمر
         });
     </script>
 }

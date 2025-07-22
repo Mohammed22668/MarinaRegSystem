@@ -1,0 +1,65 @@
+@model IEnumerable<MarinaRegSystem.Models.AppointmentViewModel>
+@using MarinaRegSystem.Helpers
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center mt-4">
+        لا توجد حجوزات لعرضها.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-center mb-0">
+                    <thead>
+                        <tr class="text-center">
+                            <th>المستخدم</th>
+                            <th>اسم المريض</th>
+                            <th>القسم</th>
+                            <th>الطبيب</th>
+                            <th>تاريخ الموعد</th>
+                            <th>وقت الموعد</th>
+                            <th>الحالة</th>
+                            <th>السعر</th>
+                            <th>سبب الإلغاء</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var appt = item.Appointment;
+                            <tr>
+                                <td class="text-center">@appt.User?.Username</td>
+                                <td class="text-center">@appt.PatientName</td>
+                                <td class="text-center">@appt.Department?.Name</td>
+                                <td class="text-center">@appt.Doctor?.Name</td>
+                                <td class="text-center">@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
+                                <td class="text-center">@appt.AppointmentTime.ToString(@"hh\:mm")</td>
+                                <td class="text-center">
+                                    <span
+                                        class="badge bg-@(appt.Status == MarinaRegSystem.Models.AppointmentStatus.Confirmed ? "success" : "danger")">
+                                        @appt.Status.GetDisplayName()
+                                    </span>
+                                </td>
+                                <td class="text-center">@($"{appt.Price:##,##0} د.ع")</td>
+                                <td class="text-center">@appt.CancelReason</td>
+                                <td class="text-center">
+                                    <a asp-action="EditAppointment" asp-route-id="@appt.Id"
+                                        class="btn btn-sm bg-success-light me-2">
+                                        <i class="fas fa-pencil-alt"></i> تعديل
+                                    </a>
+                                    <button type="button" class="btn btn-sm bg-danger-light btn-delete" data-id="@appt.Id">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

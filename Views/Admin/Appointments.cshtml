@@ -116,128 +116,111 @@
 
 
 
-<h2>@ViewData["Title"]</h2>
+
 
 <!-- 🔍 نموذج البحث والفلترة -->
-<form method="get" asp-action="Appointments" class="row g-3 mb-4">
-    <div class="col-md-3">
-        <input type="text" name="PatientName" value="@Model.PatientName" class="form-control"
-            placeholder="اسم المريض" />
-    </div>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-4 text-primary">
+            <i class="fas fa-filter me-2"></i> فلترة الحجوزات
+        </h5>
 
-    <div class="col-md-3">
-        <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control" placeholder="اسم الطبيب" />
-    </div>
-    <div class="col-md-3">
-        <select name="DepartmentId" class="form-select">
-            <option value="">-- اختر القسم --</option>
-            @foreach (var dept in Model.Departments)
-            {
-                <option value="@dept.Value" selected="@(dept.Value == Model.DepartmentId?.ToString())">@dept.Text</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-3">
-        <input type="date" name="AppointmentDate" value="@(Model.AppointmentDate?.ToString("yyyy-MM-dd"))"
-            class="form-control" />
-    </div>
-    <div class="col-md-3">
-        <select name="Shift" class="form-select">
-            <option value="">-- اختر الشفت --</option>
-            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.ShiftType>())
-            {
-                <option value="@item.Value" selected="@(item.Value == Model.Shift?.ToString())">@item.Text</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-3">
-        <select name="Status" class="form-select">
-            <option value="">-- اختر الحالة --</option>
-            @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.AppointmentStatus>())
-            {
-                <option value="@item.Value" selected="@(item.Value == Model.Status?.ToString())">@item.Text</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-3 d-grid">
-        <button type="submit" class="btn btn-primary">بحث</button>
-    </div>
+        <form method="get" asp-action="Appointments">
+            <div class="row g-3">
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">اسم المريض</label>
+                    <input type="text" name="PatientName" value="@Model.PatientName" class="form-control"
+                        placeholder="اسم المريض" />
+                </div>
 
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">اسم الطبيب</label>
+                    <input type="text" name="DoctorName" value="@Model.DoctorName" class="form-control"
+                        placeholder="اسم الطبيب" />
+                </div>
 
-    <div class="col-md-3 d-grid">
-        <button type="submit" name="export" value="excel" class="btn btn-success">
-            <i class="fas fa-file-excel"></i> تصدير إلى Excel
-        </button>
-    </div>
-</form>
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label">القسم</label>
+                    <select name="DepartmentId" class="form-select">
+                        <option value="">-- اختر القسم --</option>
+                        @foreach (var dept in Model.Departments)
+                        {
+                            <option value="@dept.Value" selected="@(dept.Value == Model.DepartmentId?.ToString())">
+                                @dept.Text</option>
+                        }
+                    </select>
+                </div>
 
-<!-- جدول عرض الحجوزات -->
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover table-center mb-0">
-                        <thead>
-                            <tr class="text-center ">
-                                <th>المستخدم</th>
-                                <th>اسم المريض</th>
-                                <th>القسم</th>
-                                <th>الطبيب</th>
-                                <th>تاريخ الموعد</th>
-                                <th>وقت الموعد</th>
-                                <th>الشفت</th>
-                                <th>الحالة</th>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">الحالة</label>
+                    <select name="Status" class="form-select">
+                        <option value="">-- اختر الحالة --</option>
+                        @foreach (var item in EnumExtensions.ToSelectList<MarinaRegSystem.Models.AppointmentStatus>())
+                        {
+                            <option value="@item.Value" selected="@(item.Value == Model.Status?.ToString())">@item.Text
+                            </option>
+                        }
+                    </select>
+                </div>
 
-                                <th>السعر</th>
-                                <th>سبب الالغاء</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Results)
-                            {
-                                var appt = item.Appointment;
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">من تاريخ</label>
+                    <input type="date" name="FromDate" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))"
+                        class="form-control" />
+                </div>
 
-                                <tr>
-                                    <td class="text-center">@appt.User?.Username</td>
-                                    <td class="text-center">@appt.PatientName</td>
-                                    <td class="text-center">@appt.Department?.Name</td>
-                                    <td class="text-center">@appt.Doctor?.Name</td>
-                                    <td class="text-center">@appt.AppointmentDate.ToString("yyyy-MM-dd")</td>
-                                    <td class="text-center">@appt.AppointmentTime.ToString(@"hh\:mm")</td>
-                                    <td class="text-center">@appt.Shift.GetDisplayName()</td>
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label">إلى تاريخ</label>
+                    <input type="date" name="ToDate" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))"
+                        class="form-control" />
+                </div>
 
-                                    <td class="text-center">
-                                        <span
-                                            class="badge bg-@(appt.Status == MarinaRegSystem.Models.AppointmentStatus.Confirmed ? "success" : "danger")">
-                                            @appt.Status.GetDisplayName()
-                                        </span>
-                                    </td>
-                                    <td class="text-center">@($"{appt.Price:##,##0} د.ع")</td>
+                <div class="col-md-6 col-lg-3 d-grid align-self-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> بحث
+                    </button>
+                </div>
 
-                                    <td class="text-center">@appt.CancelReason</td>
-                                    <td class="text-center">
-                                        <a asp-action="EditAppointment" asp-route-id="@appt.Id"
-                                            class="btn btn-sm bg-success-light me-2">
-                                            <i class="fas fa-pencil-alt"></i> تعديل
-                                        </a>
-                                        <button type="button" class="btn btn-sm bg-danger-light btn-delete"
-                                            data-id="@appt.Id">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
+                <div class="col-md-6 col-lg-3 d-grid align-self-end">
+                    <button type="submit" name="export" value="excel" class="btn btn-success">
+                        <i class="fas fa-file-excel me-1"></i> تصدير إلى Excel
+                    </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
+<!-- تبويبات الحجوزات -->
+<ul class="nav nav-pills nav-justified mb-4 bg-light p-1 rounded shadow-sm" id="appointmentTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming"
+            type="button" role="tab">
+            <i class="fas fa-calendar-check me-1"></i> الحجوزات الحالية / القادمة
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button"
+            role="tab">
+            <i class="fas fa-history me-1"></i> الحجوزات السابقة
+        </button>
+    </li>
+</ul>
+<div class="tab-content" id="appointmentTabsContent">
+    <!-- التبويب الأول: الحالية والقادمة -->
+    <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+        @await Html.PartialAsync("_AppointmentsTable", Model.Results.Where(r => r.Appointment.Status ==
+        AppointmentStatus.Pending || r.Appointment.Status == AppointmentStatus.Confirmed).OrderByDescending(r =>
+        r.Appointment.AppointmentDate).ThenByDescending(r => r.Appointment.AppointmentTime).ToList())
+    </div>
+
+    <!-- التبويب الثاني: السابقة -->
+    <div class="tab-pane fade" id="past" role="tabpanel">
+        @await Html.PartialAsync("_AppointmentsTable", Model.Results.Where(r => r.Appointment.Status !=
+                AppointmentStatus.Pending && r.Appointment.Status != AppointmentStatus.Confirmed).OrderByDescending(r =>
+                r.Appointment.AppointmentDate).ThenByDescending(r => r.Appointment.AppointmentTime).ToList())
+    </div>
+</div>
 
 
 
