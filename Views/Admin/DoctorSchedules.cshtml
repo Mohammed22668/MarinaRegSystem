@@ -154,9 +154,9 @@
                       <i class="fas fa-pencil-alt"></i> تعديل
                 </a>
                 
-               <button type="button" class="btn btn-sm bg-danger-light btn-delete" data-id="@item.Id">
-                <i class="fas fa-trash"></i> حذف
-               </button>
+            <button type="button" class="btn btn-sm bg-danger-light btn-delete" data-id="@item.Id">
+    <i class="fas fa-trash"></i> حذف
+</button>
             </td>
         </tr>
     }
@@ -170,6 +170,24 @@
         </div>
 
 
+<!-- Modal تأكيد الحذف -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteLabel">تأكيد الحذف</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <div class="modal-body">
+        هل أنت متأكد من حذف جدول الدوام هذا؟
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+        <button type="button" id="confirmDeleteBtn" class="btn btn-danger">حذف</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -177,50 +195,36 @@
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const deleteButtons = document.querySelectorAll('.btn-delete-schedule');
+    $(document).ready(function () {
+        let deleteId = null;
 
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const scheduleId = this.getAttribute('data-id');
+        // عند الضغط على زر الحذف، نفتح المودال ونحفظ ال id
+        $('.btn-delete').click(function () {
+            deleteId = $(this).data('id');
+            var modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        });
 
-                Swal.fire({
-                    title: 'هل أنت متأكد من حذف جدول الطبيب؟',
-                    text: "لن تتمكن من التراجع عن هذه العملية!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'نعم، احذف!',
-                    cancelButtonText: 'إلغاء'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // إنشاء فورم لإرسال طلب POST للحذف
-                        const form = document.createElement('form');
-                        form.method = 'post';
-                        form.action = '@Url.Action("DeleteDoctorSchedule", "Admin")';
+        // عند تأكيد الحذف في المودال
+        $('#confirmDeleteBtn').click(function () {
+            if (!deleteId) return;
 
-                        // إضافة Token منع التزوير (Anti-forgery token) إذا تستخدمه
-                        const token = document.querySelector('input[name="__RequestVerificationToken"]');
-                        if (token) {
-                            const tokenInput = document.createElement('input');
-                            tokenInput.type = 'hidden';
-                            tokenInput.name = '__RequestVerificationToken';
-                            tokenInput.value = token.value;
-                            form.appendChild(tokenInput);
-                        }
+            $.ajax({
+                url: '@Url.Action("DeleteDoctorSchedule", "Admin")', // غير ControllerName إلى اسم الكنترولر
+                type: 'POST',
+                data: { id: deleteId },
+                success: function (response) {
+                    // اغلاق المودال
+                    var modalEl = document.getElementById('confirmDeleteModal');
+                    var modal = bootstrap.Modal.getInstance(modalEl);
+                    modal.hide();
 
-                        // إضافة الحقل الخاص بالـ id
-                        const idInput = document.createElement('input');
-                        idInput.type = 'hidden';
-                        idInput.name = 'id';
-                        idInput.value = scheduleId;
-                        form.appendChild(idInput);
-
-                        document.body.appendChild(form);
-                        form.submit();
-                    }
-                });
+                    // إعادة تحميل الصفحة أو إزالة السطر من الجدول (حسب الحاجة)
+                    location.reload();
+                },
+                error: function () {
+                    alert('حدث خطأ أثناء الحذف.');
+                }
             });
         });
     });

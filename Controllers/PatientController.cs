@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 
 namespace MarinaRegSystem.Controllers
 {
@@ -25,11 +26,14 @@ namespace MarinaRegSystem.Controllers
         private const string WhatsAppAuthKey = "In31s77aNxvFxvR9CvexJnM1wcWAXpJ3ltg8d8JfEuTmxTFnpG";
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<AppointmentController> _logger;
 
-        public PatientController(ApplicationDbContext context, IWebHostEnvironment environment)
+
+        public PatientController(ApplicationDbContext context, IWebHostEnvironment environment, ILogger<AppointmentController> logger)
         {
             _context = context;
             _environment = environment;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -129,9 +133,35 @@ namespace MarinaRegSystem.Controllers
                 appointment.DiagnosisFileUrl = "/uploads/diagnosis/" + fileName;
             }
 
+            var departmentName = await _context.Departments
+    .Where(d => d.Id == appointment.DepartmentId)
+    .Select(d => d.Name)
+    .FirstOrDefaultAsync();
+
+            var subDepartmentName = await _context.SubDepartments
+                .Where(sd => sd.Id == appointment.SubDepartmentId)
+                .Select(sd => sd.Name)
+                .FirstOrDefaultAsync();
+
+            var doctorName = await _context.Doctors
+                .Where(doc => doc.Id == appointment.DoctorId)
+                .Select(doc => doc.Name)
+                .FirstOrDefaultAsync();
+
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
             await SendAppointmentPendingMessageAsync(userId);
+            try
+            {
+                await EmailHelper.SendAppointmentNotificationEmailAsync(appointment, departmentName, subDepartmentName, doctorName);
+
+            }
+            catch (Exception ex)
+            {
+                // سجل الخطأ أو تجاهله حسب الحاجة
+                _logger.LogError(ex, "فشل إرسال بريد تنبيهي بخصوص الحجز.");
+            }
+
 
 
             TempData["SuccessMessage"] = "تم حجز الموعد بنجاح";

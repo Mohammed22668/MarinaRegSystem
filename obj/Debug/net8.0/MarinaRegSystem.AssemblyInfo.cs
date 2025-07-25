@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MarinaRegSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+622e4e3f39864fe2de221cd5e7c659bfbef99799")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09839b550a91c9280fa384e25e52780ec67f839f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MarinaRegSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MarinaRegSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

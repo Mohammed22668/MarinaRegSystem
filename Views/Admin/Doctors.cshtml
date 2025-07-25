@@ -183,8 +183,10 @@
                                         <th>التخصص</th>
                                         <th>القسم</th>
                                            <th>القسم الفرعي</th>
-                                        <th>سنوات الخبرة</th>
+                                  
+                                          <th> رقم الهاتف</th>
                                         <th>التقييم</th>
+
                                          <th>الشفت</th> 
                                           <th>الحجوزات</th> 
                                        
@@ -207,7 +209,8 @@
                                             <td>@item.Speciality</td>
                                             <td>@item.Department?.Name</td>
                                              <td>@item.SubDepartment?.Name</td>
-                                            <td>@item.Experience سنوات</td>
+                                        
+                                             <td>@item.Phone</td>
                                             <td>
                                                 <div class="rating">
                                                     @for (int i = 1; i <= 5; i++)

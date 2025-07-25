@@ -13,6 +13,10 @@ namespace MarinaRegSystem.Models
         public List<SubDepartment> Results { get; set; }
 
         public List<SelectListItem> Departments { get; set; }
+        public virtual ICollection<Doctor> Doctors { get; set; }
+
+        public virtual ICollection<Appointment> Appointments { get; set; }
+
     }
 
 

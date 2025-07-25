@@ -7,12 +7,13 @@
 
 
 @section Head {
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <link rel="shortcut icon" href="~/assets/img/favicon.png">
-    <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" href="~/assets/img/favicon.png">
+        <title>لوحة تحكم الأدمن - مستشفى مارينا</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
@@ -33,76 +34,76 @@
         <!-- Main CSS -->
         <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
 
-    <!-- Animate -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+        <!-- Animate -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
 
-     <style>
-    .table th {
-        background-color: #f1f4f7;
-        color: #3b3f5c;
-        font-weight: bold;
-        text-align: center;
-        vertical-align: middle;
-    }
+        <style>
+            .table th {
+                background-color: #f1f4f7;
+                color: #3b3f5c;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+            }
 
-    .table td {
-        text-align: center;
-        vertical-align: middle;
-    }
+            .table td {
+                text-align: center;
+                vertical-align: middle;
+            }
 
-    .table-avatar a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-    }
+            .table-avatar a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+            }
 
-    .table-avatar img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+            .table-avatar img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
 
-    .rating i {
-        font-size: 1rem;
-    }
+            .rating i {
+                font-size: 1rem;
+            }
 
-    .actions .btn {
-        padding: 5px 10px;
-        font-size: 0.85rem;
-        border-radius: 6px;
-    }
+            .actions .btn {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+                border-radius: 6px;
+            }
 
-    .bg-success-light {
-        background-color: #d4edda;
-        color: #155724;
-    }
+            .bg-success-light {
+                background-color: #d4edda;
+                color: #155724;
+            }
 
-    .bg-danger-light {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
+            .bg-danger-light {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
 
-    .btn-primary i {
-        margin-left: 5px;
-    }
+            .btn-primary i {
+                margin-left: 5px;
+            }
 
-    .page-title {
-        font-weight: 700;
-        color: #3b3f5c;
-        font-size: 1.75rem;
-    }
+            .page-title {
+                font-weight: 700;
+                color: #3b3f5c;
+                font-size: 1.75rem;
+            }
 
-    .badge {
-        font-size: 0.85rem;
-        padding: 6px 12px;
-        border-radius: 50px;
-    }
-</style>
+            .badge {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+                border-radius: 50px;
+            }
+        </style>
 
-</head>
+    </head>
 }
 
 
@@ -111,22 +112,23 @@
 <!-- نموذج البحث والفلترة -->
 <form asp-action="SubDepartments" method="get" class="row mb-4">
     <div class="col-md-4 mb-2">
-        <input type="text" name="SubDepartmentName" value="@Model.SubDepartmentName" class="form-control" placeholder="اسم القسم الفرعي" />
+        <input type="text" name="SubDepartmentName" value="@Model.SubDepartmentName" class="form-control"
+            placeholder="اسم القسم الفرعي" />
     </div>
     <div class="col-md-4 mb-2">
         <select name="DepartmentId" class="form-control">
             <option value="">-- اختر القسم الرئيسي --</option>
-          @foreach (var dept in Model.Departments)
-{
-    if (dept.Value == Model.DepartmentId?.ToString())
-    {
-        <option value="@dept.Value" selected>@dept.Text</option>
-    }
-    else
-    {
-        <option value="@dept.Value">@dept.Text</option>
-    }
-}
+            @foreach (var dept in Model.Departments)
+            {
+                if (dept.Value == Model.DepartmentId?.ToString())
+                {
+                    <option value="@dept.Value" selected>@dept.Text</option>
+                }
+                else
+                {
+                    <option value="@dept.Value">@dept.Text</option>
+                }
+            }
         </select>
     </div>
     <div class="col-md-4 mb-2 text-end">
@@ -160,12 +162,14 @@
                         <td>@item.Department?.Name</td>
                         <td>@(item.Doctors?.Count ?? 0)</td>
                         <td>
-                            <a asp-action="EditSubDepartment" asp-route-id="@item.Id" class="btn btn-sm btn-primary me-1">تعديل</a>
+                            <a asp-action="EditSubDepartment" asp-route-id="@item.Id"
+                                class="btn btn-sm btn-primary me-1">تعديل</a>
 
-                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn" data-id="@item.Id" title="إلغاء الحجز">
-    <i class="fas fa-times me-1"></i> إلغاء
-</a>
-                            
+                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn" data-id="@item.Id"
+                                title="حذف القسم الفرعي">
+                                <i class="fas fa-times me-1"></i> حذف
+                            </a>
+
                         </td>
                     </tr>
                 }
@@ -220,30 +224,30 @@
 
 
 
-@section Footer{
-   <!-- jQuery -->
-<script src="~/assets/js/jquery-3.7.1.min.js"></script>
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
 
-<!-- Bootstrap JS -->
-<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 
-<!-- Feather Js -->
-<script src="~/assets/js/feather.min.js"></script>
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
 
-<!-- Slimscroll -->
-<script src="~/assets/js/jquery.slimscroll.js"></script>
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
 
-<!-- Select2 Js -->
-<script src="~/assets/js/select2.min.js"></script>
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
 
-<!-- Datepicker JS -->
-<script src="~/assets/plugins/moment/moment.min.js"></script>
-<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 
-<!-- Custom JS -->
-<script src="~/assets/js/script.js"></script>
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
 
-<!-- Validation Scripts -->
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

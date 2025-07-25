@@ -60,8 +60,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRG9jdG9ycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/DoctorScheduleCalendar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRG9jdG9yU2NoZWR1bGVDYWxlbmRhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/DoctorSchedules.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRG9jdG9yU2NoZWR1bGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/DoctorSchedulesBySubDepartments.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRG9jdG9yU2NoZWR1bGVzQnlTdWJEZXBhcnRtZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [E:/C\#_Project/MarinaRegSystem/MarinaRegSystem/Views/Admin/EditAppointment.cshtml]

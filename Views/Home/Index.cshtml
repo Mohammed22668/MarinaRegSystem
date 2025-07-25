@@ -1,9 +1,10 @@
 @{
-    Layout = "_LayoutHome";
+    Layout = null;
 }
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,7 @@
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #f4f6f9; 
+            background-color: #f4f6f9;
             color: #333;
         }
 
@@ -30,7 +31,8 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        .btn-login, .btn-register {
+        .btn-login,
+        .btn-register {
             border-radius: 30px;
             padding: 0.4rem 1rem;
             font-weight: bold;
@@ -73,147 +75,122 @@
         }
     </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
-    <div class="container">
-        <a href="#" class=""><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100px" height="100px"></a>
-        <a class="navbar-brand fw-bold fs-4" href="#" class="ml-2">مستشفى مارينا الاهلي</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#services">الخدمات</a></li>
-                <li class="nav-item"><a class="nav-link" href="#doctors">الأطباء</a></li>
-            </ul>
-            <div class="d-flex gap-2">
-                <a href="~/Home/Login" class="btn btn-outline-primary btn-login">تسجيل الدخول</a>
-                <a href="~/Home/Register" class="btn btn-primary btn-register">إنشاء حساب</a>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- Hero Section -->
-<section class="hero mt-5">
-    <div class="container">
-        <h1 class="display-4 fw-bold">  مرحبًا بك في مستشفى مارينا الاهلي  </h1>
-        <p class="lead mb-4">نقدم لك أفضل الخدمات الطبية بأيدي أمهر الأطباء والمعدات الحديثة.</p>
-        <a href="#services" class="btn btn-light btn-lg btn-custom me-2">تعرف على خدماتنا</a>
-        <a href="/Patient/AddSchedule" class="btn btn-outline-light btn-lg btn-custom">احجز موعدًا الآن</a>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="py-5 bg-white">
-    <div class="container">
-        <h2 class="text-center mb-5 fw-bold">لماذا تختار مستشفى مارينا الاهلي ؟</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="feature-icon mb-3"><i class="fas fa-user-md"></i></div>
-                <h5 class="fw-bold">أطباء متخصصون</h5>
-                <p>فريق طبي مؤهل ومتخصص في مختلف المجالات الطبية.</p>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-icon mb-3"><i class="fas fa-hospital"></i></div>
-                <h5 class="fw-bold">تقنيات حديثة</h5>
-                <p>أحدث المعدات والتقنيات الطبية لضمان تشخيص دقيق وعلاج فعّال.</p>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-icon mb-3"><i class="fas fa-clock"></i></div>
-                <h5 class="fw-bold">خدمة 24/7</h5>
-                <p>مستعدون دائمًا لتلبية احتياجاتك الصحية في أي وقت.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Services Section -->
-<section id="services" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5 fw-bold">خدماتنا</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-clinic-medical fa-2x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold">الاستشارات الطبية</h5>
-                        <p class="card-text">استقبال استشارات طبية من أطباء ذوي خبرة عالية.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-x-ray fa-2x text-success mb-3"></i>
-                        <h5 class="card-title fw-bold">التصوير الطبي</h5>
-                        <p class="card-text">خدمات متكاملة في مجال الأشعة والتصوير التشخيصي.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-prescription-bottle-alt fa-2x text-warning mb-3"></i>
-                        <h5 class="card-title fw-bold">الصيدلة</h5>
-                        <p class="card-text">صيدلية داخلية توفر جميع الأدوية بأسعار تنافسية.</p>
-                    </div>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top">
+        <div class="container">
+            <a href="#" class=""><img src="~/assets/img/marina-logo5.png" alt="Logo" width="100px" height="100px"></a>
+            <a class="navbar-brand fw-bold fs-4" href="#" class="ml-2">مستشفى مارينا الاهلي</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#services">الخدمات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#doctors">الأطباء</a></li>
+                </ul>
+                <div class="d-flex gap-2">
+                    <a href="~/Home/Login" class="btn btn-outline-primary btn-login">تسجيل الدخول</a>
+                    <a href="~/Home/Register" class="btn btn-primary btn-register">إنشاء حساب</a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </nav>
 
-<!-- Doctors Section -->
-<section id="doctors" class="py-5 bg-white">
-    <div class="container">
-        <h2 class="text-center mb-5 fw-bold">أطباؤنا</h2>
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4 col-sm-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold">دكتور أحمد محمد</h5>
-                        <p class="text-muted">اختصاص قلب وشرايين</p>
-                        <a href="/Patient/AddSchedule" class="btn btn-outline-primary btn-sm">حجز موعد</a>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero mt-5">
+        <div class="container">
+            <h1 class="display-4 fw-bold"> مرحبًا بك في مستشفى مارينا الاهلي </h1>
+            <p class="lead mb-4">نقدم لك أفضل الخدمات الطبية بأيدي أمهر الأطباء والمعدات الحديثة.</p>
+            <a href="#services" class="btn btn-light btn-lg btn-custom me-2">تعرف على خدماتنا</a>
+            <a href="/Patient/AddSchedule" class="btn btn-outline-light btn-lg btn-custom">احجز موعدًا الآن</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">لماذا تختار مستشفى مارينا الاهلي ؟</h2>
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="feature-icon mb-3"><i class="fas fa-user-md"></i></div>
+                    <h5 class="fw-bold">أطباء متخصصون</h5>
+                    <p>فريق طبي مؤهل ومتخصص في مختلف المجالات الطبية.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-icon mb-3"><i class="fas fa-hospital"></i></div>
+                    <h5 class="fw-bold">تقنيات حديثة</h5>
+                    <p>أحدث المعدات والتقنيات الطبية لضمان تشخيص دقيق وعلاج فعّال.</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-icon mb-3"><i class="fas fa-clock"></i></div>
+                    <h5 class="fw-bold">خدمة 24/7</h5>
+                    <p>مستعدون دائمًا لتلبية احتياجاتك الصحية في أي وقت.</p>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-md fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title fw-bold">دكتورة سارة عبد الكريم</h5>
-                        <p class="text-muted">اختصاص توليد ونساء</p>
-                        <a href="/Patient/AddSchedule" class="btn btn-outline-primary btn-sm">حجز موعد</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">خدماتنا</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clinic-medical fa-2x text-primary mb-3"></i>
+                            <h5 class="card-title fw-bold">الاستشارات الطبية</h5>
+                            <p class="card-text">استقبال استشارات طبية من أطباء ذوي خبرة عالية.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-x-ray fa-2x text-success mb-3"></i>
+                            <h5 class="card-title fw-bold">التصوير الطبي</h5>
+                            <p class="card-text">خدمات متكاملة في مجال الأشعة والتصوير التشخيصي.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-prescription-bottle-alt fa-2x text-warning mb-3"></i>
+                            <h5 class="card-title fw-bold">الصيدلة</h5>
+                            <p class="card-text">صيدلية داخلية توفر جميع الأدوية بأسعار تنافسية.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Call to Action -->
-<section class="py-5 text-white text-center" style="background-color: #007bff;">
-    <div class="container">
-        <h2 class="display-6 fw-bold mb-3">ابدأ رحلتك نحو صحة أفضل اليوم!</h2>
-        <p class="mb-4">احجز موعدًا مع أحد أطباءنا الآن واستفد من أفضل الرعاية الصحية.</p>
-        <a href="/Patient/AddSchedule" class="btn btn-light btn-lg btn-custom">احجز موعدًا الآن</a>
-    </div>
-</section>
+    <!-- Doctors Section -->
 
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <p class="mb-0">&copy; 2025 - مستشفى مارينا الاهلي- جميع الحقوق محفوظة</p>
-    </div>
-</footer>
+    <!-- Call to Action -->
+    <section class="py-5 text-white text-center" style="background-color: #007bff;">
+        <div class="container">
+            <h2 class="display-6 fw-bold mb-3">ابدأ رحلتك نحو صحة أفضل اليوم!</h2>
+            <p class="mb-4">احجز موعدًا مع أحد أطباءنا الآن واستفد من أفضل الرعاية الصحية.</p>
+            <a href="/Patient/AddSchedule" class="btn btn-light btn-lg btn-custom">احجز موعدًا الآن</a>
+        </div>
+    </section>
 
-@section Scripts {
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> 
-}
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="mb-0">&copy; 2025 - مستشفى مارينا الاهلي- جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    @section Scripts {
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    }
 </body>
+
 </html>

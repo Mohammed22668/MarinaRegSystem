@@ -1,0 +1,149 @@
+@model DoctorScheduleCalendarViewModel
+
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "جدول الاطباء";
+    var subDepartments = Model.SubDepartments;
+
+}
+
+
+@section Head {
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <link rel="shortcut icon" type="image/x-icon" href="~/assets/img/favicon.png">
+        <title>مستشفى مارينا - الرئيسية</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap.rtl.min.css">
+
+        <!-- Fontawesome CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/fontawesome.min.css">
+        <link rel="stylesheet" href="~/assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/select2.min.css">
+
+        <!-- Datatables CSS -->
+        <link rel="stylesheet" href="~/assets/plugins/datatables/datatables.min.css">
+
+        <!-- Feathericon CSS -->
+        <link rel="stylesheet" href="~/assets/css/feather.css">
+
+        <!-- Main CSS -->
+        <link rel="stylesheet" type="text/css" href="~/assets/css/style.css">
+
+
+
+    </head>
+}
+
+@section currentPage {
+    <li class="menu-side"><img src="~/assets/img/icons/menu-icon-04.svg" alt=""></li>
+    <li class="breadcrumb-item" style="vertical-align:middle;margin-right:10px"><a href="#"
+            style="font-weight:bolder">الأطباء</a></li>
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">جدول دوام الأطباء</h2>
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">جدول دوام الأطباء</h2>
+
+        <ul class="nav nav-tabs mb-3" id="subDeptTabs" role="tablist">
+            @for (int i = 0; i < Model.SubDepartments.Count; i++)
+            {
+                var subDept = Model.SubDepartments[i];
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(i == 0 ? "active" : "")" id="tab-@subDept.Id" data-bs-toggle="tab"
+                        data-bs-target="#content-@subDept.Id" type="button" role="tab">
+                        @subDept.Name
+                    </button>
+                </li>
+            }
+        </ul>
+
+        <div class="tab-content" id="subDeptTabsContent">
+            @for (int i = 0; i < Model.SubDepartments.Count; i++)
+            {
+                var subDept = Model.SubDepartments[i];
+                var calendarId = $"calendar-{subDept.Id}";
+
+                <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="content-@subDept.Id" role="tabpanel">
+                    <div id="@calendarId" class="calendar-container mb-4" style="min-height: 600px;"></div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const eventsBySubDept = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.EventsBySubDepartment));
+
+            Object.keys(eventsBySubDept).forEach(function (subDeptId) {
+                const calendarEl = document.getElementById('calendar-' + subDeptId);
+                if (!calendarEl) return;
+
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    locale: 'ar',
+                    initialView: 'timeGridWeek',
+                    allDaySlot: false,
+                    height: "auto",
+                    slotMinTime: "08:00:00",
+                    slotMaxTime: "22:00:00",
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'timeGridWeek,timeGridDay'
+                    },
+                    events: eventsBySubDept[subDeptId]
+                });
+
+                calendar.render();
+            });
+        });
+    </script>
+
+
+
+
+</div>
+
+
+
+@section Footer {
+    <!-- jQuery -->
+    <script src="~/assets/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Feather Js -->
+    <script src="~/assets/js/feather.min.js"></script>
+
+    <!-- Slimscroll -->
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+
+    <!-- Select2 Js -->
+    <script src="~/assets/js/select2.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script src="~/assets/plugins/moment/moment.min.js"></script>
+    <script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/assets/js/script.js"></script>
+
+    <!-- Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

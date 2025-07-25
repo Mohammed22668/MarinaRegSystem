@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using QRCoder;
 using System.Net.Http;
 
 
@@ -425,15 +424,21 @@ namespace MarinaRegSystem.Controllers
         {
             var schedule = _context.DoctorSchedules.Find(id);
             if (schedule == null)
-                return NotFound();
+                return Json(new { success = false, message = "الجدول غير موجود" });
 
-            _context.DoctorSchedules.Remove(schedule);
-            _context.SaveChanges();
+            try
+            {
+                _context.DoctorSchedules.Remove(schedule);
+                _context.SaveChanges();
 
-            TempData["Success"] = "تم حذف الجدول بنجاح";
-            return RedirectToAction(nameof(DoctorSchedules));
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // يمكن تسجيل الخطأ في اللوج هنا
+                return Json(new { success = false, message = "حدث خطأ أثناء الحذف." });
+            }
         }
-
         // جلب صفحة التعديل مع ملأ البيانات
         [HttpGet]
         public IActionResult EditDoctorSchedule(int id)
@@ -476,6 +481,8 @@ namespace MarinaRegSystem.Controllers
             ViewBag.Doctors = new SelectList(_context.Doctors.ToList(), "Id", "Name", model.DoctorId);
             return View(model);
         }
+
+
 
         [HttpGet]
         public IActionResult AddSchedule()
@@ -662,7 +669,8 @@ namespace MarinaRegSystem.Controllers
                         "✅ تم تأكيد موعدك في مستشفى مارينا الأهلي\n\n" +
                         $"🧑‍⚕️ الطبيب: {doctor?.Name ?? "غير محدد"}\n" +
                         $"📅 التاريخ: {existing.AppointmentDate:yyyy-MM-dd}\n" +
-                        $"⏰ الوقت: {existing.AppointmentTime}\n";
+                        $"⏰ الوقت: {existing.AppointmentTime}\n" +
+                         $"📝 الملاحظات: {existing.Notes}\n";
                 }
                 if (existing.Status == AppointmentStatus.Rejected)
 
@@ -731,6 +739,7 @@ namespace MarinaRegSystem.Controllers
             var query = _context.SubDepartments
         .Include(sd => sd.Department)
         .Include(sd => sd.Doctors)
+
         .AsQueryable();
 
             // 🔍 بحث بالاسم
@@ -949,6 +958,71 @@ namespace MarinaRegSystem.Controllers
 
             return digits;
         }
+
+
+
+        public async Task<IActionResult> DoctorSchedulesBySubDepartments()
+        {
+            var subDepartments = await _context.SubDepartments
+                .Include(sd => sd.Department)
+                .ToListAsync();
+
+            var schedules = await _context.DoctorSchedules
+                .Include(s => s.Doctor)
+                .ToListAsync();
+
+            var viewModel = new DoctorScheduleTabsViewModel
+            {
+                SubDepartments = subDepartments,
+                Schedules = schedules
+            };
+
+            return View(viewModel);
+        }
+
+
+
+        public async Task<IActionResult> DoctorScheduleCalendar()
+        {
+            var subDepartments = await _context.SubDepartments.ToListAsync();
+
+            var schedules = await _context.DoctorSchedules
+                .Include(ds => ds.Doctor)
+                .Include(ds => ds.Doctor.SubDepartment)
+                .ToListAsync();
+
+            var result = new Dictionary<int, List<DoctorScheduleEvent>>();
+
+            foreach (var subDept in subDepartments)
+            {
+                var events = schedules
+                    .Where(s => s.Doctor.SubDepartmentId == subDept.Id)
+                    .Select(s => new DoctorScheduleEvent
+                    {
+                        Title = $"{s.Doctor.Name}",
+                        Start = GetNextDateForDay(s.DayOfWeek).Add(s.StartTime).ToString("s"),
+                        End = GetNextDateForDay(s.DayOfWeek).Add(s.EndTime).ToString("s")
+                    }).ToList();
+
+                result[subDept.Id] = events;
+            }
+
+            var model = new DoctorScheduleCalendarViewModel
+            {
+                SubDepartments = subDepartments,
+                EventsBySubDepartment = result
+            };
+
+            return View(model);
+        }
+
+        private DateTime GetNextDateForDay(DayOfWeek day)
+        {
+            var today = DateTime.Today;
+            int daysUntil = ((int)day - (int)today.DayOfWeek + 7) % 7;
+            return today.AddDays(daysUntil);
+        }
+
 
 
 
